@@ -4,6 +4,129 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@base-ui/react':
+      specifier: ^1.6.0
+      version: 1.6.0
+    '@fontsource-variable/dm-sans':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/inter':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/lora':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/manrope':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/merriweather':
+      specifier: ^5.2.6
+      version: 5.3.0
+    '@fontsource-variable/montserrat':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/outfit':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/playfair-display':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/plus-jakarta-sans':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource-variable/space-grotesk':
+      specifier: ^5.2.10
+      version: 5.3.0
+    '@fontsource/anton':
+      specifier: ^5.2.7
+      version: 5.3.0
+    '@fontsource/archivo-black':
+      specifier: ^5.2.8
+      version: 5.3.0
+    '@fontsource/bebas-neue':
+      specifier: ^5.2.7
+      version: 5.3.0
+    '@fontsource/libre-baskerville':
+      specifier: ^5.2.10
+      version: 5.3.0
+    '@fontsource/poppins':
+      specifier: ^5.2.7
+      version: 5.3.0
+    '@hugeicons/core-free-icons':
+      specifier: ^3.1.1
+      version: 3.3.0
+    '@hugeicons/react':
+      specifier: ^1.1.5
+      version: 1.1.9
+    '@tailwindcss/vite':
+      specifier: ^4.1.18
+      version: 4.3.3
+    '@tanstack/react-router':
+      specifier: ^1.132.0
+      version: 1.170.18
+    '@types/react':
+      specifier: ^19.2.0
+      version: 19.2.17
+    '@types/react-dom':
+      specifier: ^19.2.0
+      version: 19.2.3
+    '@vitejs/plugin-react':
+      specifier: ^5.0.4
+      version: 5.2.0
+    class-variance-authority:
+      specifier: ^0.7.1
+      version: 0.7.1
+    clsx:
+      specifier: ^2.1.1
+      version: 2.1.1
+    next-themes:
+      specifier: ^0.4.6
+      version: 0.4.6
+    radix-ui:
+      specifier: ^1.4.3
+      version: 1.6.7
+    react:
+      specifier: ^19.2.0
+      version: 19.2.8
+    react-colorful:
+      specifier: ^5.6.1
+      version: 5.8.0
+    react-dom:
+      specifier: ^19.2.0
+      version: 19.2.8
+    react-textarea-autosize:
+      specifier: ^8.5.9
+      version: 8.5.9
+    recharts:
+      specifier: ^3.7.0
+      version: 3.10.1
+    shadcn:
+      specifier: ^3.8.5
+      version: 3.8.5
+    sonner:
+      specifier: ^2.0.7
+      version: 2.0.7
+    tailwind-merge:
+      specifier: ^3.4.0
+      version: 3.6.0
+    tailwindcss:
+      specifier: ^4.1.18
+      version: 4.3.3
+    typescript:
+      specifier: ^7.0.0
+      version: 7.0.2
+    vite:
+      specifier: ^7.1.7
+      version: 7.3.6
+    vite-tsconfig-paths:
+      specifier: ^6.0.2
+      version: 6.1.1
+    zod:
+      specifier: ^4.1.11
+      version: 4.4.3
+
 importers:
 
   .:
@@ -21,7 +144,7 @@ importers:
         specifier: ^2.5.4
         version: 2.10.7
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
 
   apps/api:
@@ -66,7 +189,7 @@ importers:
         specifier: ^13.0.0
         version: 13.0.2
       zod:
-        specifier: ^4.1.11
+        specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
       '@inbound/config':
@@ -85,7 +208,7 @@ importers:
         specifier: ^4.19.3
         version: 4.23.1
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
       vitest:
         specifier: ^4.1.10
@@ -94,58 +217,58 @@ importers:
   apps/bio:
     dependencies:
       '@base-ui/react':
-        specifier: ^1.6.0
+        specifier: 'catalog:'
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fontsource-variable/dm-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/inter':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/lora':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/manrope':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/merriweather':
-        specifier: ^5.2.6
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/montserrat':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/outfit':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/playfair-display':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/plus-jakarta-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/space-grotesk':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/anton':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/archivo-black':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/bebas-neue':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/libre-baskerville':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/poppins':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@hugeicons/core-free-icons':
-        specifier: ^3.1.1
+        specifier: 'catalog:'
         version: 3.3.0
       '@hugeicons/react':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.9(react@19.2.8)
       '@inbound/shared':
         specifier: workspace:*
@@ -154,7 +277,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-router':
-        specifier: ^1.132.0
+        specifier: 'catalog:'
         version: 1.170.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-router-ssr-query':
         specifier: ^1.131.7
@@ -163,74 +286,74 @@ importers:
         specifier: ^1.132.0
         version: 1.168.32(crossws@0.4.10(srvx@0.11.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       class-variance-authority:
-        specifier: ^0.7.1
+        specifier: 'catalog:'
         version: 0.7.1
       clsx:
-        specifier: ^2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       next-themes:
-        specifier: ^0.4.6
+        specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       radix-ui:
-        specifier: ^1.4.3
+        specifier: 'catalog:'
         version: 1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8
       react-colorful:
-        specifier: ^5.6.1
+        specifier: 'catalog:'
         version: 5.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
       recharts:
-        specifier: ^3.7.0
+        specifier: 'catalog:'
         version: 3.10.1(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)(redux@5.0.1)
       shadcn:
-        specifier: ^3.8.5
+        specifier: 'catalog:'
         version: 3.8.5(@types/node@22.20.1)(typescript@7.0.2)
       sonner:
-        specifier: ^2.0.7
+        specifier: 'catalog:'
         version: 2.0.7(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       tailwind-merge:
-        specifier: ^3.4.0
+        specifier: 'catalog:'
         version: 3.6.0
     devDependencies:
       '@inbound/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@tailwindcss/vite':
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.3.3(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       '@types/react':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.0.4
+        specifier: 'catalog:'
         version: 5.2.0(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       nitro:
-        specifier: npm:nitro-nightly@3.0.1-20260712-095235-05bf1c38
-        version: nitro-nightly@3.0.1-20260712-095235-05bf1c38(better-sqlite3@11.10.0)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0))(jiti@2.7.0)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
+        specifier: 3.0.260610-beta
+        version: 3.0.260610-beta(better-sqlite3@11.10.0)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0))(jiti@2.7.0)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       tailwindcss:
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.3.3
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
       vite:
-        specifier: ^7.1.7
+        specifier: 'catalog:'
         version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1)
       vite-tsconfig-paths:
-        specifier: ^6.0.2
+        specifier: 'catalog:'
         version: 6.1.1(typescript@7.0.2)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
 
   apps/dashboard:
     dependencies:
       '@base-ui/react':
-        specifier: ^1.6.0
+        specifier: 'catalog:'
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@dnd-kit/helpers':
         specifier: ^0.3.2
@@ -239,58 +362,58 @@ importers:
         specifier: ^0.3.2
         version: 0.3.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fontsource-variable/dm-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/figtree':
         specifier: ^5.2.10
         version: 5.3.0
       '@fontsource-variable/inter':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/lora':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/manrope':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/merriweather':
-        specifier: ^5.2.6
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/montserrat':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/outfit':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/playfair-display':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/plus-jakarta-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/space-grotesk':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/anton':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/archivo-black':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/bebas-neue':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/libre-baskerville':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/poppins':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@hugeicons/core-free-icons':
-        specifier: ^3.1.1
+        specifier: 'catalog:'
         version: 3.3.0
       '@hugeicons/react':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.9(react@19.2.8)
       '@inbound/shared':
         specifier: workspace:*
@@ -311,7 +434,7 @@ importers:
         specifier: ^5.90.21
         version: 5.101.4(react@19.2.8)
       '@tanstack/react-router':
-        specifier: ^1.132.0
+        specifier: 'catalog:'
         version: 1.170.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-store':
         specifier: ^0.8.0
@@ -323,55 +446,55 @@ importers:
         specifier: ^1.132.0
         version: 1.168.23(@tanstack/react-router@1.170.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       class-variance-authority:
-        specifier: ^0.7.1
+        specifier: 'catalog:'
         version: 0.7.1
       clsx:
-        specifier: ^2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       framer-motion:
         specifier: ^12.34.3
         version: 12.42.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       next-themes:
-        specifier: ^0.4.6
+        specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       radix-ui:
-        specifier: ^1.4.3
+        specifier: 'catalog:'
         version: 1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8
       react-colorful:
-        specifier: ^5.6.1
+        specifier: 'catalog:'
         version: 5.8.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.17)(react@19.2.8)
       react-textarea-autosize:
-        specifier: ^8.5.9
+        specifier: 'catalog:'
         version: 8.5.9(@types/react@19.2.17)(react@19.2.8)
       recharts:
-        specifier: ^3.7.0
+        specifier: 'catalog:'
         version: 3.10.1(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)(redux@5.0.1)
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
       shadcn:
-        specifier: ^3.8.5
+        specifier: 'catalog:'
         version: 3.8.5(@types/node@22.20.1)(typescript@7.0.2)
       sonner:
-        specifier: ^2.0.7
+        specifier: 'catalog:'
         version: 2.0.7(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       tailwind-merge:
-        specifier: ^3.4.0
+        specifier: 'catalog:'
         version: 3.6.0
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
       zod:
-        specifier: ^4.1.11
+        specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
       '@inbound/config':
@@ -381,31 +504,31 @@ importers:
         specifier: ^0.5.19
         version: 0.5.20(tailwindcss@4.3.3)
       '@tailwindcss/vite':
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.3.3(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       '@tanstack/router-cli':
         specifier: ^1.167.21
         version: 1.167.21
       '@types/react':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^5.0.4
+        specifier: 'catalog:'
         version: 5.2.0(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
       tailwindcss:
-        specifier: ^4.1.18
+        specifier: 'catalog:'
         version: 4.3.3
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
       vite:
-        specifier: ^7.1.7
+        specifier: 'catalog:'
         version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1)
       vite-tsconfig-paths:
-        specifier: ^6.0.2
+        specifier: 'catalog:'
         version: 6.1.1(typescript@7.0.2)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1))
 
   packages/config: {}
@@ -416,7 +539,7 @@ importers:
         specifier: ^11.1.0
         version: 11.1.1
       zod:
-        specifier: ^4.1.11
+        specifier: 'catalog:'
         version: 4.4.3
     devDependencies:
       '@inbound/config':
@@ -426,101 +549,101 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
 
   packages/ui:
     dependencies:
       '@fontsource-variable/dm-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/inter':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/lora':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/manrope':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/merriweather':
-        specifier: ^5.2.6
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/montserrat':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/outfit':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/playfair-display':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/plus-jakarta-sans':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource-variable/space-grotesk':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/anton':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/archivo-black':
-        specifier: ^5.2.8
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/bebas-neue':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/libre-baskerville':
-        specifier: ^5.2.10
+        specifier: 'catalog:'
         version: 5.3.0
       '@fontsource/poppins':
-        specifier: ^5.2.7
+        specifier: 'catalog:'
         version: 5.3.0
       '@hugeicons/core-free-icons':
-        specifier: ^3.1.1
+        specifier: 'catalog:'
         version: 3.3.0
       '@hugeicons/react':
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.9(react@19.2.8)
       '@inbound/shared':
         specifier: workspace:*
         version: link:../shared
       class-variance-authority:
-        specifier: ^0.7.1
+        specifier: 'catalog:'
         version: 0.7.1
       clsx:
-        specifier: ^2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       radix-ui:
-        specifier: ^1.4.3
+        specifier: 'catalog:'
         version: 1.6.7(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-textarea-autosize:
-        specifier: ^8.5.9
+        specifier: 'catalog:'
         version: 8.5.9(@types/react@19.2.17)(react@19.2.8)
       shadcn:
-        specifier: ^3.8.5
+        specifier: 'catalog:'
         version: 3.8.5(@types/node@22.20.1)(typescript@7.0.2)
       tailwind-merge:
-        specifier: ^3.4.0
+        specifier: 'catalog:'
         version: 3.6.0
     devDependencies:
       '@inbound/config':
         specifier: workspace:*
         version: link:../config
       '@types/react':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.17)
       react:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8
       react-dom:
-        specifier: ^19.2.0
+        specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)
       typescript:
-        specifier: ^7.0.0
+        specifier: 'catalog:'
         version: 7.0.2
 
 packages:
@@ -4346,15 +4469,6 @@ packages:
     resolution: {integrity: sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  h3-rules@0.1.0:
-    resolution: {integrity: sha512-MrUUH1E/yoM7hvpKVbLs/CFeindwiTn7Fcfo+zXDpfuRYbcpJDPkYGGttCSiHNJmjUQNYQ5yn9veUIqFonYXuw==}
-    peerDependencies:
-      h3: ^2.0.1-rc.25
-      ocache: '>=0.2.0'
-    peerDependenciesMeta:
-      ocache:
-        optional: true
-
   h3@2.0.1-rc.20:
     resolution: {integrity: sha512-28ljodXuUp0fZovdiSRq4G9OgrxCztrJe5VdYzXAB7ueRvI7pIUqLU14Xi3XqdYJ/khXjfpUOOD2EQa6CmBgsg==}
     engines: {node: '>=20.11.1'}
@@ -4365,12 +4479,12 @@ packages:
       crossws:
         optional: true
 
-  h3@2.0.1-rc.26:
-    resolution: {integrity: sha512-GDxlvDsKxgjRvG5UBRJYyGJTMWLV30CJ4cV+e7QCTgftDHihrvio1fVPbNembhEr6J4WNm8IWy3fookgyTweLw==}
+  h3@2.0.1-rc.22:
+    resolution: {integrity: sha512-Esv0DMIuPkCTSWCA0vO73vcTqwzH1wjSrAO1TXNu/K3up1sZHa9EKMapbmxCDYBeymC3fVTk4qxp7ogQWQ+KgA==}
     engines: {node: '>=20.11.1'}
     hasBin: true
     peerDependencies:
-      crossws: ^0.4.9
+      crossws: ^0.4.1
     peerDependenciesMeta:
       crossws:
         optional: true
@@ -5059,19 +5173,19 @@ packages:
   nf3@0.3.22:
     resolution: {integrity: sha512-NOcqlHu22X1rUakd0SrqllP8kb3LWFmSAi1svTxaKxz+yB604xlaOmUfI3oO+RkODvaocKDDy8bgthnZL8hrkw==}
 
-  nitro-nightly@3.0.1-20260712-095235-05bf1c38:
-    resolution: {integrity: sha512-aOE3Pc2BNMorvXCMlBdBRAkWY+brTFEbg1EKbiouYdhbTcdjpfzwhlvk8duirKiIA+c2B06MlnrNHXUMLkI/mQ==}
+  nitro@3.0.260610-beta:
+    resolution: {integrity: sha512-KPb4L5yaF/Rx/xoGMpgHRJvZhbhGiqbRKOwwPLCH9jKTKTsEUHLjnJas85AeCzaswqa8Wi52eQBtRsODC4PS0Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
-      '@vercel/queue': ^0.4.0
+      '@vercel/queue': ^0.3.0
       dotenv: '*'
       giget: '*'
       jiti: ^2.7.0
-      rollup: ^4.62.0
+      rollup: ^4.61.1
       vite: ^7 || ^8
       xml2js: ^0.6.2
-      zephyr-agent: ^1.1.2
+      zephyr-agent: ^0.2.0
     peerDependenciesMeta:
       '@vercel/queue':
         optional: true
@@ -5131,8 +5245,8 @@ packages:
     resolution: {integrity: sha512-4a+OsYv9UktOJKE+l1A4OufDgdRF9PifWj+tJnHURo/P+WOxpG4GzUFL9qCalmWauao6ogiG+QvnCovwPoyAWA==}
     engines: {node: '>=12.20.0'}
 
-  ocache@0.2.0:
-    resolution: {integrity: sha512-QE+SxXf/A8yR01rEOg2X5KwUe+mARHo1xQXl+iwLMzLIH06S5lBOZhhHQWp7T5etfFa8nOnRhvjGuo9YBCWwig==}
+  ocache@0.1.5:
+    resolution: {integrity: sha512-kNNnkkVQup/QDvmTz8Q84wc2ntiyoVHDxa6eHWKt5qdGAmFRBIxy83rxgCYEjW0x06UJ9E3P6VgM2yY4rOBH4w==}
 
   ofetch@2.0.0-alpha.3:
     resolution: {integrity: sha512-zpYTCs2byOuft65vI3z43Dd6iSdFbOZZLb9/d21aCpx2rGastVU9dOCv0lu4ykc1Ur1anAYjDi3SUvR0vq50JA==}
@@ -5531,9 +5645,6 @@ packages:
   rou3@0.8.1:
     resolution: {integrity: sha512-ePa+XGk00/3HuCqrEnK3LxJW7I0SdNg6EFzKUJG73hMAdDcOUC/i/aSz7LSDwLrGr33kal/rqOGydzwl6U7zBA==}
 
-  rou3@0.9.1:
-    resolution: {integrity: sha512-z/sSmzvtwMDDnxsPVhfWMuG6F6mbmhFDXoVqLmMfbpDD9qfV3GDmSQpf0+W296/ZDIpW2wcMmBfpVFzcnOi/nA==}
-
   router@2.2.0:
     resolution: {integrity: sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==}
     engines: {node: '>= 18'}
@@ -5663,11 +5774,6 @@ packages:
 
   srvx@0.11.22:
     resolution: {integrity: sha512-LqZxxBDMKuMAZzFzJnDCkFOrs9MZQZr0LvHiO/SuSZVdQaXD7xQ5UWTUxheJrQPve1qk9MG2B/yttUvJxw8egQ==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
-
-  srvx@0.12.4:
-    resolution: {integrity: sha512-RixzFlMn3dvzDTpKIAXhXrqL4cy6vScNCP0VVwgVbUBU94o+DiXLsFnAZetbyKAEnK6Ox3hzHXWGsyv/Iibv7g==}
     engines: {node: '>=20.16.0'}
     hasBin: true
 
@@ -9822,14 +9928,6 @@ snapshots:
 
   graphql@16.14.2: {}
 
-  h3-rules@0.1.0(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.11.22)))(ocache@0.2.0):
-    dependencies:
-      h3: 2.0.1-rc.26(crossws@0.4.10(srvx@0.11.22))
-      rou3: 0.9.1
-      ufo: 1.6.4
-    optionalDependencies:
-      ocache: 0.2.0
-
   h3@2.0.1-rc.20(crossws@0.4.10(srvx@0.11.22)):
     dependencies:
       rou3: 0.8.1
@@ -9837,10 +9935,10 @@ snapshots:
     optionalDependencies:
       crossws: 0.4.10(srvx@0.11.22)
 
-  h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.11.22)):
+  h3@2.0.1-rc.22(crossws@0.4.10(srvx@0.11.22)):
     dependencies:
-      rou3: 0.9.1
-      srvx: 0.12.4
+      rou3: 0.8.1
+      srvx: 0.11.22
     optionalDependencies:
       crossws: 0.4.10(srvx@0.11.22)
 
@@ -10626,21 +10724,19 @@ snapshots:
 
   nf3@0.3.22: {}
 
-  nitro-nightly@3.0.1-20260712-095235-05bf1c38(better-sqlite3@11.10.0)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0))(jiti@2.7.0)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1)):
+  nitro@3.0.260610-beta(better-sqlite3@11.10.0)(chokidar@5.0.0)(dotenv@17.4.2)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0))(jiti@2.7.0)(rollup@4.62.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(lightningcss@1.33.0)(tsx@4.23.1)):
     dependencies:
       consola: 3.4.2
       crossws: 0.4.10(srvx@0.11.22)
       db0: 0.3.4(better-sqlite3@11.10.0)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0))
       env-runner: 0.1.16
-      h3: 2.0.1-rc.26(crossws@0.4.10(srvx@0.11.22))
-      h3-rules: 0.1.0(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.11.22)))(ocache@0.2.0)
+      h3: 2.0.1-rc.22(crossws@0.4.10(srvx@0.11.22))
       hookable: 6.1.1
       nf3: 0.3.22
-      ocache: 0.2.0
+      ocache: 0.1.5
       ofetch: 2.0.0-alpha.3
       ohash: 2.0.11
       rolldown: 1.2.0
-      rou3: 0.9.1
       srvx: 0.11.22
       unenv: 2.0.0-rc.24
       unstorage: 2.0.0-alpha.7(chokidar@5.0.0)(db0@0.3.4(better-sqlite3@11.10.0)(drizzle-orm@0.43.1(@opentelemetry/api@1.9.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@11.10.0)))(ofetch@2.0.0-alpha.3)
@@ -10712,7 +10808,7 @@ snapshots:
 
   obug@2.1.4: {}
 
-  ocache@0.2.0:
+  ocache@0.1.5:
     dependencies:
       ohash: 2.0.11
 
@@ -11284,8 +11380,6 @@ snapshots:
 
   rou3@0.8.1: {}
 
-  rou3@0.9.1: {}
-
   router@2.2.0:
     dependencies:
       debug: 4.4.3
@@ -11464,8 +11558,6 @@ snapshots:
   space-separated-tokens@2.0.2: {}
 
   srvx@0.11.22: {}
-
-  srvx@0.12.4: {}
 
   stackback@0.0.2: {}
 
