@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getOverview } from "@/lib/server/analytics.functions"
+import { analyticsOverview } from "@/api/analytics"
 import { queryKeys } from "./keys"
 
 export function useAnalyticsOverview({
@@ -20,7 +20,11 @@ export function useAnalyticsOverview({
     enabled: enabled && Boolean(profileId),
     queryFn: async () => {
       if (!profileId) throw new Error("Profile not selected")
-      return getOverview({ profileId, start, end })
+      return analyticsOverview({
+        profileId,
+        startDate: start,
+        endDate: end,
+      })
     },
   })
 }
