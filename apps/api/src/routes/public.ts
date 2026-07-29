@@ -4,19 +4,15 @@ import {
   startFormSessionInputSchema,
 } from "@inbound/shared"
 import { z } from "zod"
-import {
-  getFormSessionMessages,
-  sendFormSessionMessage,
-  startFormSession,
-} from "../lib/form-sessions.ts"
-import { getLinkById, getPublicProfileByUsername } from "../lib/profiles.ts"
+import * as chat from "../domains/chat/index.ts"
+import * as profiles from "../domains/profiles/index.ts"
 import { ingestLinkClick, ingestPageView } from "../integrations/tinybird.ts"
 
 export const publicRoutes = new Hono()
 
 publicRoutes.get("/profiles/:username", async (c) => {
   const username = c.req.param("username")
-  const data = await getPublicProfileByUsername(username)
+  const data = await profiles.getPublicProfileByUsername(username)
   if (!data) {
     return c.json({ error: "Not found" }, 404)
   }
@@ -24,7 +20,7 @@ publicRoutes.get("/profiles/:username", async (c) => {
 })
 
 publicRoutes.get("/links/:id", async (c) => {
-  const link = await getLinkById(c.req.param("id"))
+  const link = await profiles.getLinkById(c.req.param("id"))
   if (!link) {
     return c.json({ error: "Not found" }, 404)
   }
@@ -32,7 +28,7 @@ publicRoutes.get("/links/:id", async (c) => {
 })
 
 publicRoutes.post("/links/:id/click", async (c) => {
-  const link = await getLinkById(c.req.param("id"))
+  const link = await profiles.getLinkById(c.req.param("id"))
   if (!link) {
     return c.json({ error: "Not found" }, 404)
   }
@@ -73,12 +69,12 @@ publicRoutes.post("/page-views", async (c) => {
 
 publicRoutes.post("/form-sessions", async (c) => {
   const body = startFormSessionInputSchema.parse(await c.req.json())
-  const sessionId = await startFormSession(body)
+  const sessionId = await chat.startFormSession(body)
   return c.json({ sessionId })
 })
 
 publicRoutes.get("/form-sessions/:sessionId/messages", async (c) => {
-  const messages = await getFormSessionMessages(c.req.param("sessionId"))
+  const messages = await chat.getFormSessionMessages(c.req.param("sessionId"))
   return c.json({ messages })
 })
 
@@ -87,6 +83,6 @@ publicRoutes.post("/form-sessions/:sessionId/messages", async (c) => {
     sessionId: c.req.param("sessionId"),
     ...(await c.req.json()),
   })
-  await sendFormSessionMessage(body)
+  await chat.sendFormSessionMessage(body)
   return c.json({ ok: true })
 })

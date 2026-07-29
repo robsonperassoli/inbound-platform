@@ -1,19 +1,11 @@
 import { createId, getDefaultTheme } from "@inbound/shared"
-import { eq } from "drizzle-orm"
-import { db, sqlite } from "../db/client.ts"
-import {
-  accountMembers,
-  accounts,
-  forms,
-  links,
-  profiles,
-  users,
-} from "../db/schema.ts"
+import * as accounts from "../domains/accounts/index.ts"
+import * as forms from "../domains/forms/index.ts"
+import * as profiles from "../domains/profiles/index.ts"
+import { sqlite } from "../db/client.ts"
 
 async function seed() {
-  const existing = await db.query.users.findFirst({
-    where: eq(users.email, "dev@inbound.click"),
-  })
+  const existing = await accounts.getUserByEmail("dev@inbound.click")
   if (existing) {
     console.log("Seed already applied")
     return
@@ -26,20 +18,19 @@ async function seed() {
   const theme = getDefaultTheme()
   const now = Date.now()
 
-  await db.insert(users).values({
+  await accounts.createUser({
     id: userId,
     authId: "dev_dev@inbound.click",
     email: "dev@inbound.click",
     name: "Dev User",
   })
 
-  await db.insert(accounts).values({
+  await accounts.createAccount({
     id: accountId,
     type: "individual",
   })
 
-  await db.insert(accountMembers).values({
-    id: createId(),
+  await accounts.createMembership({
     accountId,
     userId,
     role: "owner",
@@ -47,7 +38,7 @@ async function seed() {
     joinedAt: now,
   })
 
-  await db.insert(profiles).values({
+  await profiles.insertProfile({
     id: profileId,
     accountId,
     userId,
@@ -67,7 +58,7 @@ async function seed() {
     updatedAt: now,
   })
 
-  await db.insert(forms).values({
+  await forms.insertForm({
     id: formId,
     userId,
     title: "Contact me",
@@ -91,39 +82,34 @@ async function seed() {
     updatedAt: now,
   })
 
-  await db.insert(links).values([
-    {
-      id: createId(),
-      userId,
-      profileId,
-      title: "My Website",
-      type: "url",
-      url: "https://inbound.click",
-      order: 0,
-      active: true,
-    },
-    {
-      id: createId(),
-      userId,
-      profileId,
-      title: "Contact",
-      type: "form",
-      formId,
-      order: 1,
-      active: true,
-    },
-    {
-      id: createId(),
-      userId,
-      profileId,
-      title: "Instagram",
-      type: "social",
-      platform: "instagram",
-      url: "https://instagram.com/demo",
-      order: 2,
-      active: true,
-    },
-  ])
+  await profiles.insertLink({
+    userId,
+    profileId,
+    title: "My Website",
+    type: "url",
+    url: "https://inbound.click",
+    order: 0,
+    active: true,
+  })
+  await profiles.insertLink({
+    userId,
+    profileId,
+    title: "Contact",
+    type: "form",
+    formId,
+    order: 1,
+    active: true,
+  })
+  await profiles.insertLink({
+    userId,
+    profileId,
+    title: "Instagram",
+    type: "social",
+    platform: "instagram",
+    url: "https://instagram.com/demo",
+    order: 2,
+    active: true,
+  })
 
   console.log("Seeded demo user/profile at /demo")
 }

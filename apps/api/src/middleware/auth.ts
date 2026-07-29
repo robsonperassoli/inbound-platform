@@ -1,13 +1,12 @@
 import { createMiddleware } from "hono/factory"
 import { getCookie } from "hono/cookie"
-import { eq } from "drizzle-orm"
-import { db } from "../db/client.ts"
-import { accountMembers, accounts, users, type User } from "../db/schema.ts"
+import * as accounts from "../domains/accounts/index.ts"
+import type { User } from "../db/schema.ts"
 
 export type AuthContext = {
   user: User
-  account: typeof accounts.$inferSelect
-  membership: typeof accountMembers.$inferSelect
+  account: accounts.AuthScope["account"]
+  membership: accounts.AuthScope["membership"]
 }
 
 type Variables = {
@@ -21,28 +20,22 @@ export const requireAuth = createMiddleware<{ Variables: Variables }>(
       return c.json({ error: "Unauthorized" }, 401)
     }
 
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, sessionUserId),
-    })
-    if (!user) {
-      return c.json({ error: "Unauthorized" }, 401)
-    }
-
-    const membership = await db.query.accountMembers.findFirst({
-      where: eq(accountMembers.userId, user.id),
-    })
-    if (!membership) {
-      return c.json({ error: "No account membership" }, 403)
-    }
-
-    const account = await db.query.accounts.findFirst({
-      where: eq(accounts.id, membership.accountId),
-    })
-    if (!account) {
+    const result = await accounts.getAuthScope(sessionUserId)
+    if (!result.ok) {
+      if (result.reason === "unauthorized") {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
+      if (result.reason === "no_membership") {
+        return c.json({ error: "No account membership" }, 403)
+      }
       return c.json({ error: "Account not found" }, 403)
     }
 
-    c.set("auth", { user, account, membership })
+    c.set("auth", {
+      user: result.scope.user,
+      account: result.scope.account,
+      membership: result.scope.membership,
+    })
     await next()
   },
 )

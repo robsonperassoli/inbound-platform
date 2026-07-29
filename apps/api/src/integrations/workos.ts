@@ -1,8 +1,5 @@
 import { WorkOS } from "@workos-inc/node"
-import { eq } from "drizzle-orm"
-import { createId } from "@inbound/shared"
-import { db } from "../db/client.ts"
-import { accountMembers, accounts, users } from "../db/schema.ts"
+import * as accounts from "../domains/accounts/index.ts"
 import { env } from "../lib/env.ts"
 
 export function getWorkOS() {
@@ -16,49 +13,7 @@ export async function ensureUserFromWorkOS(input: {
   name?: string | null
   profilePictureUrl?: string | null
 }) {
-  const existing = await db.query.users.findFirst({
-    where: eq(users.authId, input.authId),
-  })
-
-  if (existing) {
-    await db
-      .update(users)
-      .set({
-        email: input.email ?? existing.email,
-        name: input.name ?? existing.name,
-        profilePictureUrl:
-          input.profilePictureUrl ?? existing.profilePictureUrl,
-      })
-      .where(eq(users.id, existing.id))
-    return existing
-  }
-
-  const userId = createId()
-  const accountId = createId()
-
-  await db.insert(users).values({
-    id: userId,
-    authId: input.authId,
-    email: input.email ?? null,
-    name: input.name ?? null,
-    profilePictureUrl: input.profilePictureUrl ?? null,
-  })
-
-  await db.insert(accounts).values({
-    id: accountId,
-    type: "individual",
-  })
-
-  await db.insert(accountMembers).values({
-    id: createId(),
-    accountId,
-    userId,
-    role: "owner",
-    profiles: ["all"],
-    joinedAt: Date.now(),
-  })
-
-  return db.query.users.findFirst({ where: eq(users.id, userId) })
+  return accounts.ensureUserFromWorkOS(input)
 }
 
 export function getAuthorizationUrl(redirectUri: string, state?: string) {

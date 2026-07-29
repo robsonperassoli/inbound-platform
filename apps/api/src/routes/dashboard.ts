@@ -1,33 +1,17 @@
 import { Hono } from "hono"
-import { and, asc, desc, eq } from "drizzle-orm"
-import { createId, getDefaultTheme } from "@inbound/shared"
 import { z } from "zod"
-import { db } from "../db/client.ts"
-import {
-  accountMembers,
-  accounts,
-  forms,
-  formSubmissions,
-  links,
-  messages,
-  profiles,
-  stripeSubscriptions,
-  superUsers,
-  threads,
-  users,
-} from "../db/schema.ts"
-import { resolveAssetUrl, createUploadUrl } from "../integrations/storage.ts"
+import * as accounts from "../domains/accounts/index.ts"
+import * as billing from "../domains/billing/index.ts"
+import * as chat from "../domains/chat/index.ts"
+import * as forms from "../domains/forms/index.ts"
+import * as profiles from "../domains/profiles/index.ts"
+import { createUploadUrl } from "../integrations/storage.ts"
 import {
   createCheckoutSession,
   createCustomerPortalSession,
 } from "../integrations/stripe.ts"
 import { sendSupportEmail } from "../integrations/resend.ts"
 import { queryTinybirdEndpoint } from "../integrations/tinybird.ts"
-import {
-  sendThreadMessage,
-  startFormBuilderThread,
-  startThemeDesignerThread,
-} from "../lib/agents.ts"
 import { getPlanIdForPriceId, getStripePriceId } from "../lib/pricing.ts"
 import { requireAuth } from "../middleware/auth.ts"
 import type { AuthContext } from "../middleware/auth.ts"
@@ -43,48 +27,28 @@ dashboardRoutes.use("*", requireAuth)
 dashboardRoutes.get("/me", async (c) => {
   const auth = c.get("auth")
 
-  const [superUser, subscription] = await Promise.all([
-    db.query.superUsers.findFirst({
-      where: eq(superUsers.userId, auth.user.id),
-    }),
-    db.query.stripeSubscriptions.findFirst({
-      where: eq(stripeSubscriptions.accountId, auth.account.id),
-      orderBy: [desc(stripeSubscriptions.updatedAt)],
-    }),
+  const [isSuperUser, billingState] = await Promise.all([
+    accounts.isSuperUser(auth.user.id),
+    billing.getMeBillingState(auth.account.id, auth.account.type),
   ])
-
-  const subscribed =
-    subscription?.status === "active" || subscription?.status === "trialing"
 
   return c.json({
     user: auth.user,
     account: auth.account,
     membership: auth.membership,
-    subscribed: subscribed || auth.account.type === "team",
+    subscribed: billingState.subscribed,
     plan:
       auth.account.type === "team"
         ? "team"
-        : getPlanIdForPriceId(subscription?.priceId),
-    isSuperUser: Boolean(superUser),
+        : getPlanIdForPriceId(billingState.subscription?.priceId),
+    isSuperUser,
   })
 })
 
 dashboardRoutes.get("/profiles", async (c) => {
   const auth = c.get("auth")
-  const rows = await db.query.profiles.findMany({
-    where: eq(profiles.accountId, auth.account.id),
-    orderBy: [asc(profiles.username)],
-  })
-
-  return c.json({
-    profiles: await Promise.all(
-      rows.map(async (p) => ({
-        ...p,
-        avatarUrl: await resolveAssetUrl(p.avatarKey),
-        backgroundImageUrl: await resolveAssetUrl(p.backgroundImageKey),
-      })),
-    ),
-  })
+  const rows = await profiles.listAccountProfiles(auth.account.id)
+  return c.json({ profiles: rows })
 })
 
 dashboardRoutes.get("/profiles/username-available", async (c) => {
@@ -93,10 +57,8 @@ dashboardRoutes.get("/profiles/username-available", async (c) => {
     return c.json({ available: false })
   }
 
-  const existing = await db.query.profiles.findFirst({
-    where: eq(profiles.username, username),
-  })
-  return c.json({ available: !existing })
+  const available = await profiles.isUsernameAvailable(username)
+  return c.json({ available })
 })
 
 dashboardRoutes.post("/profiles", async (c) => {
@@ -109,65 +71,32 @@ dashboardRoutes.post("/profiles", async (c) => {
     })
     .parse(await c.req.json())
 
-  const existing = await db.query.profiles.findFirst({
-    where: eq(profiles.username, body.username),
-  })
-  if (existing) {
-    return c.json({ error: "Username taken" }, 409)
+  try {
+    const profile = await profiles.createProfile({
+      accountId: auth.account.id,
+      userId: auth.user.id,
+      username: body.username,
+      title: body.title,
+      bio: body.bio,
+    })
+    return c.json({ profile }, 201)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Bad request"
+    if (message === "Username taken") {
+      return c.json({ error: message }, 409)
+    }
+    throw error
   }
-
-  const theme = getDefaultTheme()
-  const id = createId()
-  const now = Date.now()
-
-  await db.insert(profiles).values({
-    id,
-    accountId: auth.account.id,
-    userId: auth.user.id,
-    username: body.username,
-    title: body.title,
-    bio: body.bio ?? "",
-    theme: theme.name,
-    backgroundColor: theme.backgroundColor,
-    fontFamily: theme.fontFamily,
-    textColor: theme.textColor,
-    buttonShape: theme.buttonShape,
-    buttonStyle: theme.buttonStyle,
-    buttonColor: theme.buttonColor,
-    buttonTextColor: theme.buttonTextColor,
-    createdAt: now,
-    updatedAt: now,
-  })
-
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, id),
-  })
-  return c.json({ profile }, 201)
 })
 
 dashboardRoutes.get("/profiles/:id", async (c) => {
   const auth = c.get("auth")
-  const profile = await db.query.profiles.findFirst({
-    where: and(
-      eq(profiles.id, c.req.param("id")),
-      eq(profiles.accountId, auth.account.id),
-    ),
-  })
-  if (!profile) return c.json({ error: "Not found" }, 404)
-
-  const profileLinks = await db.query.links.findMany({
-    where: eq(links.profileId, profile.id),
-    orderBy: [asc(links.order)],
-  })
-
-  return c.json({
-    profile: {
-      ...profile,
-      avatarUrl: await resolveAssetUrl(profile.avatarKey),
-      backgroundImageUrl: await resolveAssetUrl(profile.backgroundImageKey),
-    },
-    links: profileLinks,
-  })
+  const data = await profiles.getProfileWithLinks(
+    c.req.param("id"),
+    auth.account.id,
+  )
+  if (!data) return c.json({ error: "Not found" }, 404)
+  return c.json(data)
 })
 
 dashboardRoutes.patch("/profiles/:id", async (c) => {
@@ -192,35 +121,17 @@ dashboardRoutes.patch("/profiles/:id", async (c) => {
     })
     .parse(await c.req.json())
 
-  const existing = await db.query.profiles.findFirst({
-    where: and(
-      eq(profiles.id, c.req.param("id")),
-      eq(profiles.accountId, auth.account.id),
-    ),
-  })
-  if (!existing) return c.json({ error: "Not found" }, 404)
-
-  await db
-    .update(profiles)
-    .set({ ...body, updatedAt: Date.now() })
-    .where(eq(profiles.id, existing.id))
-
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, existing.id),
-  })
+  const profile = await profiles.updateProfileForAccount(
+    c.req.param("id"),
+    auth.account.id,
+    body,
+  )
+  if (!profile) return c.json({ error: "Not found" }, 404)
   return c.json({ profile })
 })
 
 dashboardRoutes.post("/profiles/:id/links", async (c) => {
   const auth = c.get("auth")
-  const profile = await db.query.profiles.findFirst({
-    where: and(
-      eq(profiles.id, c.req.param("id")),
-      eq(profiles.accountId, auth.account.id),
-    ),
-  })
-  if (!profile) return c.json({ error: "Not found" }, 404)
-
   const body = z
     .object({
       title: z.string(),
@@ -235,21 +146,13 @@ dashboardRoutes.post("/profiles/:id/links", async (c) => {
     })
     .parse(await c.req.json())
 
-  const id = createId()
-  await db.insert(links).values({
-    id,
+  const link = await profiles.createLinkForProfile({
+    profileId: c.req.param("id"),
+    accountId: auth.account.id,
     userId: auth.user.id,
-    profileId: profile.id,
-    title: body.title,
-    type: body.type,
-    url: body.url ?? null,
-    platform: body.platform ?? null,
-    formId: body.formId ?? null,
-    order: body.order ?? 0,
-    active: body.active ?? true,
+    ...body,
   })
-
-  const link = await db.query.links.findFirst({ where: eq(links.id, id) })
+  if (!link) return c.json({ error: "Not found" }, 404)
   return c.json({ link }, 201)
 })
 
@@ -269,34 +172,25 @@ dashboardRoutes.patch("/links/:id", async (c) => {
     })
     .parse(await c.req.json())
 
-  const existing = await db.query.links.findFirst({
-    where: and(eq(links.id, c.req.param("id")), eq(links.userId, auth.user.id)),
-  })
-  if (!existing) return c.json({ error: "Not found" }, 404)
-
-  await db.update(links).set(body).where(eq(links.id, existing.id))
-  const link = await db.query.links.findFirst({
-    where: eq(links.id, existing.id),
-  })
+  const link = await profiles.updateLinkForUser(
+    c.req.param("id"),
+    auth.user.id,
+    body,
+  )
+  if (!link) return c.json({ error: "Not found" }, 404)
   return c.json({ link })
 })
 
 dashboardRoutes.delete("/links/:id", async (c) => {
   const auth = c.get("auth")
-  const existing = await db.query.links.findFirst({
-    where: and(eq(links.id, c.req.param("id")), eq(links.userId, auth.user.id)),
-  })
-  if (!existing) return c.json({ error: "Not found" }, 404)
-  await db.delete(links).where(eq(links.id, existing.id))
+  const ok = await profiles.deleteLinkForUser(c.req.param("id"), auth.user.id)
+  if (!ok) return c.json({ error: "Not found" }, 404)
   return c.json({ ok: true })
 })
 
 dashboardRoutes.get("/forms", async (c) => {
   const auth = c.get("auth")
-  const rows = await db.query.forms.findMany({
-    where: eq(forms.userId, auth.user.id),
-    orderBy: [desc(forms.updatedAt)],
-  })
+  const rows = await forms.listFormsForUser(auth.user.id)
   return c.json({ forms: rows })
 })
 
@@ -320,27 +214,18 @@ dashboardRoutes.post("/forms", async (c) => {
     })
     .parse(await c.req.json())
 
-  const id = createId()
-  const now = Date.now()
-  await db.insert(forms).values({
-    id,
+  const form = await forms.createFormForUser({
     userId: auth.user.id,
     title: body.title,
     description: body.description ?? null,
-    fields: body.fields ?? [],
-    createdAt: now,
-    updatedAt: now,
+    fields: body.fields,
   })
-
-  const form = await db.query.forms.findFirst({ where: eq(forms.id, id) })
   return c.json({ form }, 201)
 })
 
 dashboardRoutes.get("/forms/:id", async (c) => {
   const auth = c.get("auth")
-  const form = await db.query.forms.findFirst({
-    where: and(eq(forms.id, c.req.param("id")), eq(forms.userId, auth.user.id)),
-  })
+  const form = await forms.getFormForUser(c.req.param("id"), auth.user.id)
   if (!form) return c.json({ error: "Not found" }, 404)
   return c.json({ form })
 })
@@ -366,40 +251,29 @@ dashboardRoutes.patch("/forms/:id", async (c) => {
     })
     .parse(await c.req.json())
 
-  const existing = await db.query.forms.findFirst({
-    where: and(eq(forms.id, c.req.param("id")), eq(forms.userId, auth.user.id)),
-  })
-  if (!existing) return c.json({ error: "Not found" }, 404)
-
-  await db
-    .update(forms)
-    .set({ ...body, updatedAt: Date.now() })
-    .where(eq(forms.id, existing.id))
-
-  const form = await db.query.forms.findFirst({
-    where: eq(forms.id, existing.id),
-  })
+  const form = await forms.updateFormForUser(
+    c.req.param("id"),
+    auth.user.id,
+    body,
+  )
+  if (!form) return c.json({ error: "Not found" }, 404)
   return c.json({ form })
 })
 
 dashboardRoutes.get("/forms/:id/submissions", async (c) => {
   const auth = c.get("auth")
-  const form = await db.query.forms.findFirst({
-    where: and(eq(forms.id, c.req.param("id")), eq(forms.userId, auth.user.id)),
-  })
-  if (!form) return c.json({ error: "Not found" }, 404)
-
-  const submissions = await db.query.formSubmissions.findMany({
-    where: eq(formSubmissions.formId, form.id),
-    orderBy: [desc(formSubmissions.createdAt)],
-  })
-  return c.json({ submissions })
+  const result = await forms.listSubmissionsForUserForm(
+    c.req.param("id"),
+    auth.user.id,
+  )
+  if (!result) return c.json({ error: "Not found" }, 404)
+  return c.json({ submissions: result.submissions })
 })
 
 dashboardRoutes.post("/threads/theme-designer", async (c) => {
   const auth = c.get("auth")
   const body = z.object({ profileId: z.string() }).parse(await c.req.json())
-  const threadId = await startThemeDesignerThread({
+  const threadId = await chat.startThemeDesignerThread({
     userId: auth.user.id,
     profileId: body.profileId,
   })
@@ -411,7 +285,7 @@ dashboardRoutes.post("/threads/form-builder", async (c) => {
   const body = z
     .object({ profileId: z.string().optional() })
     .parse(await c.req.json().catch(() => ({})))
-  const threadId = await startFormBuilderThread({
+  const threadId = await chat.startFormBuilderThread({
     userId: auth.user.id,
     profileId: body.profileId,
   })
@@ -420,33 +294,21 @@ dashboardRoutes.post("/threads/form-builder", async (c) => {
 
 dashboardRoutes.get("/threads/:id/messages", async (c) => {
   const auth = c.get("auth")
-  const thread = await db.query.threads.findFirst({
-    where: and(
-      eq(threads.id, c.req.param("id")),
-      eq(threads.userId, auth.user.id),
-    ),
-  })
-  if (!thread) return c.json({ error: "Not found" }, 404)
-
-  const rows = await db.query.messages.findMany({
-    where: eq(messages.threadId, thread.id),
-    orderBy: [asc(messages.createdAt)],
-  })
-  return c.json({ thread, messages: rows })
+  const data = await chat.getThreadWithMessages(
+    c.req.param("id"),
+    auth.user.id,
+  )
+  if (!data) return c.json({ error: "Not found" }, 404)
+  return c.json(data)
 })
 
 dashboardRoutes.post("/threads/:id/messages", async (c) => {
   const auth = c.get("auth")
-  const thread = await db.query.threads.findFirst({
-    where: and(
-      eq(threads.id, c.req.param("id")),
-      eq(threads.userId, auth.user.id),
-    ),
-  })
+  const thread = await chat.getThreadForUser(c.req.param("id"), auth.user.id)
   if (!thread) return c.json({ error: "Not found" }, 404)
 
   const body = z.object({ message: z.string().min(1) }).parse(await c.req.json())
-  await sendThreadMessage({ threadId: thread.id, message: body.message })
+  await chat.sendThreadMessage({ threadId: thread.id, message: body.message })
   return c.json({ ok: true })
 })
 
@@ -557,82 +419,28 @@ dashboardRoutes.post("/feedback", async (c) => {
 
 dashboardRoutes.get("/system/users", async (c) => {
   const auth = c.get("auth")
-  const superUser = await db.query.superUsers.findFirst({
-    where: eq(superUsers.userId, auth.user.id),
-  })
-  if (!superUser) {
+  if (!(await accounts.isSuperUser(auth.user.id))) {
     return c.json({ error: "Forbidden" }, 403)
   }
 
-  const [allUsers, memberships, allAccounts] = await Promise.all([
-    db.query.users.findMany(),
-    db.query.accountMembers.findMany(),
-    db.query.accounts.findMany(),
-  ])
-
-  const membershipsByUserId = new Map(
-    memberships.map((membership) => [membership.userId, membership]),
-  )
-  const accountsById = new Map(
-    allAccounts.map((account) => [account.id, account]),
-  )
-  const roleOrder = { owner: 0, admin: 1, member: 2 } as const
-
-  const result = allUsers
-    .map((user) => {
-      const membership = membershipsByUserId.get(user.id)
-      if (!membership) {
-        return null
-      }
-      const account = accountsById.get(membership.accountId)
-      return {
-        userId: user.id,
-        accountId: membership.accountId,
-        accountType: account?.type ?? null,
-        name: user.name ?? user.email ?? "Unknown user",
-        email: user.email ?? "",
-        role: membership.role,
-        canSetupStripe: membership.role === "owner",
-      }
-    })
-    .filter((row): row is NonNullable<typeof row> => row !== null)
-    .sort((a, b) => {
-      const byRole = roleOrder[a.role] - roleOrder[b.role]
-      if (byRole !== 0) return byRole
-      const byName = a.name.localeCompare(b.name)
-      if (byName !== 0) return byName
-      return a.email.localeCompare(b.email)
-    })
-
-  return c.json({ users: result })
+  const users = await accounts.listSystemUsers()
+  return c.json({ users })
 })
 
 dashboardRoutes.post("/profiles/:id/links/reorder", async (c) => {
   const auth = c.get("auth")
-  const profileId = c.req.param("id")
   const body = z
     .object({
       linkIds: z.array(z.string()).min(1),
     })
     .parse(await c.req.json())
 
-  const profile = await db.query.profiles.findFirst({
-    where: and(
-      eq(profiles.id, profileId),
-      eq(profiles.accountId, auth.account.id),
-    ),
+  const ok = await profiles.reorderLinksForProfile({
+    profileId: c.req.param("id"),
+    accountId: auth.account.id,
+    linkIds: body.linkIds,
   })
-  if (!profile) return c.json({ error: "Not found" }, 404)
-
-  await Promise.all(
-    body.linkIds.map((linkId, index) =>
-      db
-        .update(links)
-        .set({ order: index })
-        .where(and(eq(links.id, linkId), eq(links.profileId, profileId))),
-    ),
-  )
-
+  if (!ok) return c.json({ error: "Not found" }, 404)
   return c.json({ ok: true })
 })
 
@@ -643,39 +451,18 @@ dashboardRoutes.get(
     const formId = c.req.param("id")
     const submissionId = c.req.param("submissionId")
 
-    const form = await db.query.forms.findFirst({
-      where: and(eq(forms.id, formId), eq(forms.userId, auth.user.id)),
-    })
-    if (!form) return c.json({ error: "Not found" }, 404)
+    const result = await forms.getSubmissionForUserForm(
+      formId,
+      submissionId,
+      auth.user.id,
+    )
+    if (!result) return c.json({ error: "Not found" }, 404)
 
-    const submission = await db.query.formSubmissions.findFirst({
-      where: and(
-        eq(formSubmissions.id, submissionId),
-        eq(formSubmissions.formId, formId),
-      ),
-    })
-    if (!submission) return c.json({ error: "Not found" }, 404)
-
-    const thread = await db.query.threads.findFirst({
-      where: eq(threads.formSubmissionId, submissionId),
-    })
-
-    const transcriptMessages = thread
-      ? await db.query.messages.findMany({
-          where: eq(messages.threadId, thread.id),
-          orderBy: [asc(messages.createdAt)],
-        })
-      : []
+    const messages = await chat.getSubmissionTranscript(submissionId)
 
     return c.json({
-      submission,
-      messages: transcriptMessages.map((m) => ({
-        id: m.id,
-        role: m.role,
-        content: m.content,
-        createdAt: m.createdAt,
-        status: m.status,
-      })),
+      submission: result.submission,
+      messages,
     })
   },
 )
