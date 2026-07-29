@@ -3,8 +3,10 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import Database from "better-sqlite3"
 import { drizzle } from "drizzle-orm/better-sqlite3"
-import { env } from "../lib/env.ts"
-import * as schema from "./schema.ts"
+import { env } from "../lib/env"
+import * as schema from "./schema"
+
+type SqliteDatabase = InstanceType<typeof Database>
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -22,7 +24,10 @@ function resolveSqlitePath() {
     : path.resolve(repoRoot, configured)
 }
 
-export function createSqliteConnection(sqlitePath = resolveSqlitePath()) {
+export function createSqliteConnection(sqlitePath = resolveSqlitePath()): {
+  sqlite: SqliteDatabase
+  sqlitePath: string
+} {
   if (sqlitePath !== ":memory:") {
     fs.mkdirSync(path.dirname(sqlitePath), { recursive: true })
   }
@@ -38,7 +43,10 @@ export function createSqliteConnection(sqlitePath = resolveSqlitePath()) {
   return { sqlite, sqlitePath }
 }
 
-const { sqlite, sqlitePath } = createSqliteConnection()
+const connection: { sqlite: SqliteDatabase; sqlitePath: string } =
+  createSqliteConnection()
+const sqlite = connection.sqlite
+const sqlitePath = connection.sqlitePath
 
 export const db = drizzle(sqlite, { schema })
 export { schema, sqlite, sqlitePath }

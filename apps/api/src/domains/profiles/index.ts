@@ -1,7 +1,7 @@
 import { getDefaultTheme } from "@inbound/shared"
 import type { PublicLink, PublicProfile } from "@inbound/shared"
-import { resolveAssetUrl } from "../../integrations/storage.ts"
-import * as repository from "./repository.ts"
+import { resolveAssetUrl } from "../../integrations/storage"
+import * as repository from "./repository"
 
 async function withAssetUrls<T extends {
   avatarKey: string | null
@@ -256,4 +256,4 @@ export {
   getProfileById,
   createProfile as insertProfile,
   createLink as insertLink,
-} from "./repository.ts"
+} from "./repository"

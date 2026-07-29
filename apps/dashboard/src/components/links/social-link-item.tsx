@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/react/sortable"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type ReactNode, type Ref, useMemo, useRef, useState } from "react"
+import type { Link } from "@/lib/types"
 import { socialConfig } from "@/lib/social-links"
 import { cn } from "@/lib/utils"
 
@@ -46,7 +47,14 @@ export function SocialLinkItem({
   sortable?: boolean
   isDragging?: boolean
 }) {
-  const platformConfig = useMemo(() => socialConfig[link.platform!], [link])
+  const platformConfig = useMemo(
+    () => (link.platform ? socialConfig[link.platform] : undefined),
+    [link],
+  )
+
+  if (!platformConfig) {
+    return null
+  }
 
   return (
     <li

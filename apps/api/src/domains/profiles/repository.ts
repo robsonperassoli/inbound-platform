@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm"
 import { createId } from "@inbound/shared"
-import { db } from "../../db/client.ts"
-import { links, profiles } from "../../db/schema.ts"
+import { db } from "../../db/client"
+import { links, profiles } from "../../db/schema"
 
 export async function getProfileById(id: string) {
   return db.query.profiles.findFirst({ where: eq(profiles.id, id) })

@@ -1,8 +1,8 @@
 import { Chat01Icon, Close } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Popover } from "radix-ui"
-import { cn } from "../lib/utils.ts"
-import { Chat, type ChatMessage } from "./chat.tsx"
+import { cn } from "../lib/utils"
+import { Chat, type ChatMessage } from "./chat"
 
 export function ChatPopup({
   sessionId,

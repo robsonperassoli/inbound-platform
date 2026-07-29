@@ -1,5 +1,5 @@
 import { HugeiconsIcon } from "@hugeicons/react"
-import { socialConfig } from "../lib/social-links.ts"
+import { socialConfig } from "../lib/social-links"
 import type { UserPageLink } from "../user-page"
 
 export function SocialLink({ link }: { link: UserPageLink }) {

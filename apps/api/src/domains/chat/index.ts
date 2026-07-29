@@ -1,8 +1,8 @@
 import { createId } from "@inbound/shared"
-import * as forms from "../forms/index.ts"
-import * as profiles from "../profiles/index.ts"
-import * as repository from "./repository.ts"
-import { runFormSubmissionAgent } from "./agents.ts"
+import * as forms from "../forms/index"
+import * as profiles from "../profiles/index"
+import * as repository from "./repository"
+import { runFormSubmissionAgent } from "./agents"
 
 const FORM_SYSTEM_PROMPT = `You are Hugo, a warm, polished sales concierge.
 
@@ -244,4 +244,4 @@ export {
   listMessagesByThread,
   createMessage,
   updateMessage,
-} from "./repository.ts"
+} from "./repository"

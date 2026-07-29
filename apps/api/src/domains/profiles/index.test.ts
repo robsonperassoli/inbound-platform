@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import * as profiles from "./index.ts"
+import * as profiles from "./index"
 import {
   createProfileForAccount,
   createUserAccount,
-} from "../../test/factories.ts"
+} from "../../test/factories"
 
 vi.mock("../../integrations/storage.ts", () => ({
   resolveAssetUrl: vi.fn(async (key: string | null | undefined) =>

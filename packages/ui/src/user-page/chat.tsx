@@ -2,7 +2,7 @@ import { ArrowUp02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type KeyboardEvent, useMemo, useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
-import { cn } from "../lib/utils.ts"
+import { cn } from "../lib/utils"
 
 export type ChatMessage = {
   id: string

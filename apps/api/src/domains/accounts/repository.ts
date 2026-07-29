@@ -1,13 +1,13 @@
 import { and, asc, eq } from "drizzle-orm"
 import { createId } from "@inbound/shared"
-import { db } from "../../db/client.ts"
+import { db } from "../../db/client"
 import {
   accountMembers,
   accounts,
   invitations,
   superUsers,
   users,
-} from "../../db/schema.ts"
+} from "../../db/schema"
 
 export async function getUserById(id: string) {
   return db.query.users.findFirst({ where: eq(users.id, id) })

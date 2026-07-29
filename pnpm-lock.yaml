@@ -161,6 +161,9 @@ importers:
       '@hono/node-server':
         specifier: ^1.14.1
         version: 1.19.17(hono@4.12.32)
+      '@hono/zod-validator':
+        specifier: ^0.7.6
+        version: 0.7.6(hono@4.12.32)(zod@4.4.3)
       '@inbound/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -415,6 +418,9 @@ importers:
       '@hugeicons/react':
         specifier: 'catalog:'
         version: 1.1.9(react@19.2.8)
+      '@inbound/api':
+        specifier: workspace:*
+        version: link:../api
       '@inbound/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -454,6 +460,9 @@ importers:
       framer-motion:
         specifier: ^12.34.3
         version: 12.42.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      hono:
+        specifier: ^4.12.32
+        version: 4.12.32
       next-themes:
         specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -1489,6 +1498,12 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hono/zod-validator@0.7.6':
+    resolution: {integrity: sha512-Io1B6d011Gj1KknV4rXYz4le5+5EubcWEU/speUjuw9XMMIaP3n78yXLhjd2A3PXaXaUwEAluOiAyLqhBEJgsw==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.25.0 || ^4.0.0
 
   '@hugeicons/core-free-icons@3.3.0':
     resolution: {integrity: sha512-qYyr4JQ2eQIHTSTbITvnJvs6ERNK64D9gpwZnf2IyuG0exzqfyABLO/oTB71FB3RZPfu1GbwycdiGSo46apjMQ==}
@@ -7185,6 +7200,11 @@ snapshots:
   '@hono/node-server@1.19.17(hono@4.12.32)':
     dependencies:
       hono: 4.12.32
+
+  '@hono/zod-validator@0.7.6(hono@4.12.32)(zod@4.4.3)':
+    dependencies:
+      hono: 4.12.32
+      zod: 4.4.3
 
   '@hugeicons/core-free-icons@3.3.0': {}
 

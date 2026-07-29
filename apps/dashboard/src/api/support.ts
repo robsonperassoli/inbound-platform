@@ -1,15 +1,17 @@
-import { api } from "./client"
+import { ApiError, client } from "./client"
 
-export function sendSupport(message: string) {
-  return api<{ ok: true }>("/support", {
-    method: "POST",
-    body: JSON.stringify({ message }),
-  })
+export async function sendSupport(message: string) {
+  const res = await client.support.$post({ json: { message } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function sendFeedback(message: string) {
-  return api<{ ok: true }>("/feedback", {
-    method: "POST",
-    body: JSON.stringify({ message }),
-  })
+export async function sendFeedback(message: string) {
+  const res = await client.feedback.$post({ json: { message } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

@@ -1,4 +1,4 @@
-import { env } from "./env.ts"
+import { env } from "./env"
 
 export type PricingPlanId = "starter" | "pro" | "team"
 export type BillingCycle = "monthly" | "yearly"

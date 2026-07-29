@@ -1,5 +1,5 @@
 import type { PublicMessage, PublicProfileResponse } from "@inbound/shared"
-import { API_URL } from "./config.ts"
+import { API_URL } from "./config"
 
 export class ApiError extends Error {
   status: number

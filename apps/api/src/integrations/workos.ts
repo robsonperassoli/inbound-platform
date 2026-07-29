@@ -1,6 +1,6 @@
 import { WorkOS } from "@workos-inc/node"
-import * as accounts from "../domains/accounts/index.ts"
-import { env } from "../lib/env.ts"
+import * as accounts from "../domains/accounts/index"
+import { env } from "../lib/env"
 
 export function getWorkOS() {
   if (!env.WORKOS_API_KEY || !env.WORKOS_CLIENT_ID) return null

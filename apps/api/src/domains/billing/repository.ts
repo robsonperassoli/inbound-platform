@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm"
 import { createId } from "@inbound/shared"
-import { db } from "../../db/client.ts"
-import { stripeCustomers, stripeSubscriptions } from "../../db/schema.ts"
+import { db } from "../../db/client"
+import { stripeCustomers, stripeSubscriptions } from "../../db/schema"
 
 export async function getCustomerByAccountId(accountId: string) {
   return db.query.stripeCustomers.findFirst({

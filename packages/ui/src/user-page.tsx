@@ -4,12 +4,12 @@ import {
   getUserPageFontTracking,
 } from "@inbound/shared"
 import { useEffect, type CSSProperties } from "react"
-import { Avatar, AvatarImage } from "./components/avatar.tsx"
-import { getRelativeLuminance } from "./lib/colors.ts"
-import { loadFont } from "./lib/load-font.ts"
-import { cn } from "./lib/utils.ts"
-import { Button } from "./user-page/button.tsx"
-import { SocialLink } from "./user-page/social-link.tsx"
+import { Avatar, AvatarImage } from "./components/avatar"
+import { getRelativeLuminance } from "./lib/colors"
+import { loadFont } from "./lib/load-font"
+import { cn } from "./lib/utils"
+import { Button } from "./user-page/button"
+import { SocialLink } from "./user-page/social-link"
 
 export type { UserPageLink, UserPageProfile }
 

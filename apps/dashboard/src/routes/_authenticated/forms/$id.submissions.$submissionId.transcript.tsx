@@ -19,7 +19,7 @@ function RouteComponent() {
   const messages = transcriptQuery.data?.messages
 
   const reversedMessages = useMemo(
-    () => (messages ? messages.toReversed() : []),
+    () => (messages ? [...messages].reverse() : []),
     [messages],
   )
 

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
-import * as accounts from "../accounts/index.ts"
-import * as billing from "./index.ts"
-import * as billingRepo from "./repository.ts"
-import { createUserAccount } from "../../test/factories.ts"
+import * as accounts from "../accounts/index"
+import * as billing from "./index"
+import * as billingRepo from "./repository"
+import { createUserAccount } from "../../test/factories"
 
 describe("billing domain", () => {
   describe("syncSubscription", () => {

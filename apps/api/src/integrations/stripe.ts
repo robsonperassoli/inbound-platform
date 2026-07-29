@@ -1,6 +1,6 @@
 import Stripe from "stripe"
-import * as billing from "../domains/billing/index.ts"
-import { env } from "../lib/env.ts"
+import * as billing from "../domains/billing/index"
+import { env } from "../lib/env"
 
 export function getStripe() {
   if (!env.STRIPE_SECRET_KEY) return null
@@ -115,9 +115,11 @@ export async function handleStripeWebhook(rawBody: string, signature: string) {
       status: subscription.status,
       priceId: subscription.items.data[0]?.price.id ?? null,
       planType: subscription.metadata.planType ?? null,
-      currentPeriodEnd: subscription.current_period_end
-        ? subscription.current_period_end * 1000
-        : null,
+      currentPeriodEnd:
+        "current_period_end" in subscription &&
+        typeof subscription.current_period_end === "number"
+          ? subscription.current_period_end * 1000
+          : null,
     })
   }
 

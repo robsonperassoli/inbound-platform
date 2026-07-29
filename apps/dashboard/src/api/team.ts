@@ -1,72 +1,85 @@
-import { api } from "./client"
+import type { InferRequestType, InferResponseType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export type TeamMember = {
-  membershipId: string
-  userId: string
-  email: string
-  name: string
-  role: "owner" | "admin" | "member"
-  profiles: string[]
-  joinedAt: number
+export type TeamMember = InferResponseType<
+  typeof client.team.members.$get,
+  200
+>["members"][number]
+
+export type TeamInvitation = InferResponseType<
+  typeof client.team.invitations.$get,
+  200
+>["invitations"][number]
+
+export type TeamProfile = InferResponseType<
+  typeof client.team.profiles.$get,
+  200
+>["profiles"][number]
+
+export async function listTeamMembers() {
+  const res = await client.team.members.$get()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export type TeamInvitation = {
-  invitationId: string
-  email: string
-  role: "owner" | "admin" | "member"
-  profiles: string[]
-  expiresAt: number
-  invitedByName: string
+export async function listTeamInvitations() {
+  const res = await client.team.invitations.$get()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export type TeamProfile = {
-  id: string
-  title: string
-  username: string
+export async function listTeamProfiles() {
+  const res = await client.team.profiles.$get()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function listTeamMembers() {
-  return api<{ members: TeamMember[] }>("/team/members")
-}
-
-export function listTeamInvitations() {
-  return api<{ invitations: TeamInvitation[] }>("/team/invitations")
-}
-
-export function listTeamProfiles() {
-  return api<{ profiles: TeamProfile[] }>("/team/profiles")
-}
-
-export function createTeamInvitation(body: {
-  email: string
-  role: "admin" | "member" | "owner"
-  profiles: string[]
-}) {
-  return api<{ invitationId: string; token: string; expiresAt: number }>(
-    "/team/invitations",
-    { method: "POST", body: JSON.stringify(body) },
-  )
-}
-
-export function resendTeamInvitation(invitationId: string) {
-  return api<{ invitationId: string; token: string; expiresAt: number }>(
-    `/team/invitations/${invitationId}/resend`,
-    { method: "POST", body: "{}" },
-  )
-}
-
-export function revokeTeamInvitation(invitationId: string) {
-  return api<{ ok: true }>(`/team/invitations/${invitationId}`, {
-    method: "DELETE",
-  })
-}
-
-export function updateTeamMemberPermissions(
-  membershipId: string,
-  body: { profiles: string[] },
+export async function createTeamInvitation(
+  body: InferRequestType<typeof client.team.invitations.$post>["json"],
 ) {
-  return api<{ ok: true }>(`/team/members/${membershipId}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
+  const res = await client.team.invitations.$post({ json: body })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export async function resendTeamInvitation(invitationId: string) {
+  const res = await client.team.invitations[":id"].resend.$post({
+    param: { id: invitationId },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export async function revokeTeamInvitation(invitationId: string) {
+  const res = await client.team.invitations[":id"].$delete({
+    param: { id: invitationId },
+  })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export async function updateTeamMemberPermissions(
+  membershipId: string,
+  body: InferRequestType<(typeof client.team.members)[":id"]["$patch"]>["json"],
+) {
+  const res = await client.team.members[":id"].$patch({
+    param: { id: membershipId },
+    json: body,
+  })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

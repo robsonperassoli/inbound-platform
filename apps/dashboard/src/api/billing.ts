@@ -1,15 +1,20 @@
-import { api } from "./client"
+import type { InferRequestType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export function createCheckout(input: {
-  plan: "starter" | "pro"
-  cycle: "monthly" | "yearly"
-}) {
-  return api<{ sessionId: string; url: string | null }>("/billing/checkout", {
-    method: "POST",
-    body: JSON.stringify(input),
-  })
+export async function createCheckout(
+  input: InferRequestType<typeof client.billing.checkout.$post>["json"],
+) {
+  const res = await client.billing.checkout.$post({ json: input })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function createPortal() {
-  return api<{ url: string }>("/billing/portal", { method: "POST" })
+export async function createPortal() {
+  const res = await client.billing.portal.$post()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

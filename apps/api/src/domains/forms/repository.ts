@@ -1,7 +1,7 @@
 import { and, asc, desc, eq } from "drizzle-orm"
 import { createId } from "@inbound/shared"
-import { db } from "../../db/client.ts"
-import { formSubmissions, forms } from "../../db/schema.ts"
+import { db } from "../../db/client"
+import { formSubmissions, forms } from "../../db/schema"
 
 type FormField = {
   id: string

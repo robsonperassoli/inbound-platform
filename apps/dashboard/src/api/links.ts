@@ -1,46 +1,51 @@
-import type { Link } from "@/lib/types"
-import { api } from "./client"
+import type { InferRequestType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export type CreateLinkBody = {
-  title: string
-  type: Link["type"]
-  url?: string
-  platform?: Link["platform"]
-  formId?: string
-  order?: number
-  active?: boolean
-}
+export type CreateLinkBody = InferRequestType<
+  (typeof client.profiles)[":id"]["links"]["$post"]
+>["json"]
 
-export function createLink(profileId: string, body: CreateLinkBody) {
-  return api<{ link: Link }>(`/profiles/${profileId}/links`, {
-    method: "POST",
-    body: JSON.stringify(body),
+export async function createLink(profileId: string, body: CreateLinkBody) {
+  const res = await client.profiles[":id"].links.$post({
+    param: { id: profileId },
+    json: body,
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export type UpdateLinkBody = Partial<{
-  title: string
-  url: string | null
-  order: number
-  active: boolean
-  platform: Link["platform"]
-  formId: string | null
-}>
+export type UpdateLinkBody = InferRequestType<
+  (typeof client.links)[":id"]["$patch"]
+>["json"]
 
-export function updateLink(id: string, body: UpdateLinkBody) {
-  return api<{ link: Link }>(`/links/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
+export async function updateLink(id: string, body: UpdateLinkBody) {
+  const res = await client.links[":id"].$patch({
+    param: { id },
+    json: body,
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function deleteLink(id: string) {
-  return api<{ ok: true }>(`/links/${id}`, { method: "DELETE" })
+export async function deleteLink(id: string) {
+  const res = await client.links[":id"].$delete({ param: { id } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function reorderLinks(profileId: string, linkIds: string[]) {
-  return api<{ ok: true }>(`/profiles/${profileId}/links/reorder`, {
-    method: "POST",
-    body: JSON.stringify({ linkIds }),
+export async function reorderLinks(profileId: string, linkIds: string[]) {
+  const res = await client.profiles[":id"].links.reorder.$post({
+    param: { id: profileId },
+    json: { linkIds },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

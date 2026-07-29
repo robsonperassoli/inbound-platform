@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/app.ts"
+  },
   "scripts": {
     "dev": "tsx watch --env-file=../../.env src/index.ts",
     "start": "node --import tsx src/index.ts",
@@ -20,6 +23,7 @@
     "@aws-sdk/client-s3": "^3.787.0",
     "@aws-sdk/s3-request-presigner": "^3.787.0",
     "@hono/node-server": "^1.14.1",
+    "@hono/zod-validator": "^0.7.6",
     "@inbound/shared": "workspace:*",
     "@workos-inc/node": "^7.71.0",
     "ai": "^6.0.116",

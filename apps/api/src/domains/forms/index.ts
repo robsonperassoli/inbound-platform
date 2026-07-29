@@ -1,4 +1,4 @@
-import * as repository from "./repository.ts"
+import * as repository from "./repository"
 
 type FormField = {
   id: string
@@ -115,4 +115,4 @@ export {
   createForm as insertForm,
   updateForm,
   getSubmissionById,
-} from "./repository.ts"
+} from "./repository"

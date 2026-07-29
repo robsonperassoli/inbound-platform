@@ -1,67 +1,80 @@
-import type { Form } from "@/lib/types"
-import { api } from "./client"
+import type { InferRequestType, InferResponseType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export type FormSubmission = {
-  id: string
-  formId: string
-  values: Record<string, string | number | boolean | null>
-  createdAt: number
-  completedAt: number | null
+export type FormSubmission = InferResponseType<
+  (typeof client.forms)[":id"]["submissions"]["$get"],
+  200
+>["submissions"][number]
+
+export async function listForms() {
+  const res = await client.forms.$get()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function listForms() {
-  return api<{ forms: Form[] }>("/forms")
+export async function getForm(id: string) {
+  const res = await client.forms[":id"].$get({ param: { id } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function getForm(id: string) {
-  return api<{ form: Form }>(`/forms/${id}`)
+export async function createForm(
+  body: InferRequestType<typeof client.forms.$post>["json"],
+) {
+  const res = await client.forms.$post({ json: body })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function createForm(body: {
-  title: string
-  description?: string
-  fields?: Form["fields"]
-}) {
-  return api<{ form: Form }>("/forms", {
-    method: "POST",
-    body: JSON.stringify(body),
+export type UpdateFormBody = InferRequestType<
+  (typeof client.forms)[":id"]["$patch"]
+>["json"]
+
+export async function updateForm(id: string, body: UpdateFormBody) {
+  const res = await client.forms[":id"].$patch({
+    param: { id },
+    json: body,
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export type UpdateFormBody = Partial<{
-  title: string
-  description: string | null
-  fields: Form["fields"]
-  publishedAt: number | null
-}>
+export async function updateFormFields(
+  id: string,
+  fields: NonNullable<UpdateFormBody["fields"]>,
+) {
+  return updateForm(id, { fields })
+}
 
-export function updateForm(id: string, body: UpdateFormBody) {
-  return api<{ form: Form }>(`/forms/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
+export async function listSubmissions(formId: string) {
+  const res = await client.forms[":id"].submissions.$get({
+    param: { id: formId },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function updateFormFields(id: string, fields: Form["fields"]) {
-  return api<{ form: Form }>(`/forms/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({ fields }),
-  })
-}
-
-export function listSubmissions(formId: string) {
-  return api<{ submissions: FormSubmission[] }>(`/forms/${formId}/submissions`)
-}
-
-export function getSubmissionTranscript(formId: string, submissionId: string) {
-  return api<{
-    submission: FormSubmission
-    messages: Array<{
-      id: string
-      role: "user" | "assistant" | "system"
-      content: string
-      createdAt: number
-      status: string
-    }>
-  }>(`/forms/${formId}/submissions/${submissionId}/transcript`)
+export async function getSubmissionTranscript(
+  formId: string,
+  submissionId: string,
+) {
+  const res = await client.forms[":id"].submissions[":submissionId"].transcript.$get(
+    {
+      param: { id: formId, submissionId },
+    },
+  )
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import * as forms from "./index.ts"
-import { createFormForAccount, createUserAccount } from "../../test/factories.ts"
+import * as forms from "./index"
+import { createFormForAccount, createUserAccount } from "../../test/factories"
 
 describe("forms domain", () => {
   it("creates and lists forms for a user", async () => {

@@ -1,63 +1,61 @@
-import type { Link, Profile } from "@/lib/types"
-import { api } from "./client"
+import type { InferRequestType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export function listProfiles() {
-  return api<{ profiles: Profile[] }>("/profiles")
+export async function listProfiles() {
+  const res = await client.profiles.$get()
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function checkUsernameAvailability(username: string) {
-  return api<{ available: boolean }>(
-    `/profiles/username-available?${new URLSearchParams({ username })}`,
-  )
-}
-
-export function isUsernameAvailable(username: string) {
-  return api<{ available: boolean }>(
-    `/profiles/username-available?username=${encodeURIComponent(username)}`,
-  )
-}
-
-export function getProfile(id: string) {
-  return api<{ profile: Profile; links: Link[] }>(`/profiles/${id}`)
-}
-
-export function createProfile(body: {
-  username: string
-  title: string
-  bio?: string
-}) {
-  return api<{ profile: Profile }>("/profiles", {
-    method: "POST",
-    body: JSON.stringify(body),
+export async function checkUsernameAvailability(username: string) {
+  const res = await client.profiles["username-available"].$get({
+    query: { username },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export type UpdateProfileBody = Partial<{
-  title: string
-  bio: string
-  theme: string
-  backgroundColor: string
-  fontFamily: string
-  textColor: string
-  buttonShape: Profile["buttonShape"]
-  buttonStyle: Profile["buttonStyle"]
-  buttonColor: string
-  buttonTextColor: string
-  avatarKey: string | null
-  backgroundImageKey: string | null
-  publishedAt: number | null
-}>
-
-export function updateProfile(id: string, body: UpdateProfileBody) {
-  return api<{ profile: Profile }>(`/profiles/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
-  })
+export async function isUsernameAvailable(username: string) {
+  return checkUsernameAvailability(username)
 }
 
-export function publishProfile(id: string) {
-  return api<{ profile: Profile }>(`/profiles/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({ publishedAt: Date.now() }),
+export async function getProfile(id: string) {
+  const res = await client.profiles[":id"].$get({ param: { id } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export async function createProfile(
+  body: InferRequestType<typeof client.profiles.$post>["json"],
+) {
+  const res = await client.profiles.$post({ json: body })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export type UpdateProfileBody = InferRequestType<
+  (typeof client.profiles)[":id"]["$patch"]
+>["json"]
+
+export async function updateProfile(id: string, body: UpdateProfileBody) {
+  const res = await client.profiles[":id"].$patch({
+    param: { id },
+    json: body,
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
+
+export async function publishProfile(id: string) {
+  return updateProfile(id, { publishedAt: Date.now() })
 }

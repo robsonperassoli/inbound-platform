@@ -1,4 +1,4 @@
-import type { ButtonShape, ButtonStyle } from "./schemas/index.ts"
+import type { ButtonShape, ButtonStyle } from "./schemas/index"
 
 const defaultThemeName = "Pearl White"
 

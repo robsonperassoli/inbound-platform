@@ -1,7 +1,7 @@
 import { createMiddleware } from "hono/factory"
 import { getCookie } from "hono/cookie"
-import * as accounts from "../domains/accounts/index.ts"
-import type { User } from "../db/schema.ts"
+import * as accounts from "../domains/accounts/index"
+import type { User } from "../db/schema"
 
 export type AuthContext = {
   user: User

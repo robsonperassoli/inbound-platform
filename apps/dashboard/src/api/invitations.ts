@@ -1,21 +1,24 @@
-import { api } from "./client"
+import type { InferResponseType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export type InvitationByToken =
-  | {
-      status: "valid"
-      email: string
-      role: "owner" | "admin" | "member"
-      invitedByName: string
-    }
-  | { status: "invalid"; message: string }
+export type InvitationByToken = InferResponseType<
+  (typeof client.invitations)[":token"]["$get"]
+>
 
-export function getInvitationByToken(token: string) {
-  return api<InvitationByToken>(`/invitations/${token}`)
+export async function getInvitationByToken(token: string) {
+  const res = await client.invitations[":token"].$get({ param: { token } })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function acceptInvitation(token: string) {
-  return api<{ ok: true }>(`/invitations/${token}/accept`, {
-    method: "POST",
-    body: "{}",
+export async function acceptInvitation(token: string) {
+  const res = await client.invitations[":token"].accept.$post({
+    param: { token },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

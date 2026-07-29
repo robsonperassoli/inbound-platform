@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import * as forms from "../forms/index.ts"
-import * as chat from "./index.ts"
+import * as forms from "../forms/index"
+import * as chat from "./index"
 import {
   createFormForAccount,
   createProfileForAccount,
   createUserAccount,
-} from "../../test/factories.ts"
+} from "../../test/factories"
 
 vi.mock("./agents.ts", () => ({
   runFormSubmissionAgent: vi.fn(async () => undefined),
 }))
 
-import { runFormSubmissionAgent } from "./agents.ts"
+import { runFormSubmissionAgent } from "./agents"
 
 describe("chat domain", () => {
   beforeEach(() => {

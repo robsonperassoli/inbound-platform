@@ -135,11 +135,7 @@ function RouteComponent() {
           <CardContent className="p-0">
             <DragDropProvider
               onDragEnd={(e) => {
-                const linksWitId = buttonLinks.map((link) => ({
-                  id: link.id,
-                  ...link,
-                }))
-                const orderedIds = move(linksWitId, e).map(({ id }) => id)
+                const orderedIds = move(buttonLinks, e).map(({ id }) => id)
                 reorderLinksMutation.mutate({
                   profileId: profile.id,
                   orderedIds,
@@ -191,11 +187,7 @@ function RouteComponent() {
           <CardContent className="p-0">
             <DragDropProvider
               onDragEnd={(e) => {
-                const linksWitId = socialLinks.map((link) => ({
-                  id: link.id,
-                  ...link,
-                }))
-                const orderedIds = move(linksWitId, e).map(({ id }) => id)
+                const orderedIds = move(socialLinks, e).map(({ id }) => id)
                 reorderLinksMutation.mutate({
                   profileId: profile.id,
                   orderedIds,

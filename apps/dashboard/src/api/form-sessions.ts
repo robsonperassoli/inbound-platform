@@ -1,26 +1,33 @@
-import type { ThreadMessage } from "./threads"
-import { api } from "./client"
+import type { InferRequestType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export function startFormSession(body: {
-  profileId: string
-  formId: string
-  linkId?: string
-}) {
-  return api<{ sessionId: string }>("/public/form-sessions", {
-    method: "POST",
-    body: JSON.stringify(body),
-  })
+export async function startFormSession(
+  body: InferRequestType<typeof client.public["form-sessions"]["$post"]>["json"],
+) {
+  const res = await client.public["form-sessions"].$post({ json: body })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function getFormSessionMessages(sessionId: string) {
-  return api<{ messages: ThreadMessage[] }>(
-    `/public/form-sessions/${sessionId}/messages`,
-  )
+export async function getFormSessionMessages(sessionId: string) {
+  const res = await client.public["form-sessions"][":sessionId"].messages.$get({
+    param: { sessionId },
+  })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }
 
-export function sendFormSessionMessage(sessionId: string, message: string) {
-  return api<{ ok: true }>(`/public/form-sessions/${sessionId}/messages`, {
-    method: "POST",
-    body: JSON.stringify({ message }),
+export async function sendFormSessionMessage(sessionId: string, message: string) {
+  const res = await client.public["form-sessions"][":sessionId"].messages.$post({
+    param: { sessionId },
+    json: { message },
   })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
 }

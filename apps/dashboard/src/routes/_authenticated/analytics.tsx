@@ -120,7 +120,7 @@ export const Route = createFileRoute("/_authenticated/analytics")({
   component: RouteComponent,
   ssr: false,
   validateSearch: {
-    parse: (input) =>
+    parse: (input: unknown) =>
       z
         .object({
           period: periodSchema.default("7days"),

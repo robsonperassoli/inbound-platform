@@ -1,7 +1,7 @@
 import { asc, eq } from "drizzle-orm"
 import { createId } from "@inbound/shared"
-import { db } from "../../db/client.ts"
-import { messages, threads } from "../../db/schema.ts"
+import { db } from "../../db/client"
+import { messages, threads } from "../../db/schema"
 
 export async function getThreadById(id: string) {
   return db.query.threads.findFirst({ where: eq(threads.id, id) })

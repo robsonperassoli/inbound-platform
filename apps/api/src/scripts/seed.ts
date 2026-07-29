@@ -1,8 +1,8 @@
 import { createId, getDefaultTheme } from "@inbound/shared"
-import * as accounts from "../domains/accounts/index.ts"
-import * as forms from "../domains/forms/index.ts"
-import * as profiles from "../domains/profiles/index.ts"
-import { sqlite } from "../db/client.ts"
+import * as accounts from "../domains/accounts/index"
+import * as forms from "../domains/forms/index"
+import * as profiles from "../domains/profiles/index"
+import { sqlite } from "../db/client"
 
 async function seed() {
   const existing = await accounts.getUserByEmail("dev@inbound.click")

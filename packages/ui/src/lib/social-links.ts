@@ -6,7 +6,7 @@ import {
   CustomTiktokIcon,
   CustomXIcon,
   CustomYoutubeIcon,
-} from "./social-icons.ts"
+} from "./social-icons"
 
 export type SocialPlatform =
   | "instagram"

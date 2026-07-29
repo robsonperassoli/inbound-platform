@@ -6,6 +6,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Link } from "@tanstack/react-router"
 import { type ReactNode, type Ref, useRef, useState } from "react"
+import type { Link as ProfileLink } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export function SortableLinkListItem({
@@ -13,7 +14,7 @@ export function SortableLinkListItem({
   link,
 }: {
   index: number
-  link: Link
+  link: ProfileLink
 }) {
   const [element, setElement] = useState<Element | null>(null)
   const handleRef = useRef<HTMLButtonElement | null>(null)
@@ -43,7 +44,7 @@ export function LinkListItem({
   setElement,
   isDragging,
 }: {
-  link: Link
+  link: ProfileLink
   actions?: ReactNode
   setElement?: (element: Element | null) => void
   handleRef?: Ref<HTMLButtonElement>
@@ -101,7 +102,7 @@ export function LinkListItem({
           </div>
         ) : (
           <a
-            href={link.url}
+            href={link.url ?? undefined}
             target="_blank"
             rel="noreferrer"
             className="block truncate text-sm text-muted-foreground transition-colors hover:text-foreground"

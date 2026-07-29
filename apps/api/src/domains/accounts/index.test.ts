@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import * as accounts from "./index.ts"
-import * as accountsRepo from "./repository.ts"
-import { createProfileForAccount, createUserAccount } from "../../test/factories.ts"
+import * as accounts from "./index"
+import * as accountsRepo from "./repository"
+import { createProfileForAccount, createUserAccount } from "../../test/factories"
 
 describe("accounts domain", () => {
   afterEach(() => {

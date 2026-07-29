@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto"
 import { createId } from "@inbound/shared"
-import * as profiles from "../profiles/index.ts"
-import * as repository from "./repository.ts"
+import * as profiles from "../profiles/index"
+import * as repository from "./repository"
 
 const INVITATION_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -374,4 +374,4 @@ export {
   createUser,
   createAccount,
   createMembership,
-} from "./repository.ts"
+} from "./repository"

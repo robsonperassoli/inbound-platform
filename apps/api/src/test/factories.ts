@@ -1,7 +1,7 @@
 import { createId } from "@inbound/shared"
-import * as accounts from "../domains/accounts/index.ts"
-import * as forms from "../domains/forms/index.ts"
-import * as profiles from "../domains/profiles/index.ts"
+import * as accounts from "../domains/accounts/index"
+import * as forms from "../domains/forms/index"
+import * as profiles from "../domains/profiles/index"
 
 export async function createUserAccount(input?: {
   authId?: string

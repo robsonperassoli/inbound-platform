@@ -1,42 +1,23 @@
-import { api } from "./client"
+import type { InferResponseType } from "hono/client"
+import { ApiError, client } from "./client"
 
-export type AnalyticsOverview = {
-  linkClicks: Array<{
-    link_id: string
-    clicks: number
-    unique_clickers: number
-  }> | null
-  overview: {
-    total_page_views: number
-    unique_visitors: number
-    total_link_clicks: number
-    average_ctr: number
-  } | null
-  deviceBreakdown: Array<{
-    device: string
-    views: number
-    unique_visitors: number
-  }> | null
-  referrerBreakdown: Array<{
-    referrer: string
-    views: number
-    unique_visitors: number
-  }> | null
-}
+export type AnalyticsOverview = InferResponseType<
+  typeof client.analytics.overview.$get,
+  200
+>
 
 export async function analyticsOverview(params: {
   profileId: string
   startDate: string
   endDate: string
 }): Promise<AnalyticsOverview> {
-  const q = new URLSearchParams(params)
-  const data = await api<{
-    linkClicks?: AnalyticsOverview["linkClicks"]
-    overview?: AnalyticsOverview["overview"]
-    deviceBreakdown?: AnalyticsOverview["deviceBreakdown"]
-    referrerBreakdown?: AnalyticsOverview["referrerBreakdown"]
-  }>(`/analytics/overview?${q}`)
-
+  const res = await client.analytics.overview.$get({
+    query: params,
+  })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  const data = await res.json()
   return {
     linkClicks: data.linkClicks ?? null,
     overview: data.overview ?? null,

@@ -2,10 +2,10 @@ import { openai } from "@ai-sdk/openai"
 import { streamText, tool } from "ai"
 import { createId } from "@inbound/shared"
 import { z } from "zod"
-import * as forms from "../forms/index.ts"
-import * as profiles from "../profiles/index.ts"
-import { env } from "../../lib/env.ts"
-import * as repository from "./repository.ts"
+import * as forms from "../forms/index"
+import * as profiles from "../profiles/index"
+import { env } from "../../lib/env"
+import * as repository from "./repository"
 
 const themeSchema = z.object({
   theme: z.string(),

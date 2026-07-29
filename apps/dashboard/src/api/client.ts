@@ -1,4 +1,8 @@
+import { hc } from "hono/client"
+import type { AppType, PricingPlanId } from "@inbound/api"
 import { API_URL } from "@/lib/config"
+
+export type { PricingPlanId }
 
 export class ApiError extends Error {
   status: number
@@ -8,26 +12,8 @@ export class ApiError extends Error {
   }
 }
 
-export async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers)
-  if (init?.body && !headers.has("Content-Type")) {
-    headers.set("Content-Type", "application/json")
-  }
-
-  const response = await fetch(`${API_URL}${path}`, {
-    ...init,
+export const client = hc<AppType>(API_URL, {
+  init: {
     credentials: "include",
-    headers,
-  })
-
-  if (!response.ok) {
-    const body = await response.text()
-    throw new ApiError(response.status, body || response.statusText)
-  }
-
-  if (response.status === 204) {
-    return undefined as T
-  }
-
-  return (await response.json()) as T
-}
+  },
+})

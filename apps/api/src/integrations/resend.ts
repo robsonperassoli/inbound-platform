@@ -1,5 +1,5 @@
 import { Resend } from "resend"
-import { env } from "../lib/env.ts"
+import { env } from "../lib/env"
 
 function getResend() {
   if (!env.RESEND_API_KEY) return null

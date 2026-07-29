@@ -1,5 +1,5 @@
-import * as accounts from "../accounts/index.ts"
-import * as repository from "./repository.ts"
+import * as accounts from "../accounts/index"
+import * as repository from "./repository"
 
 export async function getCustomerByAccountId(accountId: string) {
   return repository.getCustomerByAccountId(accountId)

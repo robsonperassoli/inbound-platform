@@ -1,4 +1,4 @@
-import { env } from "../lib/env.ts"
+import { env } from "../lib/env"
 
 type IngestRow = Record<string, string | number | boolean | null>
 
