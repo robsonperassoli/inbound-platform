@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useForms } from "@/hooks/queries"
+import { useForms } from "@/hooks/queries/forms"
 
 export const Route = createFileRoute("/_authenticated/forms/")({
   component: RouteComponent,

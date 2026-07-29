@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { EditLinkForm } from "./edit-link-form"
-import { useProfileWithLinks, useUpdateLink } from "@/hooks/queries"
+import { useProfileWithLinks } from "@/hooks/queries/profiles"
+import { useUpdateLink } from "@/hooks/queries/links"
 import { useSelectedProfileId } from "@/stores/profiles"
 
 export function EditLinkModal({

@@ -9,7 +9,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { usePublishProfile } from "@/hooks/queries"
+import { usePublishProfile } from "@/hooks/queries/profiles"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { useSession } from "@/hooks/use-session"
 

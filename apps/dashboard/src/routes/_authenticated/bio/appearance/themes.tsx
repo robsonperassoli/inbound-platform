@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import { useSiteHeader } from "@/components/site-header"
 import { ThemePreview } from "@/components/theme-preview"
 import { Button } from "@/components/ui/button"
-import { useUpdateProfile } from "@/hooks/queries"
+import { useUpdateProfile } from "@/hooks/queries/profiles"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { type Theme, themes } from "@/lib/themes"
 

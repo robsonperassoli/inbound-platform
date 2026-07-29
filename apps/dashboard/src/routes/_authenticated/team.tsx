@@ -1,5 +1,3 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { apiClient } from "@/lib/api"
 import {
   MoreHorizontal,
   Refresh01Icon,
@@ -61,6 +59,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  useCreateTeamInvitation,
+  useResendTeamInvitation,
+  useRevokeTeamInvitation,
+  useTeamInvitations,
+  useTeamMembers,
+  useTeamProfiles,
+  useUpdateTeamMemberPermissions,
+} from "@/hooks/queries/team"
 import { useSession } from "@/hooks/use-session"
 import { getInitials } from "@/lib/names"
 
@@ -159,21 +166,9 @@ function RouteComponent() {
 
   const session = useSession()
   const isReadOnly = session?.role === "member"
-  const membersQuery = useQuery({
-    queryKey: ["team", "members"],
-    enabled: Boolean(session) && !isReadOnly,
-    queryFn: async () => (await apiClient.listTeamMembers()).members,
-  })
-  const invitationsQuery = useQuery({
-    queryKey: ["team", "invitations"],
-    enabled: Boolean(session) && !isReadOnly,
-    queryFn: async () => (await apiClient.listTeamInvitations()).invitations,
-  })
-  const profileOptionsQuery = useQuery({
-    queryKey: ["team", "profiles"],
-    enabled: Boolean(session) && !isReadOnly,
-    queryFn: async () => (await apiClient.listTeamProfiles()).profiles,
-  })
+  const membersQuery = useTeamMembers(Boolean(session) && !isReadOnly)
+  const invitationsQuery = useTeamInvitations(Boolean(session) && !isReadOnly)
+  const profileOptionsQuery = useTeamProfiles(Boolean(session) && !isReadOnly)
 
   if (
     session === undefined ||
@@ -516,21 +511,8 @@ function MemberActions({
 }
 
 function InvitationActions({ invitation }: { invitation: Invitation }) {
-  const queryClient = useQueryClient()
-  const resendInvitation = useMutation({
-    mutationFn: (invitationId: string) =>
-      apiClient.resendTeamInvitation(invitationId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["team", "invitations"] })
-    },
-  })
-  const revokeInvitation = useMutation({
-    mutationFn: (invitationId: string) =>
-      apiClient.revokeTeamInvitation(invitationId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["team", "invitations"] })
-    },
-  })
+  const resendInvitation = useResendTeamInvitation()
+  const revokeInvitation = useRevokeTeamInvitation()
 
   const [isResending, setIsResending] = useState(false)
   const [isRevoking, setIsRevoking] = useState(false)
@@ -696,17 +678,7 @@ function InviteDialogContent({
   onSuccess: () => void
   profileOptions: ProfileOption[]
 }) {
-  const queryClient = useQueryClient()
-  const createInvitation = useMutation({
-    mutationFn: (body: {
-      email: string
-      role: "admin" | "member"
-      profiles: TeamProfiles
-    }) => apiClient.createTeamInvitation(body),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["team", "invitations"] })
-    },
-  })
+  const createInvitation = useCreateTeamInvitation()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -863,16 +835,7 @@ function MemberPermissionsDialogContent({
   onSuccess: () => void
   profileOptions: ProfileOption[]
 }) {
-  const queryClient = useQueryClient()
-  const updateMemberPermissions = useMutation({
-    mutationFn: (body: { membershipId: string; profiles: TeamProfiles }) =>
-      apiClient.updateTeamMemberPermissions(body.membershipId, {
-        profiles: body.profiles,
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["team", "members"] })
-    },
-  })
+  const updateMemberPermissions = useUpdateTeamMemberPermissions()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)

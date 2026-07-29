@@ -24,7 +24,11 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
-import { apiClient } from "@/lib/api"
+import { useCreateLink } from "@/hooks/queries/links"
+import {
+  useCreateProfile,
+  useIsUsernameAvailable,
+} from "@/hooks/queries/profiles"
 import { cn } from "@/lib/utils"
 import { setSelectedProfile } from "@/stores/profiles"
 
@@ -241,6 +245,7 @@ function useUsernameAvailability(username: string) {
     useState(initialUsername)
   const [usernameBlurred, setUsernameBlurred] = useState(false)
   const requestRef = useRef(0)
+  const checkUsername = useIsUsernameAvailable()
 
   const resetUsernameAvailability = useEffectEvent(() => {
     requestRef.current += 1
@@ -269,7 +274,7 @@ function useUsernameAvailability(username: string) {
       setUsernameStatus("checking")
 
       try {
-        const { available } = await apiClient.isUsernameAvailable(normalized)
+        const available = await checkUsername.mutateAsync(normalized)
 
         if (requestId !== requestRef.current) {
           return "idle"
@@ -327,6 +332,8 @@ export function OnboardingPage({
 }) {
   const navigate = useNavigate()
   const prefersReducedMotion = useReducedMotion()
+  const createProfile = useCreateProfile()
+  const createLink = useCreateLink()
 
   const [step, setStep] = useState<Step>("intro")
   const [title, setTitle] = useState(draft.title)
@@ -462,7 +469,7 @@ export function OnboardingPage({
         return
       }
 
-      const { profile } = await apiClient.createProfile({
+      const { profile } = await createProfile.mutateAsync({
         title: title.trim(),
         username: normalizedUsername,
         bio: bio.trim(),
@@ -470,7 +477,8 @@ export function OnboardingPage({
 
       await Promise.all(
         starterLinks.map((link, order) =>
-          apiClient.createLink(profile.id, {
+          createLink.mutateAsync({
+            profileId: profile.id,
             title: link.title,
             type: "url",
             url: link.url,

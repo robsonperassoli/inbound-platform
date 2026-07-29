@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { ChatMessageContent } from "@/components/chat-message-content"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { apiClient } from "@/lib/api"
+import { useSubmissionTranscript } from "@/hooks/queries/forms"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute(
@@ -15,10 +14,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { id, submissionId } = Route.useParams()
   const navigate = useNavigate()
-  const transcriptQuery = useQuery({
-    queryKey: ["transcript", id, submissionId],
-    queryFn: () => apiClient.getSubmissionTranscript(id, submissionId),
-  })
+  const transcriptQuery = useSubmissionTranscript(id, submissionId)
 
   const messages = transcriptQuery.data?.messages
 

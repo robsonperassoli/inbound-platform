@@ -5,7 +5,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { themes } from "@inbound/shared"
-import { useUpdateProfile } from "@/hooks/queries"
+import { useUpdateProfile } from "@/hooks/queries/profiles"
 
 interface GenerateThemeButtonProps {
   profileId: string

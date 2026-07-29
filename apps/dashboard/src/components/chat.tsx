@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import type { ThreadMessage } from "@/lib/api"
+import type { ThreadMessage } from "@/api/threads"
 import { cn } from "@/lib/utils"
 import { ChatMessageContent } from "./chat-message-content"
 import { ChatMessageForm } from "./chat-message-form"

@@ -28,7 +28,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useFileUpload } from "@/hooks/use-file-upload"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
-import { useUpdateProfile } from "@/hooks/queries"
+import { useUpdateProfile } from "@/hooks/queries/profiles"
 
 export const Route = createFileRoute("/_authenticated/bio/settings")({
   component: RouteComponent,

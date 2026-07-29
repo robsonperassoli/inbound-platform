@@ -13,8 +13,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  useSendThreadMessage,
+  useStartFormBuilder,
+} from "@/hooks/queries/threads"
 import { useSelectedProfileId } from "@/stores/profiles"
-import { apiClient } from "@/lib/api"
 
 const DEFAULT_PROMPT_EXAMPLES = [
   {
@@ -46,6 +49,8 @@ export function CreateFormPrompt({
   const [hoveredExample, setHoveredExample] = useState<string | null>(null)
   const [isSubmitting, setSubmitting] = useState(false)
   const profileId = useSelectedProfileId()
+  const startFormBuilder = useStartFormBuilder()
+  const sendThreadMessage = useSendThreadMessage()
 
   const trimmedPrompt = prompt.trim()
   const isEmpty = trimmedPrompt.length === 0
@@ -64,8 +69,13 @@ export function CreateFormPrompt({
 
       setSubmitting(true)
 
-      const { threadId } = await apiClient.startFormBuilder(profileId ?? undefined)
-      await apiClient.sendThreadMessage(threadId, prompt.trim())
+      const { threadId } = await startFormBuilder.mutateAsync(
+        profileId ?? undefined,
+      )
+      await sendThreadMessage.mutateAsync({
+        threadId,
+        message: prompt.trim(),
+      })
 
       await navigate({
         to: "/forms/builder/$threadId",
@@ -74,7 +84,9 @@ export function CreateFormPrompt({
       })
     } catch (err) {
       console.error(err)
-      toast.error(err?.message ?? "Could not create form")
+      toast.error(
+        err instanceof Error ? err.message : "Could not create form",
+      )
     } finally {
       setSubmitting(false)
     }

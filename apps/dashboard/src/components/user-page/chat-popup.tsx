@@ -1,9 +1,11 @@
 import { Chat01Icon, Close } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Popover } from "radix-ui"
 import { cn } from "@/lib/utils"
-import { apiClient } from "@/lib/api"
+import {
+  useFormSessionMessages,
+  useSendFormSessionMessage,
+} from "@/hooks/queries/form-sessions"
 import { Chat } from "./chat"
 
 export function ChatPopup({
@@ -17,26 +19,8 @@ export function ChatPopup({
   onOpen: () => void
   onClose: () => void
 }) {
-  const queryClient = useQueryClient()
-  const addMessage = useMutation({
-    mutationFn: (message: string) =>
-      apiClient.sendFormSessionMessage(sessionId, message),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["form-session-messages", sessionId],
-      })
-    },
-  })
-  const { data } = useQuery({
-    queryKey: ["form-session-messages", sessionId],
-    enabled: Boolean(sessionId),
-    queryFn: () => apiClient.getFormSessionMessages(sessionId),
-    refetchInterval: (query) => {
-      const messages = query.state.data?.messages
-      if (!messages) return false
-      return messages.some((m) => m.status === "streaming") ? 500 : false
-    },
-  })
+  const addMessage = useSendFormSessionMessage()
+  const { data } = useFormSessionMessages(sessionId)
 
   return (
     <Popover.Root open={open}>
@@ -98,7 +82,7 @@ export function ChatPopup({
           <Chat
             messages={data?.messages ?? []}
             sendMessage={async (message: string) => {
-              await addMessage.mutateAsync(message)
+              await addMessage.mutateAsync({ sessionId, message })
             }}
           />
         </Popover.Content>

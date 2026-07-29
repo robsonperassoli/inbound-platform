@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useProfiles } from "@/hooks/queries"
+import { useProfiles } from "@/hooks/queries/profiles"
 import { useSession } from "@/hooks/use-session"
 import { getInitials } from "@/lib/names"
 import { setSelectedProfile, useSelectedProfileId } from "@/stores/profiles"

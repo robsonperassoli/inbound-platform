@@ -1,7 +1,6 @@
 import { Tick02Icon, ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import z from "zod"
 import { Chat } from "@/components/chat"
 import { EmptyFormPreview, FormPreview } from "@/components/form-preview"
@@ -12,8 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { queryKeys, useThread } from "@/hooks/queries"
-import { apiClient } from "@/lib/api"
+import { useSendThreadMessage, useThread } from "@/hooks/queries/threads"
 
 export const Route = createFileRoute("/_authenticated/forms/builder/$threadId")(
   {
@@ -29,17 +27,11 @@ function RouteComponent() {
   const { threadId } = Route.useParams()
   const { returnTo } = Route.useSearch()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { data } = useThread(threadId)
   const thread = data?.thread
   const messages = data?.messages ?? []
 
-  const sendMessage = useMutation({
-    mutationFn: (message: string) =>
-      apiClient.sendThreadMessage(threadId, message),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.thread(threadId) }),
-  })
+  const sendMessage = useSendThreadMessage()
 
   const onDoneClicked = async () => {
     if (returnTo === "bio") {
@@ -62,7 +54,7 @@ function RouteComponent() {
           viewType="sidebar"
           messages={messages}
           sendMessage={async (message) => {
-            await sendMessage.mutateAsync(message)
+            await sendMessage.mutateAsync({ threadId, message })
           }}
           chatActions={
             <div className="p-2 border-b w-full flex justify-between sm:hidden">

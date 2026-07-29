@@ -43,7 +43,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { useSession } from "@/hooks/use-session"
-import { apiClient } from "@/lib/api"
+import { useSendFeedback, useSendSupport } from "@/hooks/queries/support"
 
 type ModalType = "support" | "feedback" | null
 type Errors<T> = Partial<Record<keyof T, string>>
@@ -143,6 +143,8 @@ export function SidebarContactModals({
   const { pathname } = useLocation()
   const session = useSession()
   const profileData = useSelectedProfile()
+  const sendSupport = useSendSupport()
+  const sendFeedback = useSendFeedback()
 
   const defaultEmail = session?.email ?? ""
   const requesterName = session?.name ?? profileData?.profile.title ?? "there"
@@ -241,7 +243,7 @@ export function SidebarContactModals({
         throw new Error("Profile not selected")
       }
 
-      await apiClient.sendSupport(
+      await sendSupport.mutateAsync(
         [
           `Category: ${validation.data.category}`,
           `Email: ${validation.data.email}`,
@@ -277,7 +279,7 @@ export function SidebarContactModals({
           throw new Error("Profile not selected")
         }
 
-        await apiClient.sendFeedback(
+        await sendFeedback.mutateAsync(
           [
             `Type: feature`,
             `Email: ${validation.data.email}`,
@@ -312,7 +314,7 @@ export function SidebarContactModals({
         throw new Error("Profile not selected")
       }
 
-      await apiClient.sendFeedback(
+      await sendFeedback.mutateAsync(
         [
           `Type: bug`,
           `Email: ${validation.data.email}`,

@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,7 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { apiClient } from "@/lib/api"
+import {
+  useAcceptInvitation,
+  useInvitation,
+} from "@/hooks/queries/invitations"
 
 export const Route = createFileRoute("/_authenticated/invites/$token")({
   component: RouteComponent,
@@ -19,13 +21,8 @@ export const Route = createFileRoute("/_authenticated/invites/$token")({
 function RouteComponent() {
   const { token } = Route.useParams()
   const navigate = useNavigate()
-  const invitationQuery = useQuery({
-    queryKey: ["invitation", token],
-    queryFn: () => apiClient.getInvitationByToken(token),
-  })
-  const acceptInvitation = useMutation({
-    mutationFn: () => apiClient.acceptInvitation(token),
-  })
+  const invitationQuery = useInvitation(token)
+  const acceptInvitation = useAcceptInvitation()
 
   const [isAccepting, setIsAccepting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +34,7 @@ function RouteComponent() {
     setError(null)
 
     try {
-      await acceptInvitation.mutateAsync()
+      await acceptInvitation.mutateAsync(token)
       await navigate({ to: "/bio", reloadDocument: true })
     } catch (acceptError) {
       setError(

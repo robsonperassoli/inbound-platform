@@ -8,7 +8,6 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Temporal } from "@js-temporal/polyfill"
-import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useMemo, useState } from "react"
 import z from "zod"
@@ -37,9 +36,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useAnalyticsOverview } from "@/hooks/queries/analytics"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { formatToTinybirdDateTime } from "@/lib/dates"
-import { getOverview } from "@/lib/server/analytics.functions"
 
 const periodSchema = z.enum(["today", "7days", "30days", "3months", "6months"])
 type TimePeriod = z.infer<typeof periodSchema>
@@ -613,26 +612,13 @@ function RouteComponent() {
   const links = profileData?.links
   const profile = profileData?.profile
 
-  const { data: stats } = useQuery({
-    queryKey: ["stats", period, profileData?.profile.id],
+  const dateRange = useMemo(() => getPeriodDates(period), [period])
+  const { data: stats } = useAnalyticsOverview({
+    period,
+    profileId: profile?.id,
+    start: formatToTinybirdDateTime(dateRange.start.toInstant()),
+    end: formatToTinybirdDateTime(dateRange.end.toInstant()),
     enabled: !!profileData,
-    queryFn: async () => {
-      const profileId = profile?.id
-
-      if (!profileId) {
-        throw new Error("Profile not selected")
-      }
-
-      const dateRange = getPeriodDates(period)
-      const stats = await getOverview({
-        profileId,
-        start: formatToTinybirdDateTime(dateRange.start.toInstant()),
-        end: formatToTinybirdDateTime(dateRange.end.toInstant()),
-      })
-      console.log(stats)
-
-      return stats
-    },
   })
 
   const handlePeriodChange = async (newPeriod: TimePeriod) => {

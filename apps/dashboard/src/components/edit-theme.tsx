@@ -5,7 +5,7 @@ import { useFileUpload } from "@/hooks/use-file-upload"
 import {
   useProfileWithLinks,
   useUpdateProfile,
-} from "@/hooks/queries"
+} from "@/hooks/queries/profiles"
 import { fonts } from "@/lib/themes"
 import { FileUpload } from "./file-upload"
 import { ImagePreview } from "./image-preview"

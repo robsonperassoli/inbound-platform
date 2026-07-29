@@ -28,7 +28,7 @@ import {
   useDeleteLink,
   useReorderLinks,
   useUpdateLink,
-} from "@/hooks/queries"
+} from "@/hooks/queries/links"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import type { Link } from "@/lib/types"
 

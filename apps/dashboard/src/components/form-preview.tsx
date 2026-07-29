@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "./ui/button"
-import { useForm } from "@/hooks/queries"
+import { useForm } from "@/hooks/queries/forms"
 import type { Form } from "@/lib/types"
 
 type FormField = Form["fields"][number]

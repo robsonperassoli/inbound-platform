@@ -15,7 +15,7 @@ import { useSiteHeader } from "@/components/site-header"
 import { Card, CardContent } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
-import { apiClient } from "@/lib/api"
+import { useStartThemeDesigner } from "@/hooks/queries/threads"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_authenticated/bio/appearance/")({
@@ -122,6 +122,7 @@ function RouteComponent() {
   const profileData = useSelectedProfile()
   const profile = profileData?.profile
   const [aiLoading, setAiLoading] = useState(false)
+  const startThemeDesigner = useStartThemeDesigner()
 
   const startChatWithAI = async () => {
     try {
@@ -130,7 +131,7 @@ function RouteComponent() {
       }
 
       setAiLoading(true)
-      const { threadId } = await apiClient.startThemeDesigner(profile.id)
+      const { threadId } = await startThemeDesigner.mutateAsync(profile.id)
       await navigate({ to: "/design/theme/$threadId", params: { threadId } })
     } catch (error) {
       console.error(error)

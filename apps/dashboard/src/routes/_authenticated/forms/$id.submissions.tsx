@@ -6,7 +6,7 @@ import { useMemo } from "react"
 import { DataTable } from "@/components/data-table"
 import { useSiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
-import { useForm, useFormSubmissions } from "@/hooks/queries"
+import { useForm, useFormSubmissions } from "@/hooks/queries/forms"
 import { formatToLocalDateTime } from "@/lib/dates"
 
 export const Route = createFileRoute("/_authenticated/forms/$id/submissions")({

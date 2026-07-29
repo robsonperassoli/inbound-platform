@@ -28,12 +28,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useSession } from "@/hooks/use-session"
-import { apiClient } from "@/lib/api"
+import { useCreatePortal } from "@/hooks/queries/billing"
 import { getInitials } from "@/lib/names"
 
 export function NavUser() {
   const navigate = useNavigate()
   const session = useSession()
+  const createPortal = useCreatePortal()
 
   const signOut = async () => {
     await navigate({ to: "/logout", reloadDocument: true })
@@ -42,7 +43,7 @@ export function NavUser() {
   const { isMobile } = useSidebar()
 
   const goToStripeCustomerPortal = async () => {
-    const result = await apiClient.createPortal()
+    const result = await createPortal.mutateAsync()
     if (!result?.url) {
       console.error("Empty customer portal URL")
       return

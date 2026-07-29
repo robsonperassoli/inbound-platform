@@ -25,9 +25,11 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
-import { apiClient } from "@/lib/api"
-import { useQueryClient } from "@tanstack/react-query"
-import { queryKeys } from "@/hooks/queries"
+import { useCreateLink } from "@/hooks/queries/links"
+import {
+  useCreateProfile,
+  useIsUsernameAvailable,
+} from "@/hooks/queries/profiles"
 
 const createProfileSchema = z.object({
   title: z.string().trim().min(2, "Name must be at least 2 characters"),
@@ -69,7 +71,9 @@ export function CreateProfileModal({
   onOpenChange: (open: boolean) => void
   onCreated: (profileId: string) => void
 }) {
-  const queryClient = useQueryClient()
+  const createProfile = useCreateProfile()
+  const createLink = useCreateLink()
+  const checkUsername = useIsUsernameAvailable()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle")
@@ -105,7 +109,7 @@ export function CreateProfileModal({
           return
         }
 
-        const { profile } = await apiClient.createProfile({
+        const { profile } = await createProfile.mutateAsync({
           title: value.title.trim(),
           username: normalizedUsername,
           bio: value.bio.trim(),
@@ -113,7 +117,8 @@ export function CreateProfileModal({
 
         await Promise.all(
           starterLinks.map((link, order) =>
-            apiClient.createLink(profile.id, {
+            createLink.mutateAsync({
+              profileId: profile.id,
               title: link.title,
               type: "url",
               url: link.url,
@@ -123,7 +128,6 @@ export function CreateProfileModal({
           ),
         )
 
-        await queryClient.invalidateQueries({ queryKey: queryKeys.profiles })
         onCreated(profile.id)
         onOpenChange(false)
         toast.success("Page created")
@@ -159,7 +163,7 @@ export function CreateProfileModal({
       setUsernameStatus("checking")
 
       try {
-        const { available } = await apiClient.isUsernameAvailable(normalized)
+        const available = await checkUsername.mutateAsync(normalized)
 
         if (requestId !== requestRef.current) {
           return "idle"
@@ -178,7 +182,7 @@ export function CreateProfileModal({
         return "error"
       }
     },
-    [usernameError],
+    [checkUsername, usernameError],
   )
 
   useEffect(() => {

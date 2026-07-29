@@ -2,7 +2,7 @@ import { ArrowUp02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { type KeyboardEvent, useMemo, useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
-import type { ThreadMessage } from "@/lib/api"
+import type { ThreadMessage } from "@/api/threads"
 import { cn } from "@/lib/utils"
 import { ChatMessageContent } from "../chat-message-content"
 import {

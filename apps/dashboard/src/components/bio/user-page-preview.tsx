@@ -3,7 +3,7 @@ import {
   toUserPageLinks,
   toUserPageProfile,
   useProfileWithLinks,
-} from "@/hooks/queries"
+} from "@/hooks/queries/profiles"
 
 export function UserPagePreview({ profileId }: { profileId: string }) {
   const { data, isLoading } = useProfileWithLinks(profileId)

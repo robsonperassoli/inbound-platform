@@ -53,7 +53,7 @@ import {
   useForm as useFormQuery,
   useSaveFormFields,
   useUpdateForm,
-} from "@/hooks/queries"
+} from "@/hooks/queries/forms"
 import type { Form } from "@/lib/types"
 
 export const Route = createFileRoute("/_authenticated/forms/$id/settings")({

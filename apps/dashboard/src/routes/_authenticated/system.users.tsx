@@ -1,7 +1,6 @@
+import { createFileRoute, redirect } from "@tanstack/react-router"
 import { Copy01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { createFileRoute, redirect } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
 import { ScrollableContainer } from "@/components/app-layout/scrollable-container"
 import { useSiteHeader } from "@/components/site-header"
 import { Badge } from "@/components/ui/badge"
@@ -35,12 +34,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { getSession } from "@/api/session"
 import { useCopyToClipboard } from "@/hooks/copy-to-clipboard"
-import { apiClient } from "@/lib/api"
+import { useSystemUsers } from "@/hooks/queries/system"
 
 export const Route = createFileRoute("/_authenticated/system/users")({
   beforeLoad: async () => {
-    const session = await apiClient.getSession()
+    const session = await getSession()
     if (!session.isSuperUser) {
       throw redirect({ to: "/bio" })
     }
@@ -51,10 +51,7 @@ export const Route = createFileRoute("/_authenticated/system/users")({
 function RouteComponent() {
   useSiteHeader({ title: "System Users", titleMode: "append" })
 
-  const usersQuery = useQuery({
-    queryKey: ["system", "users"],
-    queryFn: async () => (await apiClient.listSystemUsers()).users,
-  })
+  const usersQuery = useSystemUsers()
 
   const users = usersQuery.data
 

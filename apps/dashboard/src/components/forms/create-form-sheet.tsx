@@ -19,7 +19,7 @@ import {
   SheetTitle,
 } from "../ui/sheet"
 import { Textarea } from "../ui/textarea"
-import { useCreateForm } from "@/hooks/queries"
+import { useCreateForm } from "@/hooks/queries/forms"
 
 const createFormSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),

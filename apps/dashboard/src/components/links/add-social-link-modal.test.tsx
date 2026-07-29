@@ -13,7 +13,7 @@ import { AddSocialLinkModal } from "./add-social-link-modal"
 
 const addLinkMock = vi.fn()
 
-vi.mock("@/hooks/queries", () => ({
+vi.mock("@/hooks/queries/links", () => ({
   useCreateLink: () => ({ mutateAsync: addLinkMock }),
 }))
 

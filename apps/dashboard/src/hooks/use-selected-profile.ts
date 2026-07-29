@@ -1,1 +1,1 @@
-export { useSelectedProfile } from "@/hooks/queries"
+export { useSelectedProfile } from "@/hooks/queries/profiles"

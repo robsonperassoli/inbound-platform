@@ -36,7 +36,7 @@ import {
   socialConfig,
   socialPlatforms,
 } from "@/lib/social-links"
-import { useCreateLink } from "@/hooks/queries"
+import { useCreateLink } from "@/hooks/queries/links"
 
 export const addSocialLinkSchema = z
   .object({

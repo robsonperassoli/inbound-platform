@@ -1,11 +1,11 @@
-import { apiClient } from "@/lib/api"
+import { analyticsOverview } from "@/api/analytics"
 
 export async function getOverview(params: {
   profileId: string
   start: string
   end: string
 }) {
-  const data = (await apiClient.analyticsOverview({
+  const data = (await analyticsOverview({
     profileId: params.profileId,
     startDate: params.start,
     endDate: params.end,

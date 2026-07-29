@@ -12,9 +12,10 @@ import {
 } from "@/components/pricing/pricing-section"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { useSession } from "@/hooks/use-session"
+import { useCreateCheckout } from "@/hooks/queries/billing"
+import { useSendSupport } from "@/hooks/queries/support"
 import { type BillingCycle, type PricingPlanId } from "@/lib/pricing"
 import { PRICING_PLANS } from "@/lib/pricing-plans"
-import { apiClient } from "@/lib/api"
 
 export const Route = createFileRoute("/_authenticated/upgrade")({
   component: RouteComponent,
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/_authenticated/upgrade")({
 function RouteComponent() {
   const session = useSession()
   const profileData = useSelectedProfile()
+  const createCheckout = useCreateCheckout()
+  const sendSupport = useSendSupport()
 
   const activePlan = session?.plan ?? "free"
 
@@ -60,7 +63,7 @@ function RouteComponent() {
       throw new Error("Profile not selected")
     }
 
-    await apiClient.sendSupport(
+    await sendSupport.mutateAsync(
       `Sales lead for ${profileData.profile.id}: ${JSON.stringify(values)}`,
     )
   }
@@ -90,7 +93,7 @@ function RouteComponent() {
 
             try {
               setCheckoutPlan(plan.id)
-              const result = await apiClient.createCheckout({
+              const result = await createCheckout.mutateAsync({
                 plan: plan.id,
                 cycle: billingCycle,
               })

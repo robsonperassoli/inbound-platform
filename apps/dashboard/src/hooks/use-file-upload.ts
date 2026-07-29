@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import { toast } from "sonner"
-import { apiClient } from "@/lib/api"
 import { createId } from "@inbound/shared"
+import { presignUpload } from "@/api/uploads"
 
 export function useFileUpload() {
   const [uploading, setUploading] = useState(false)
@@ -10,7 +10,7 @@ export function useFileUpload() {
     try {
       setUploading(true)
       const key = `uploads/${createId()}-${file.name.replace(/\s+/g, "-")}`
-      const { url } = await apiClient.presignUpload(key, file.type || "application/octet-stream")
+      const { url } = await presignUpload(key, file.type || "application/octet-stream")
 
       const result = await fetch(url, {
         method: "PUT",

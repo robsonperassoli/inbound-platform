@@ -10,13 +10,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { UserPage } from "@/components/user-page"
+import { listProfiles } from "@/api/profiles"
+import { queryKeys } from "@/hooks/queries/keys"
 import {
-  queryKeys,
   toUserPageLinks,
   toUserPageProfile,
   useSelectedProfile,
-} from "@/hooks/queries"
-import { apiClient } from "@/lib/api"
+} from "@/hooks/queries/profiles"
 import type { Profile } from "@/lib/types"
 import { setSelectedProfile } from "@/stores/profiles"
 
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/bio")({
     const profiles = await context.queryClient.ensureQueryData({
       queryKey: queryKeys.profiles,
       queryFn: async (): Promise<Profile[]> => {
-        const result = await apiClient.listProfiles()
+        const result = await listProfiles()
         return result.profiles
       },
     })

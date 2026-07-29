@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form"
 import { useEffect } from "react"
 import z from "zod"
-import { useCreateLink } from "@/hooks/queries"
+import { useCreateLink } from "@/hooks/queries/links"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
 import {

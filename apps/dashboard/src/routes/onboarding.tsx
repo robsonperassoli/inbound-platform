@@ -1,7 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
+import { listProfiles } from "@/api/profiles"
+import { getSession } from "@/api/session"
 import { OnboardingPage } from "@/components/onboarding-page"
 import { ensureAuthenticated } from "@/lib/auth"
-import { apiClient } from "@/lib/api"
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -9,8 +10,8 @@ export const Route = createFileRoute("/onboarding")({
     await ensureAuthenticated(location.pathname)
 
     const [{ profiles }, session] = await Promise.all([
-      apiClient.listProfiles(),
-      apiClient.getSession(),
+      listProfiles(),
+      getSession(),
     ])
 
     if (profiles.length > 0) {
