@@ -1,6 +1,6 @@
 # Inbound Platform
 
-Monorepo for the inbound bio platform: Hono API, SPA dashboard, SSR bio renderer, and shared UI.
+Monorepo for the inbound.click platform: Hono API, SPA dashboard, SSR bio renderer, and shared UI.
 
 ## Apps
 
