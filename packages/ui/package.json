@@ -38,6 +38,7 @@
     "clsx": "^2.1.1",
     "radix-ui": "^1.4.3",
     "react-textarea-autosize": "^8.5.9",
+    "shadcn": "^3.8.5",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
