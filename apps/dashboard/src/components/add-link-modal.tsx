@@ -66,13 +66,12 @@ export function AddLinkModal({
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>
-            <form.Field
-              name="title"
-              children={(f) => {
+            <form.Field name="title">
+              {(f) => {
                 const isInvalid =
                   f.state.meta.isTouched && !f.state.meta.isValid
                 return (
@@ -96,11 +95,10 @@ export function AddLinkModal({
                   </Field>
                 )
               }}
-            />
+            </form.Field>
 
-            <form.Field
-              name="url"
-              children={(f) => {
+            <form.Field name="url">
+              {(f) => {
                 const isInvalid =
                   f.state.meta.isTouched && !f.state.meta.isValid
                 return (
@@ -124,7 +122,7 @@ export function AddLinkModal({
                   </Field>
                 )
               }}
-            />
+            </form.Field>
             <Field orientation="horizontal">
               <Button size="lg" variant="secondary" onClick={onClose}>
                 Cancel

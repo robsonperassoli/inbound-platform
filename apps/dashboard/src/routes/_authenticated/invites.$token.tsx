@@ -38,7 +38,7 @@ function RouteComponent() {
 
     try {
       await acceptInvitation.mutateAsync()
-      navigate({ to: "/bio", reloadDocument: true })
+      await navigate({ to: "/bio", reloadDocument: true })
     } catch (acceptError) {
       setError(
         acceptError instanceof Error

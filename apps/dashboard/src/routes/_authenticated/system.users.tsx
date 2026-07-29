@@ -221,7 +221,7 @@ function CopyField({
                 return
               }
 
-              copyToClipboard(value)
+              void copyToClipboard(value)
             }}
           >
             <HugeiconsIcon icon={copied ? Tick01Icon : Copy01Icon} />

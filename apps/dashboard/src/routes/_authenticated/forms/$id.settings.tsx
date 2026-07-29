@@ -191,7 +191,7 @@ function SettingsEditor({
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              headerForm.handleSubmit()
+              void headerForm.handleSubmit()
             }}
           >
             <FieldGroup>
@@ -440,7 +440,7 @@ function FieldEditorSheet({
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            fieldForm.handleSubmit()
+            void fieldForm.handleSubmit()
           }}
         >
           <FieldGroup className="px-6 pb-6">

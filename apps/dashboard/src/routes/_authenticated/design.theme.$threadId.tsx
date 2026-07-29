@@ -36,8 +36,8 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: queryKeys.thread(threadId) }),
   })
 
-  const onDoneClicked = () => {
-    navigate({ to: "/bio" })
+  const onDoneClicked = async () => {
+    await navigate({ to: "/bio" })
   }
 
   return (

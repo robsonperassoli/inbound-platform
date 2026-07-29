@@ -43,7 +43,7 @@ export function FileUpload({
     }
 
     const url = URL.createObjectURL(file)
-    onChange(url, file)
+    void onChange(url, file)
 
     // Reset input so the same file can be selected again
     e.target.value = ""

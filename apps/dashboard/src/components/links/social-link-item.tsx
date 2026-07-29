@@ -35,9 +35,9 @@ export function SocialLinkItem({
   link,
   actions,
   sortable,
-  handleRef,
+  handleRef: _handleRef,
   setElement,
-  isDragging,
+  isDragging: _isDragging,
 }: {
   link: Link
   actions?: ReactNode

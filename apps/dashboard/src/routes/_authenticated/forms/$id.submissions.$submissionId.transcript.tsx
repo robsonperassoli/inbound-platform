@@ -20,10 +20,10 @@ function RouteComponent() {
     queryFn: () => apiClient.getSubmissionTranscript(id, submissionId),
   })
 
-  const messages = transcriptQuery.data?.messages ?? []
+  const messages = transcriptQuery.data?.messages
 
   const reversedMessages = useMemo(
-    () => Array.from(messages).reverse(),
+    () => (messages ? messages.toReversed() : []),
     [messages],
   )
 

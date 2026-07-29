@@ -1,6 +1,5 @@
 import { Copy01Icon, Share03Icon, Tick01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { useCopyToClipboard } from "@/hooks/copy-to-clipboard"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
@@ -66,7 +65,7 @@ export function ShareButton() {
                 title="Copy"
                 size="icon-xs"
                 onClick={() => {
-                  copyToClipboard(link)
+                  void copyToClipboard(link)
                 }}
               >
                 <HugeiconsIcon icon={copied ? Tick01Icon : Copy01Icon} />

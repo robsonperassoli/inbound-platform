@@ -36,7 +36,7 @@ export function NavUser() {
   const session = useSession()
 
   const signOut = async () => {
-    navigate({ to: "/logout", reloadDocument: true })
+    await navigate({ to: "/logout", reloadDocument: true })
   }
 
   const { isMobile } = useSidebar()

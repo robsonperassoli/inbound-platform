@@ -229,8 +229,8 @@ export function useUpdateForm() {
     mutationFn: ({ id, ...body }: { id: string } & Parameters<typeof apiClient.updateForm>[1]) =>
       apiClient.updateForm(id, body),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.forms })
-      queryClient.invalidateQueries({ queryKey: queryKeys.form(data.form.id) })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.forms })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.form(data.form.id) })
     },
   })
 }

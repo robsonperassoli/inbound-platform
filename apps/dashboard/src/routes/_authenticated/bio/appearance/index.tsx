@@ -1,4 +1,4 @@
-import type { Profile, Link, Form } from "@/lib/types"
+import type { Profile } from "@/lib/types"
 import {
   ArrowRight01Icon,
   Image,
@@ -21,8 +21,6 @@ import { cn } from "@/lib/utils"
 export const Route = createFileRoute("/_authenticated/bio/appearance/")({
   component: RouteComponent,
 })
-
-type Profile = Profile
 
 const buttonShapeLabels: Record<Profile["buttonShape"], string> = {
   square: "Square",
@@ -133,7 +131,7 @@ function RouteComponent() {
 
       setAiLoading(true)
       const { threadId } = await apiClient.startThemeDesigner(profile.id)
-      navigate({ to: "/design/theme/$threadId", params: { threadId } })
+      await navigate({ to: "/design/theme/$threadId", params: { threadId } })
     } catch (error) {
       console.error(error)
       toast.error("Could not start a conversation with the AI")

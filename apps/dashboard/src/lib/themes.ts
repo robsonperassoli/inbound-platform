@@ -1,4 +1,4 @@
-import type { Profile, Link, Form } from "@/lib/types"
+import type { Profile } from "@/lib/types"
 
 const defaultThemeName = "Pearl White"
 

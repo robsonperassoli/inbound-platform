@@ -67,7 +67,7 @@ export function CreateFormPrompt({
       const { threadId } = await apiClient.startFormBuilder(profileId ?? undefined)
       await apiClient.sendThreadMessage(threadId, prompt.trim())
 
-      navigate({
+      await navigate({
         to: "/forms/builder/$threadId",
         params: { threadId },
         search: { returnTo: "bio" },

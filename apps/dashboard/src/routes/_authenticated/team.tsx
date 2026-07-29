@@ -68,7 +68,7 @@ export const Route = createFileRoute("/_authenticated/team")({
   component: RouteComponent,
 })
 
-type TeamProfiles = Array<"all" | string>
+type TeamProfiles = Array<"all" | (string & {})>
 
 type ProfileOption = {
   id: string

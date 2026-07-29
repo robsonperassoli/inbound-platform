@@ -101,7 +101,7 @@ export async function mergeSubmissionValues(
 ) {
   const submission = await repository.getSubmissionById(submissionId)
   return repository.updateSubmissionValues(submissionId, {
-    ...(submission?.values ?? {}),
+    ...submission?.values,
     ...values,
   })
 }

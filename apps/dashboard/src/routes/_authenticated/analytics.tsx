@@ -1,4 +1,3 @@
-import type { Profile, Link, Form } from "@/lib/types"
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -122,9 +121,12 @@ export const Route = createFileRoute("/_authenticated/analytics")({
   component: RouteComponent,
   ssr: false,
   validateSearch: {
-    parse: z.object({
-      period: periodSchema.default("7days"),
-    }).parse,
+    parse: (input) =>
+      z
+        .object({
+          period: periodSchema.default("7days"),
+        })
+        .parse(input),
   },
   // loaderDeps: ({ search }) => search,
 })
@@ -633,8 +635,8 @@ function RouteComponent() {
     },
   })
 
-  const handlePeriodChange = (newPeriod: TimePeriod) => {
-    navigate({ to: ".", search: { period: newPeriod } })
+  const handlePeriodChange = async (newPeriod: TimePeriod) => {
+    await navigate({ to: ".", search: { period: newPeriod } })
   }
 
   if (!stats || !links) {

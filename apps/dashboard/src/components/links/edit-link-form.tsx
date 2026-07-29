@@ -50,13 +50,12 @@ export function EditLinkForm({
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        form.handleSubmit()
+        void form.handleSubmit()
       }}
     >
       <FieldGroup>
-        <form.Field
-          name="title"
-          children={(f) => {
+        <form.Field name="title">
+          {(f) => {
             const isInvalid = f.state.meta.isTouched && !f.state.meta.isValid
             return (
               <Field>
@@ -79,12 +78,11 @@ export function EditLinkForm({
               </Field>
             )
           }}
-        />
+        </form.Field>
 
         {editUrl && (
-          <form.Field
-            name="url"
-            children={(f) => {
+          <form.Field name="url">
+            {(f) => {
               const isInvalid = f.state.meta.isTouched && !f.state.meta.isValid
               return (
                 <Field>
@@ -105,7 +103,7 @@ export function EditLinkForm({
                 </Field>
               )
             }}
-          />
+          </form.Field>
         )}
 
         <Field orientation="horizontal">

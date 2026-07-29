@@ -223,13 +223,6 @@ export function SidebarContactModals({
     resetFeedbackState()
   }
 
-  const buildCurrentMeta = () => ({
-    currentPath: pathname,
-    userAgent:
-      typeof navigator === "undefined" ? undefined : navigator.userAgent,
-    submittedAt: new Date().toISOString(),
-  })
-
   const handleSupportSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSupportSubmitted(true)

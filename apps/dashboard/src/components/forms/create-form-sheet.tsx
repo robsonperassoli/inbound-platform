@@ -55,7 +55,7 @@ export function CreateFormSheet({
         })
 
         onClose()
-        navigate({
+        await navigate({
           to: "/forms/$id/settings",
           params: { id: createdForm.id },
         })
@@ -79,7 +79,7 @@ export function CreateFormSheet({
           className="flex-1 overflow-y-auto px-6 pb-6"
           onSubmit={(e) => {
             e.preventDefault()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>

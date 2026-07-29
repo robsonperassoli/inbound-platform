@@ -302,7 +302,7 @@ function useUsernameAvailability(username: string) {
     }, 1000)
 
     return () => clearTimeout(timeout)
-  }, [checkUsernameAvailability, username])
+  }, [username])
 
   return {
     checkUsernameAvailability,
@@ -483,8 +483,8 @@ export function OnboardingPage({
       toast.success("Page created")
       startTransition(() => {
         setSelectedProfile(profile.id)
-        navigate({ to: "/bio" })
       })
+      await navigate({ to: "/bio" })
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to create page"
