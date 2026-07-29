@@ -1,26 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
-import { apiUrl } from "../lib/api.ts"
+import { getPublicLink, trackLinkClick } from "@/lib/api"
 
 export const Route = createFileRoute("/$username/link/$linkId")({
   loader: async ({ params }) => {
-    const response = await fetch(
-      `${apiUrl()}/public/links/${params.linkId}`,
-    )
-    if (!response.ok) {
-      throw new Error("Link not found")
-    }
-    const link = (await response.json()) as {
-      id: string
-      url: string | null
-      type: string
-      profileId: string
-    }
+    const link = await getPublicLink(params.linkId)
 
-    await fetch(`${apiUrl()}/public/links/${params.linkId}/click`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ visitorId: "anonymous" }),
-    }).catch(() => undefined)
+    await trackLinkClick(params.linkId).catch(() => undefined)
 
     if (link.url) {
       throw redirect({ href: link.url })

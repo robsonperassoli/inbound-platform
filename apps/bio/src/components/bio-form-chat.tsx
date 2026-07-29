@@ -1,7 +1,7 @@
 import type { ChatMessage } from "@inbound/ui"
 import { ChatPopup } from "@inbound/ui"
 import { useCallback, useEffect, useState } from "react"
-import { apiUrl } from "@/lib/api"
+import { getFormSessionMessages, sendFormSessionMessage } from "@/lib/api"
 
 type SessionMessage = ChatMessage & {
   status?: "pending" | "complete" | "streaming" | "error"
@@ -12,12 +12,19 @@ export function BioFormChat({ sessionId }: { sessionId: string }) {
   const [messages, setMessages] = useState<SessionMessage[]>([])
 
   const loadMessages = useCallback(async () => {
-    const response = await fetch(
-      `${apiUrl()}/public/form-sessions/${sessionId}/messages`,
-    )
-    if (!response.ok) return
-    const data = (await response.json()) as { messages: SessionMessage[] }
-    setMessages(data.messages)
+    try {
+      const data = await getFormSessionMessages(sessionId)
+      setMessages(
+        data.messages.map((message) => ({
+          id: message.id,
+          role: message.role,
+          content: message.content,
+          status: message.status,
+        })),
+      )
+    } catch {
+      // Ignore transient poll failures while streaming.
+    }
   }, [sessionId])
 
   useEffect(() => {
@@ -41,11 +48,7 @@ export function BioFormChat({ sessionId }: { sessionId: string }) {
       onClose={() => setOpen(false)}
       messages={messages}
       sendMessage={async (message) => {
-        await fetch(`${apiUrl()}/public/form-sessions/${sessionId}/messages`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }),
-        })
+        await sendFormSessionMessage(sessionId, message)
         await loadMessages()
       }}
     />

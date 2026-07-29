@@ -1,3 +1,4 @@
+import { API_URL } from "./config.ts"
 import type { Form, Link, Profile, Session } from "./types.ts"
 
 export type FormSubmission = {
@@ -15,8 +16,6 @@ export type ThreadMessage = {
   createdAt: number
   status?: "pending" | "complete" | "streaming" | "error"
 }
-
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8787"
 
 export class ApiError extends Error {
   status: number
@@ -337,5 +336,3 @@ export const apiClient = {
       }>
     }>(`/forms/${formId}/submissions/${submissionId}/transcript`),
 }
-
-export { API_URL }

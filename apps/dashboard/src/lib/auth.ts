@@ -1,5 +1,6 @@
 import { redirect } from "@tanstack/react-router"
-import { apiClient, API_URL, ApiError } from "@/lib/api"
+import { apiClient, ApiError } from "@/lib/api"
+import { API_URL } from "@/lib/config"
 
 /** SPA auth gate — relies on API session cookie from WorkOS callback */
 export async function ensureAuthenticated(returnPathname: string) {
