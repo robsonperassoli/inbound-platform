@@ -8,6 +8,8 @@
     "start": "node --import tsx src/index.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file=../../.env src/scripts/migrate.ts",
     "db:seed": "tsx --env-file=../../.env src/scripts/seed.ts",
@@ -35,6 +37,7 @@
     "@types/node": "^22.10.2",
     "drizzle-kit": "^0.31.0",
     "tsx": "^4.19.3",
-    "typescript": "^7.0.0"
+    "typescript": "^7.0.0",
+    "vitest": "^4.1.10"
   }
 }

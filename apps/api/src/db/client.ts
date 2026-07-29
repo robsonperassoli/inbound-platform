@@ -3,6 +3,7 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import Database from "better-sqlite3"
 import { drizzle } from "drizzle-orm/better-sqlite3"
+import { env } from "../lib/env.ts"
 import * as schema from "./schema.ts"
 
 const repoRoot = path.resolve(
@@ -11,20 +12,25 @@ const repoRoot = path.resolve(
 )
 
 function resolveSqlitePath() {
-  const configured = process.env.SQLITE_PATH
-  if (configured) {
-    return path.isAbsolute(configured)
-      ? configured
-      : path.resolve(repoRoot, configured)
+  const configured = env.SQLITE_PATH
+  if (configured === ":memory:") {
+    return ":memory:"
   }
-  return path.resolve(repoRoot, "data/inbound.sqlite")
+
+  return path.isAbsolute(configured)
+    ? configured
+    : path.resolve(repoRoot, configured)
 }
 
 export function createSqliteConnection(sqlitePath = resolveSqlitePath()) {
-  fs.mkdirSync(path.dirname(sqlitePath), { recursive: true })
+  if (sqlitePath !== ":memory:") {
+    fs.mkdirSync(path.dirname(sqlitePath), { recursive: true })
+  }
 
   const sqlite = new Database(sqlitePath)
-  sqlite.pragma("journal_mode = WAL")
+  if (sqlitePath !== ":memory:") {
+    sqlite.pragma("journal_mode = WAL")
+  }
   sqlite.pragma("busy_timeout = 5000")
   sqlite.pragma("foreign_keys = ON")
   sqlite.pragma("synchronous = NORMAL")
