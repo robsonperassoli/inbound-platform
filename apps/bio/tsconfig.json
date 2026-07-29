@@ -1,0 +1,10 @@
+{
+  "extends": "@inbound/config/tsconfig.react.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["vite/client"]
+  },
+  "include": ["src", "vite.config.ts"]
+}

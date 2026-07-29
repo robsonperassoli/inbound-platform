@@ -1,0 +1,17 @@
+node_modules
+dist
+.output
+.vinxi
+.tanstack
+.turbo
+data
+*.sqlite
+*.sqlite-*
+.env
+.env.local
+.DS_Store
+coverage
+*.log
+.nitro
+.wrangler
+.pnpm-store/v11/

@@ -1,0 +1,34 @@
+{
+  "name": "@inbound/bio",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3001",
+    "build": "vite build",
+    "preview": "vite preview --port 3001",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@inbound/shared": "workspace:*",
+    "@inbound/ui": "workspace:*",
+    "@tanstack/react-router": "^1.132.0",
+    "@tanstack/react-router-ssr-query": "^1.131.7",
+    "@tanstack/react-start": "^1.132.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@inbound/config": "workspace:*",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "nitro": "npm:nitro-nightly@3.0.1-20260712-095235-05bf1c38",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^7.0.0",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^6.0.2"
+  }
+}

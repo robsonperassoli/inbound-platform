@@ -1,0 +1,110 @@
+import { Hono } from "hono"
+import { deleteCookie, getCookie, setCookie } from "hono/cookie"
+import {
+  authenticateWithCode,
+  ensureUserFromWorkOS,
+  getAuthorizationUrl,
+  getWorkOsLogoutUrl,
+  getWorkOsSessionIdFromAccessToken,
+} from "../integrations/workos.ts"
+import { handleStripeWebhook } from "../integrations/stripe.ts"
+import { env } from "../lib/env.ts"
+
+export const authRoutes = new Hono()
+
+const SESSION_COOKIE = "inbound_session"
+const WORKOS_SID_COOKIE = "workos_sid"
+
+function sessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "Lax" as const,
+    path: "/",
+    secure: env.NODE_ENV === "production",
+  }
+}
+
+authRoutes.get("/login", (c) => {
+  try {
+    const redirectUri = `${env.API_URL}/auth/callback`
+    const url = getAuthorizationUrl(redirectUri)
+    return c.redirect(url)
+  } catch {
+    return c.redirect(`${env.DASHBOARD_URL}/signin?workos=unconfigured`)
+  }
+})
+
+authRoutes.get("/callback", async (c) => {
+  const code = c.req.query("code")
+  if (!code) return c.json({ error: "Missing code" }, 400)
+
+  const result = await authenticateWithCode(code)
+  const user = await ensureUserFromWorkOS({
+    authId: result.user.id,
+    email: result.user.email,
+    name: [result.user.firstName, result.user.lastName]
+      .filter(Boolean)
+      .join(" "),
+    profilePictureUrl: result.user.profilePictureUrl,
+  })
+
+  if (!user) return c.json({ error: "Failed to provision user" }, 500)
+
+  const cookieOptions = sessionCookieOptions()
+
+  setCookie(c, SESSION_COOKIE, user.id, {
+    ...cookieOptions,
+    maxAge: 60 * 60 * 24 * 30,
+  })
+
+  const workosSessionId = getWorkOsSessionIdFromAccessToken(result.accessToken)
+  if (workosSessionId) {
+    setCookie(c, WORKOS_SID_COOKIE, workosSessionId, {
+      ...cookieOptions,
+      maxAge: 60 * 60 * 24 * 30,
+    })
+  }
+
+  return c.redirect(env.DASHBOARD_URL)
+})
+
+function clearAuthCookies(c: Parameters<typeof setCookie>[0]) {
+  const cookieOptions = sessionCookieOptions()
+  deleteCookie(c, SESSION_COOKIE, cookieOptions)
+  deleteCookie(c, WORKOS_SID_COOKIE, cookieOptions)
+}
+
+/** Browser logout: clear app cookies, then end the WorkOS AuthKit session. */
+authRoutes.get("/logout", (c) => {
+  const workosSessionId = getCookie(c, WORKOS_SID_COOKIE)
+  clearAuthCookies(c)
+
+  if (workosSessionId) {
+    try {
+      const logoutUrl = getWorkOsLogoutUrl(
+        workosSessionId,
+        env.DASHBOARD_URL,
+      )
+      return c.redirect(logoutUrl)
+    } catch (error) {
+      console.error("Failed to build WorkOS logout URL", error)
+    }
+  }
+
+  return c.redirect(env.DASHBOARD_URL)
+})
+
+authRoutes.post("/logout", (c) => {
+  clearAuthCookies(c)
+  return c.json({ ok: true })
+})
+
+export const webhookRoutes = new Hono()
+
+webhookRoutes.post("/stripe", async (c) => {
+  const signature = c.req.header("stripe-signature")
+  if (!signature) return c.json({ error: "Missing signature" }, 400)
+  const rawBody = await c.req.text()
+  const result = await handleStripeWebhook(rawBody, signature)
+  return c.json(result)
+})

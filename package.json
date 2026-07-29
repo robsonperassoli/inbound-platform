@@ -1,0 +1,25 @@
+{
+  "name": "inbound-platform",
+  "private": true,
+  "packageManager": "pnpm@11.5.2",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:webhooks": "turbo run dev stripe-tunnel --parallel",
+    "stripe:tunnel": "pnpm --filter @inbound/api stripe-tunnel",
+    "build": "turbo run build",
+    "lint": "oxlint --type-aware",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @inbound/api db:generate",
+    "db:migrate": "pnpm --filter @inbound/api db:migrate",
+    "db:seed": "pnpm --filter @inbound/api db:seed"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.35.0",
+    "oxlint": "^1.43.0",
+    "oxlint-tsgolint": "^7.0.0",
+    "turbo": "^2.5.4",
+    "typescript": "^7.0.0"
+  }
+}

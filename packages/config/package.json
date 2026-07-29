@@ -1,0 +1,11 @@
+{
+  "name": "@inbound/config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.react.json": "./tsconfig.react.json",
+    "./tsconfig.node.json": "./tsconfig.node.json"
+  },
+  "files": ["tsconfig*.json"]
+}
