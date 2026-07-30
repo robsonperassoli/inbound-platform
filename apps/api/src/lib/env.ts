@@ -28,7 +28,7 @@ const envSchema = z.object({
   B2_KEY_ID: z.string().optional(),
   B2_APPLICATION_KEY: z.string().optional(),
   B2_PUBLIC_URL: z.string().optional(),
-  TINYBIRD_API_URL: z.string().optional(),
+  TINYBIRD_URL: z.string().optional(),
   TINYBIRD_TOKEN: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
 })

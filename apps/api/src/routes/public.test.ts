@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+const { recordLinkClick, recordPageView } = vi.hoisted(() => ({
+  recordLinkClick: vi.fn(async () => undefined),
+  recordPageView: vi.fn(async () => undefined),
+}))
+
 vi.mock("../integrations/storage.ts", () => ({
   resolveAssetUrl: vi.fn(async (key: string | null | undefined) =>
     key ? `https://cdn.example.com/${key}` : null,
@@ -7,14 +12,13 @@ vi.mock("../integrations/storage.ts", () => ({
   createUploadUrl: vi.fn(async () => "https://upload.example.com"),
 }))
 
-vi.mock("../integrations/tinybird.ts", () => ({
-  ingestLinkClick: vi.fn(async () => undefined),
-  ingestPageView: vi.fn(async () => undefined),
-  queryTinybirdEndpoint: vi.fn(async () => ({ data: [] })),
+vi.mock("../domains/analytics/index.ts", () => ({
+  recordLinkClick,
+  recordPageView,
+  getOverview: vi.fn(),
 }))
 
 import * as profiles from "../domains/profiles/index"
-import { ingestLinkClick } from "../integrations/tinybird"
 import { createProfileForAccount } from "../test/factories"
 import { client } from "../test/http"
 
@@ -80,6 +84,10 @@ describe("public routes", () => {
       url: "https://example.com",
       type: "url",
     })
-    expect(ingestLinkClick).toHaveBeenCalled()
+    expect(recordLinkClick).toHaveBeenCalledWith({
+      profileId: profile.id,
+      visitorId: "visitor_1",
+      linkId: link!.id,
+    })
   })
 })

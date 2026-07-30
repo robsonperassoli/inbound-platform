@@ -14,7 +14,12 @@
     "test": "turbo run test",
     "db:generate": "pnpm --filter @inbound/api db:generate",
     "db:migrate": "pnpm --filter @inbound/api db:migrate",
-    "db:seed": "pnpm --filter @inbound/api db:seed"
+    "db:seed": "pnpm --filter @inbound/api db:seed",
+    "tb:start": "pnpm --filter @inbound/api tb:start",
+    "tinybird:dev": "pnpm --filter @inbound/api tinybird:dev",
+    "tinybird:build": "pnpm --filter @inbound/api tinybird:build",
+    "tinybird:deploy": "pnpm --filter @inbound/api tinybird:deploy",
+    "tinybird:preview": "pnpm --filter @inbound/api tinybird:preview"
   },
   "devDependencies": {
     "oxfmt": "^0.35.0",

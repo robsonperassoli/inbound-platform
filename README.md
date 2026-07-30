@@ -35,6 +35,35 @@ pnpm db:seed
 pnpm dev
 ```
 
+### Tinybird (analytics)
+
+Config lives in `apps/api` (`tinybird.config.json`). Local Tinybird runs in Docker via the Tinybird CLI (`tb`). Install it if needed, then:
+
+```bash
+pnpm tb:start
+tb token copy "admin local_testing@tinybird.co"
+```
+
+Put the copied token in **both**:
+
+1. Root `.env` — used by the API at runtime
+2. `apps/api/.env.local` — used by the Tinybird CLI (next to `tinybird.config.json`)
+
+```bash
+TINYBIRD_URL=http://localhost:7181
+TINYBIRD_TOKEN=<token from above>
+```
+
+Sync datasources and pipes (watch mode):
+
+```bash
+pnpm tinybird:dev
+```
+
+Then run the apps as usual with `pnpm dev`.
+
+Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` in the API environment to your Tinybird cloud host and workspace token. Deploy schemas with `pnpm tinybird:deploy`.
+
 For Stripe webhooks (ngrok required — localhost can’t be a Stripe endpoint):
 
 ```bash

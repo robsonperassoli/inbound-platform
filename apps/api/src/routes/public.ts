@@ -5,9 +5,9 @@ import {
 } from "@inbound/shared"
 import { Hono } from "hono"
 import { z } from "zod"
+import * as analytics from "../domains/analytics/index"
 import * as chat from "../domains/chat/index"
 import * as profiles from "../domains/profiles/index"
-import { ingestLinkClick, ingestPageView } from "../integrations/tinybird"
 
 const pageViewBodySchema = z.object({
   profileId: z.string(),
@@ -46,12 +46,11 @@ export const publicRoutes = new Hono()
     }
 
     const body = await c.req.json().catch(() => ({}))
-    await ingestLinkClick({
-      profile_id: link.profileId,
-      visitor_id:
+    await analytics.recordLinkClick({
+      profileId: link.profileId,
+      visitorId:
         typeof body.visitorId === "string" ? body.visitorId : "anonymous",
-      link_id: link.id,
-      timestamp: new Date().toISOString().replace("T", " ").slice(0, 19),
+      linkId: link.id,
     })
 
     return c.json({ url: link.url, type: link.type })
@@ -59,12 +58,11 @@ export const publicRoutes = new Hono()
   .post("/page-views", zValidator("json", pageViewBodySchema), async (c) => {
     const body = c.req.valid("json")
 
-    await ingestPageView({
-      profile_id: body.profileId,
-      visitor_id: body.visitorId,
-      timestamp: new Date().toISOString().replace("T", " ").slice(0, 19),
+    await analytics.recordPageView({
+      profileId: body.profileId,
+      visitorId: body.visitorId,
       referrer: body.referrer ?? null,
-      referrer_name: body.referrerName ?? null,
+      referrerName: body.referrerName ?? null,
       device: body.device ?? null,
     })
 

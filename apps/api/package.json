@@ -16,7 +16,12 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file=../../.env src/scripts/migrate.ts",
     "db:seed": "tsx --env-file=../../.env src/scripts/seed.ts",
-    "stripe-tunnel": "ngrok http 8787 --domain=factual-worm-mostly.ngrok-free.app"
+    "stripe-tunnel": "ngrok http 8787 --domain=factual-worm-mostly.ngrok-free.app",
+    "tb:start": "./tb_start.sh",
+    "tinybird:dev": "tinybird dev",
+    "tinybird:build": "tinybird build",
+    "tinybird:deploy": "tinybird deploy",
+    "tinybird:preview": "tinybird preview"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.41",
@@ -25,6 +30,7 @@
     "@hono/node-server": "^1.14.1",
     "@hono/zod-validator": "^0.7.6",
     "@inbound/shared": "workspace:*",
+    "@tinybirdco/sdk": "^0.0.55",
     "@workos-inc/node": "^7.71.0",
     "ai": "^6.0.116",
     "better-sqlite3": "^11.9.1",

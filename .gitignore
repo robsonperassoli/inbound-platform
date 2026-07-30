@@ -16,3 +16,4 @@ coverage
 .nitro
 .wrangler
 .pnpm-store/v11/
+.tb_data/
