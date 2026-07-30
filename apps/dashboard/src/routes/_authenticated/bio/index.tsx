@@ -7,6 +7,7 @@ import { useMemo, useState } from "react"
 import { AddLinkModal } from "@/components/add-link-modal"
 import { ScrollableContainer } from "@/components/app-layout/scrollable-container"
 import { PublishBanner } from "@/components/bio/publish-banner"
+import { ConfirmationDialog } from "@/components/confirmation-dialog"
 import { CreateFormPrompt } from "@/components/forms/create-form-prompt"
 import { AddSocialLinkModal } from "@/components/links/add-social-link-modal"
 import { CreateLinkButton } from "@/components/links/create-link-button"
@@ -48,6 +49,7 @@ function RouteComponent() {
     "add-link" | "add-social" | "add-form-link" | "edit-link" | null
   >(null)
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null)
+  const [linkToDelete, setLinkToDelete] = useState<Link | null>(null)
   const [sortMode, setSortMode] = useState<"social" | "buttons" | null>(null)
 
   const headerActions = useMemo(
@@ -87,18 +89,15 @@ function RouteComponent() {
     return null
   }
 
-  const handleRemoveLink = async (link: Link) => {
-    const confirmed = window.confirm(
-      `Remove "${link.title}" from your links? This action cannot be undone.`,
-    )
-    if (!confirmed) return
+  const handleConfirmDelete = () => {
+    if (!linkToDelete) return
 
-    setSelectedLinkId(link.id)
-    try {
-      await removeLink.mutateAsync({ id: link.id, profileId: profile.id })
-    } finally {
-      setSelectedLinkId(null)
-    }
+    const link = linkToDelete
+    void removeLink
+      .mutateAsync({ id: link.id, profileId: profile.id })
+      .finally(() => {
+        setLinkToDelete(null)
+      })
   }
 
   const onLinkEdit = (link: Link) => {
@@ -159,7 +158,7 @@ function RouteComponent() {
                           viewMode="normal"
                           link={link}
                           onEdit={() => onLinkEdit(link)}
-                          onDelete={() => void handleRemoveLink(link)}
+                          onDelete={() => setLinkToDelete(link)}
                           onReorder={() => setSortMode("buttons")}
                           onToggleActive={() => toggleActive(link)}
                           onEditForm={
@@ -211,7 +210,7 @@ function RouteComponent() {
                           viewMode="compact"
                           link={link}
                           onEdit={() => onLinkEdit(link)}
-                          onDelete={() => void handleRemoveLink(link)}
+                          onDelete={() => setLinkToDelete(link)}
                           onReorder={() => setSortMode("social")}
                           onToggleActive={() => toggleActive(link)}
                           onEditForm={
@@ -278,6 +277,23 @@ function RouteComponent() {
           open={openModal === "edit-link"}
         />
       )}
+
+      <ConfirmationDialog
+        open={linkToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setLinkToDelete(null)
+        }}
+        title="Delete link"
+        description={
+          linkToDelete
+            ? `Remove "${linkToDelete.title}" from your links? This action cannot be undone.`
+            : "This action cannot be undone."
+        }
+        confirmLabel="Delete"
+        confirmVariant="destructive"
+        confirming={removeLink.isPending}
+        onConfirm={handleConfirmDelete}
+      />
     </ScrollableContainer>
   )
 }
