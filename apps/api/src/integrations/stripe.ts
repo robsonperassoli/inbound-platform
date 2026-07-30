@@ -84,6 +84,82 @@ export async function createCustomerPortalSession(accountId: string) {
   return { url: session.url }
 }
 
+function subscriptionCustomerId(
+  customer: string | Stripe.Customer | Stripe.DeletedCustomer,
+) {
+  return typeof customer === "string" ? customer : customer.id
+}
+
+function subscriptionCurrentPeriodEnd(subscription: Stripe.Subscription) {
+  if (
+    "current_period_end" in subscription &&
+    typeof subscription.current_period_end === "number"
+  ) {
+    return subscription.current_period_end * 1000
+  }
+
+  const itemPeriodEnd = subscription.items.data[0]?.current_period_end
+  if (typeof itemPeriodEnd === "number") {
+    return itemPeriodEnd * 1000
+  }
+
+  return null
+}
+
+export async function processStripeEvent(event: Stripe.Event) {
+  switch (event.type) {
+    case "customer.created":
+    case "customer.updated": {
+      const customer = event.data.object
+      const accountId =
+        customer.metadata.orgId || customer.metadata.accountId || null
+      const userId = customer.metadata.userId || null
+
+      await billing.upsertStripeCustomer({
+        stripeCustomerId: customer.id,
+        email: customer.email ?? null,
+        accountId,
+        userId,
+      })
+      break
+    }
+
+    case "customer.subscription.created":
+    case "customer.subscription.updated": {
+      const subscription = event.data.object
+      const accountId =
+        subscription.metadata.orgId ||
+        subscription.metadata.accountId ||
+        null
+      const userId = subscription.metadata.userId || null
+      const stripeCustomerId = subscriptionCustomerId(subscription.customer)
+
+      await billing.upsertStripeCustomer({
+        stripeCustomerId,
+        accountId,
+        userId,
+      })
+
+      await billing.syncSubscription({
+        accountId,
+        stripeCustomerId,
+        stripeSubscriptionId: subscription.id,
+        status: subscription.status,
+        priceId: subscription.items.data[0]?.price.id ?? null,
+        planType: subscription.metadata.planType || null,
+        currentPeriodEnd: subscriptionCurrentPeriodEnd(subscription),
+      })
+      break
+    }
+
+    case "customer.subscription.deleted": {
+      const subscription = event.data.object
+      await billing.markSubscriptionCanceled(subscription.id)
+      break
+    }
+  }
+}
+
 export async function handleStripeWebhook(rawBody: string, signature: string) {
   const stripe = getStripe()
   if (!stripe || !env.STRIPE_WEBHOOK_SECRET) {
@@ -96,32 +172,6 @@ export async function handleStripeWebhook(rawBody: string, signature: string) {
     env.STRIPE_WEBHOOK_SECRET,
   )
 
-  if (
-    event.type === "customer.subscription.created" ||
-    event.type === "customer.subscription.updated"
-  ) {
-    const subscription = event.data.object
-    const accountId =
-      subscription.metadata.orgId ?? subscription.metadata.accountId
-    if (!accountId) return { received: true }
-
-    await billing.syncSubscription({
-      accountId,
-      stripeCustomerId:
-        typeof subscription.customer === "string"
-          ? subscription.customer
-          : subscription.customer.id,
-      stripeSubscriptionId: subscription.id,
-      status: subscription.status,
-      priceId: subscription.items.data[0]?.price.id ?? null,
-      planType: subscription.metadata.planType ?? null,
-      currentPeriodEnd:
-        "current_period_end" in subscription &&
-        typeof subscription.current_period_end === "number"
-          ? subscription.current_period_end * 1000
-          : null,
-    })
-  }
-
+  await processStripeEvent(event)
   return { received: true }
 }

@@ -222,12 +222,9 @@ export const superUsers = sqliteTable("super_users", {
 export const stripeCustomers = sqliteTable("stripe_customers", {
   id: id(),
   accountId: text("account_id")
-    .notNull()
     .references(() => accounts.id)
     .unique(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
+  userId: text("user_id").references(() => users.id),
   stripeCustomerId: text("stripe_customer_id").notNull().unique(),
   email: text("email"),
   createdAt: createdAt(),
@@ -235,9 +232,7 @@ export const stripeCustomers = sqliteTable("stripe_customers", {
 
 export const stripeSubscriptions = sqliteTable("stripe_subscriptions", {
   id: id(),
-  accountId: text("account_id")
-    .notNull()
-    .references(() => accounts.id),
+  accountId: text("account_id").references(() => accounts.id),
   stripeCustomerId: text("stripe_customer_id").notNull(),
   stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
   status: text("status").notNull(),

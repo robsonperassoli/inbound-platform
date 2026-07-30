@@ -151,5 +151,70 @@ describe("billing domain", () => {
         email: "billing@example.com",
       })
     })
+
+    it("upserts an unlinked customer and later attaches account linkage", async () => {
+      const { account, user } = await createUserAccount({
+        email: "later@example.com",
+      })
+
+      await billing.upsertStripeCustomer({
+        stripeCustomerId: "cus_later",
+        email: "later@example.com",
+      })
+
+      const unlinked =
+        await billing.getCustomerByStripeCustomerId("cus_later")
+      expect(unlinked).toMatchObject({
+        accountId: null,
+        userId: null,
+        email: "later@example.com",
+      })
+
+      await billing.upsertStripeCustomer({
+        stripeCustomerId: "cus_later",
+        accountId: account.id,
+        userId: user.id,
+      })
+
+      const linked = await billing.getCustomerByAccountId(account.id)
+      expect(linked).toMatchObject({
+        stripeCustomerId: "cus_later",
+        accountId: account.id,
+        userId: user.id,
+      })
+    })
+  })
+
+  describe("unlinked subscriptions", () => {
+    it("mirrors a subscription without an account id", async () => {
+      await billing.syncSubscription({
+        stripeCustomerId: "cus_orphan",
+        stripeSubscriptionId: "sub_orphan",
+        status: "active",
+        planType: null,
+      })
+
+      const subscription =
+        await billing.getSubscriptionByStripeId("sub_orphan")
+      expect(subscription).toMatchObject({
+        stripeSubscriptionId: "sub_orphan",
+        accountId: null,
+        status: "active",
+      })
+    })
+
+    it("marks a subscription canceled", async () => {
+      await billing.syncSubscription({
+        stripeCustomerId: "cus_cancel",
+        stripeSubscriptionId: "sub_cancel",
+        status: "active",
+      })
+
+      await billing.markSubscriptionCanceled("sub_cancel")
+
+      const subscription =
+        await billing.getSubscriptionByStripeId("sub_cancel")
+      expect(subscription?.status).toBe("canceled")
+    })
   })
 })

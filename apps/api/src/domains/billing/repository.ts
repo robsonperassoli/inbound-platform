@@ -9,10 +9,16 @@ export async function getCustomerByAccountId(accountId: string) {
   })
 }
 
+export async function getCustomerByStripeCustomerId(stripeCustomerId: string) {
+  return db.query.stripeCustomers.findFirst({
+    where: eq(stripeCustomers.stripeCustomerId, stripeCustomerId),
+  })
+}
+
 export async function createCustomer(input: {
   id?: string
-  accountId: string
-  userId: string
+  accountId?: string | null
+  userId?: string | null
   stripeCustomerId: string
   email?: string | null
 }) {
@@ -21,13 +27,27 @@ export async function createCustomer(input: {
     .insert(stripeCustomers)
     .values({
       id,
-      accountId: input.accountId,
-      userId: input.userId,
+      accountId: input.accountId ?? null,
+      userId: input.userId ?? null,
       stripeCustomerId: input.stripeCustomerId,
       email: input.email ?? null,
     })
     .returning()
   return row!
+}
+
+export async function updateCustomer(
+  id: string,
+  patch: {
+    accountId?: string | null
+    userId?: string | null
+    email?: string | null
+  },
+) {
+  await db.update(stripeCustomers).set(patch).where(eq(stripeCustomers.id, id))
+  return db.query.stripeCustomers.findFirst({
+    where: eq(stripeCustomers.id, id),
+  })
 }
 
 export async function getSubscriptionByStripeId(stripeSubscriptionId: string) {
@@ -45,7 +65,7 @@ export async function getLatestSubscriptionByAccount(accountId: string) {
 
 export async function createSubscription(input: {
   id?: string
-  accountId: string
+  accountId?: string | null
   stripeCustomerId: string
   stripeSubscriptionId: string
   status: string
@@ -57,7 +77,7 @@ export async function createSubscription(input: {
   const id = input.id ?? createId()
   await db.insert(stripeSubscriptions).values({
     id,
-    accountId: input.accountId,
+    accountId: input.accountId ?? null,
     stripeCustomerId: input.stripeCustomerId,
     stripeSubscriptionId: input.stripeSubscriptionId,
     status: input.status,
@@ -72,7 +92,7 @@ export async function createSubscription(input: {
 export async function updateSubscription(
   id: string,
   patch: {
-    accountId?: string
+    accountId?: string | null
     stripeCustomerId?: string
     stripeSubscriptionId?: string
     status?: string

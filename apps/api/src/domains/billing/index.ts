@@ -5,21 +5,61 @@ export async function getCustomerByAccountId(accountId: string) {
   return repository.getCustomerByAccountId(accountId)
 }
 
+export async function getCustomerByStripeCustomerId(stripeCustomerId: string) {
+  return repository.getCustomerByStripeCustomerId(stripeCustomerId)
+}
+
 export async function saveStripeCustomer(input: {
   accountId: string
   userId: string
   stripeCustomerId: string
   email?: string | null
 }) {
-  return repository.createCustomer(input)
+  return upsertStripeCustomer(input)
+}
+
+export async function upsertStripeCustomer(input: {
+  stripeCustomerId: string
+  email?: string | null
+  accountId?: string | null
+  userId?: string | null
+}) {
+  const existing = await repository.getCustomerByStripeCustomerId(
+    input.stripeCustomerId,
+  )
+
+  if (existing) {
+    const patch: {
+      email?: string | null
+      accountId?: string | null
+      userId?: string | null
+    } = {}
+
+    if (input.email !== undefined) patch.email = input.email
+    if (input.accountId) patch.accountId = input.accountId
+    if (input.userId) patch.userId = input.userId
+
+    return (await repository.updateCustomer(existing.id, patch)) ?? existing
+  }
+
+  return repository.createCustomer({
+    stripeCustomerId: input.stripeCustomerId,
+    email: input.email ?? null,
+    accountId: input.accountId ?? null,
+    userId: input.userId ?? null,
+  })
 }
 
 export async function getLatestSubscription(accountId: string) {
   return repository.getLatestSubscriptionByAccount(accountId)
 }
 
+export async function getSubscriptionByStripeId(stripeSubscriptionId: string) {
+  return repository.getSubscriptionByStripeId(stripeSubscriptionId)
+}
+
 export async function syncSubscription(input: {
-  accountId: string
+  accountId?: string | null
   stripeCustomerId: string
   stripeSubscriptionId: string
   status: string
@@ -31,8 +71,16 @@ export async function syncSubscription(input: {
     input.stripeSubscriptionId,
   )
 
-  const values = {
-    accountId: input.accountId,
+  const values: {
+    stripeCustomerId: string
+    stripeSubscriptionId: string
+    status: string
+    priceId: string | null
+    planType: string | null
+    currentPeriodEnd: number | null
+    updatedAt: number
+    accountId?: string | null
+  } = {
     stripeCustomerId: input.stripeCustomerId,
     stripeSubscriptionId: input.stripeSubscriptionId,
     status: input.status,
@@ -42,15 +90,38 @@ export async function syncSubscription(input: {
     updatedAt: Date.now(),
   }
 
+  // Only attach / overwrite account linkage when metadata provides it.
+  if (input.accountId) {
+    values.accountId = input.accountId
+  }
+
   if (existing) {
     await repository.updateSubscription(existing.id, values)
   } else {
-    await repository.createSubscription(values)
+    await repository.createSubscription({
+      ...values,
+      accountId: input.accountId ?? null,
+    })
   }
 
-  if (input.planType === "teams" && input.status === "active") {
-    await accounts.setAccountType(input.accountId, "team")
+  const accountId = input.accountId ?? existing?.accountId
+  if (
+    accountId &&
+    input.planType === "teams" &&
+    input.status === "active"
+  ) {
+    await accounts.setAccountType(accountId, "team")
   }
+}
+
+export async function markSubscriptionCanceled(stripeSubscriptionId: string) {
+  const existing =
+    await repository.getSubscriptionByStripeId(stripeSubscriptionId)
+  if (!existing) return null
+
+  return repository.updateSubscription(existing.id, {
+    status: "canceled",
+  })
 }
 
 export async function getMeBillingState(accountId: string, accountType: string) {

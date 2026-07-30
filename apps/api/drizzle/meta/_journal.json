@@ -15,6 +15,13 @@
       "when": 1785437207150,
       "tag": "0001_uneven_robbie_robertson",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785446487502,
+      "tag": "0002_brown_starhawk",
+      "breakpoints": true
     }
   ]
 }

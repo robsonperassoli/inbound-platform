@@ -96,6 +96,14 @@ pnpm dev:webhooks
 
 Webhook URL: `https://factual-worm-mostly.ngrok-free.app/webhooks/stripe`
 
+In the Stripe Dashboard → Developers → Webhooks endpoint, select these events (the API mirrors customers and subscriptions from them):
+
+- `customer.created`
+- `customer.updated`
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+
 Or tunnel alone while `pnpm dev` is already up:
 
 ```bash
