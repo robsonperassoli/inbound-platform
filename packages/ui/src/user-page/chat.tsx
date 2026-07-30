@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { type KeyboardEvent, useMemo, useRef, useState } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { cn } from "../lib/utils"
+import { ChatMessageContent } from "./chat-message-content"
 
 export type ChatMessage = {
   id: string
@@ -50,16 +51,15 @@ export function Chat({
               key={item.id}
               className={cn("w-full", isUserMessage && "flex justify-end")}
             >
-              <div
+              <ChatMessageContent
                 className={cn(
-                  "whitespace-pre-wrap text-sm",
                   isUserMessage
-                    ? "max-w-[min(75%,36rem)] rounded-2xl rounded-br-md border border-teal-700/20 bg-teal-700/10 px-4 py-3 shadow-sm"
+                    ? "max-w-[min(75%,36rem)] rounded-2xl rounded-br-md border border-teal-700/20 bg-teal-700/10 px-4 py-3 shadow-sm prose-p:my-0 prose-headings:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-code:text-foreground prose-blockquote:text-foreground/90 prose-li:marker:text-foreground/70"
                     : "mx-auto w-full max-w-prose",
                 )}
               >
                 {item.content}
-              </div>
+              </ChatMessageContent>
             </div>
           )
         })}

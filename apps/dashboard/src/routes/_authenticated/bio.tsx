@@ -1,7 +1,7 @@
 import { ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useSiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,7 +20,6 @@ import {
   useSelectedProfile,
 } from "@/hooks/queries/profiles"
 import type { Profile } from "@/lib/types"
-import { setSelectedProfile } from "@/stores/profiles"
 
 export const Route = createFileRoute("/_authenticated/bio")({
   ssr: false,
@@ -36,8 +35,6 @@ export const Route = createFileRoute("/_authenticated/bio")({
     if (profiles.length === 0) {
       throw redirect({ to: "/onboarding" })
     }
-
-    return { profileId: profiles[0]!.id }
   },
   component: RouteComponent,
 })
@@ -45,15 +42,10 @@ export const Route = createFileRoute("/_authenticated/bio")({
 function RouteComponent() {
   useSiteHeader({ title: "Bio" })
 
-  const { profileId } = Route.useLoaderData()
   const profileData = useSelectedProfile()
   const startFormSession = useStartFormSession()
   const [sessionId, setSessionId] = useState<string>()
   const [chatOpen, setChatOpen] = useState(true)
-
-  useEffect(() => {
-    setSelectedProfile(profileId)
-  }, [profileId])
 
   if (!profileData) {
     return null
