@@ -7,7 +7,6 @@ import {
   getWorkOsLogoutUrl,
   getWorkOsSessionIdFromAccessToken,
 } from "../integrations/workos"
-import { handleStripeWebhook } from "../integrations/stripe"
 import { env } from "../lib/env"
 
 const SESSION_COOKIE = "inbound_session"
@@ -90,11 +89,3 @@ export const authRoutes = new Hono()
     clearAuthCookies(c)
     return c.json({ ok: true })
   })
-
-export const webhookRoutes = new Hono().post("/stripe", async (c) => {
-  const signature = c.req.header("stripe-signature")
-  if (!signature) return c.json({ error: "Missing signature" }, 400)
-  const rawBody = await c.req.text()
-  const result = await handleStripeWebhook(rawBody, signature)
-  return c.json(result)
-})

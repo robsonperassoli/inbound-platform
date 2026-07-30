@@ -3,10 +3,21 @@ import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { env } from "./lib/env"
 import { sqlitePath } from "./db/client"
-import { authRoutes, webhookRoutes } from "./routes/auth"
-import { dashboardRoutes } from "./routes/dashboard"
+import { authRoutes } from "./routes/auth"
+import { analyticsRoutes } from "./routes/analytics"
+import { billingRoutes } from "./routes/billing"
+import { formsRoutes } from "./routes/forms"
+import { invitationsRoutes } from "./routes/invitations"
+import { linksRoutes } from "./routes/links"
+import { messagesRoutes } from "./routes/messages"
+import { profilesRoutes } from "./routes/profiles"
 import { publicRoutes } from "./routes/public"
+import { supportRoutes } from "./routes/support"
 import { teamRoutes } from "./routes/team"
+import { threadsRoutes } from "./routes/threads"
+import { uploadsRoutes } from "./routes/uploads"
+import { usersRoutes } from "./routes/users"
+import { webhookRoutes } from "./routes/webhooks"
 
 const app = new Hono()
   .use("*", logger())
@@ -33,8 +44,18 @@ const app = new Hono()
   .route("/public", publicRoutes)
   .route("/auth", authRoutes)
   .route("/webhooks", webhookRoutes)
+  .route("/", usersRoutes)
+  .route("/", profilesRoutes)
+  .route("/", linksRoutes)
+  .route("/", formsRoutes)
+  .route("/", threadsRoutes)
+  .route("/", messagesRoutes)
+  .route("/", uploadsRoutes)
+  .route("/", billingRoutes)
+  .route("/", analyticsRoutes)
+  .route("/", supportRoutes)
   .route("/", teamRoutes)
-  .route("/", dashboardRoutes)
+  .route("/", invitationsRoutes)
 
 app.onError((err, c) => {
   console.error(err)

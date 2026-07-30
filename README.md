@@ -57,9 +57,9 @@ pnpm stripe:tunnel
 ## API surface
 
 - **Public (bio):** `/public/*` — profiles, links, form sessions
-- **Auth:** `/auth/*` — WorkOS login/callback
-- **Webhooks:** `/webhooks/stripe`
-- **Dashboard:** authenticated routes at `/profiles`, `/forms`, `/threads`, `/billing`, etc. (no version prefix)
+- **Auth:** `/auth/*` — WorkOS login/callback/logout
+- **Webhooks:** `/webhooks/stripe`, `/webhooks/workos` (provider callbacks)
+- **Authenticated resources:** `/me`, `/profiles`, `/links`, `/forms`, `/threads`, `/uploads`, `/billing`, `/analytics`, `/support`, `/team`, `/invitations`, `/system`, etc. (no version prefix)
 
 ## Production notes (later)
 
