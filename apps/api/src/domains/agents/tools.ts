@@ -7,7 +7,9 @@ import * as chat from "../chat/index"
 export const themeSchema = z.object({
   theme: z.string().describe("The name of the theme"),
   backgroundColor: z.string(),
-  backgroundImage: z.string().optional(),
+  backgroundImage: z
+    .string()
+    .describe("Valid image URL, or empty string if none"),
   fontFamily: z.string(),
   textColor: z.string(),
   buttonShape: z.enum(["square", "rounded", "pill"]),
