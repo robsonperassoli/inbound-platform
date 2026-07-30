@@ -55,3 +55,24 @@ export async function sendSupportEmail(input: {
     html: `<p>From: ${input.fromEmail}</p><p>${input.message}</p>`,
   })
 }
+
+export async function sendChatCompletedEmail(input: {
+  to: string
+  firstName: string
+  transcriptUrl: string
+  status: "abandoned" | "finished"
+}) {
+  const statusMessage =
+    input.status === "abandoned"
+      ? "The visitor stopped responding before finishing the conversation. You can still review what was captured up to that moment."
+      : "The conversation finished and Hugo collected all the key details. The lead is ready for you to review."
+
+  return sendEmail({
+    to: input.to,
+    subject:
+      input.status === "abandoned"
+        ? "A visitor left a conversation unfinished"
+        : "A new lead conversation is ready",
+    html: `<p>Hi ${input.firstName},</p><p>${statusMessage}</p><p><a href="${input.transcriptUrl}">Review the transcript</a></p>`,
+  })
+}

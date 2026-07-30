@@ -1,6 +1,6 @@
 import { createId } from "@inbound/shared"
 import { sql } from "drizzle-orm"
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 const id = () =>
   text("id")
@@ -165,27 +165,36 @@ export const formSubmissions = sqliteTable("form_submissions", {
     .$defaultFn(() => Date.now()),
 })
 
-export const threads = sqliteTable("threads", {
-  id: id(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
-  title: text("title").notNull(),
-  model: text("model").notNull().default("gpt-4o-mini"),
-  systemPrompt: text("system_prompt").notNull(),
-  type: text("type", {
-    enum: ["formSubmission", "formBuilder", "themeDesigner"],
-  }).notNull(),
-  formId: text("form_id"),
-  formSubmissionId: text("form_submission_id"),
-  profileId: text("profile_id"),
-  sessionEndedAt: integer("session_ended_at", { mode: "number" }),
-  lastUserMessageAt: integer("last_user_message_at", { mode: "number" }),
-  createdAt: createdAt(),
-  updatedAt: integer("updated_at", { mode: "number" })
-    .notNull()
-    .$defaultFn(() => Date.now()),
-})
+export const threads = sqliteTable(
+  "threads",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    title: text("title").notNull(),
+    model: text("model").notNull().default("gpt-4o-mini"),
+    systemPrompt: text("system_prompt").notNull(),
+    type: text("type", {
+      enum: ["formSubmission", "formBuilder", "themeDesigner"],
+    }).notNull(),
+    formId: text("form_id"),
+    formSubmissionId: text("form_submission_id"),
+    profileId: text("profile_id"),
+    sessionEndedAt: integer("session_ended_at", { mode: "number" }),
+    lastUserMessageAt: integer("last_user_message_at", { mode: "number" }),
+    createdAt: createdAt(),
+    updatedAt: integer("updated_at", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  },
+  (table) => [
+    index("threads_type_session_ended_idx").on(
+      table.type,
+      table.sessionEndedAt,
+    ),
+  ],
+)
 
 export const messages = sqliteTable("messages", {
   id: id(),

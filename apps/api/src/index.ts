@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server"
 import { app } from "./app"
+import { startDevCron } from "./lib/dev-cron"
 import { env } from "./lib/env"
 import { sqlitePath } from "./db/client"
 
@@ -11,6 +12,8 @@ serve({
   fetch: app.fetch,
   port,
 })
+
+startDevCron()
 
 export default app
 export type { AppType } from "./app"

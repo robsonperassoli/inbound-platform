@@ -1,4 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+
+vi.mock("../../integrations/resend.ts", () => ({
+  sendChatCompletedEmail: vi.fn(async () => ({ id: "dev-email" })),
+}))
+
+import { sendChatCompletedEmail } from "../../integrations/resend"
 import * as forms from "../forms/index"
 import * as chat from "./index"
 import {
@@ -127,5 +133,123 @@ describe("chat domain", () => {
     const transcript = await chat.getSubmissionTranscript(submission.id)
     expect(transcript).toHaveLength(1)
     expect(transcript[0]?.role).toBe("assistant")
+  })
+
+  it("silently closes never-started form sessions after 2 hours", async () => {
+    const { user, profile } = await createProfileForAccount({
+      username: "silent-close",
+    })
+    const { form } = await createFormForAccount({ userId: user.id })
+    const now = Date.now()
+    const createdAt = now - 2 * 60 * 60 * 1000 - 1
+
+    const thread = await chat.createThread({
+      userId: user.id,
+      title: "Abandoned open",
+      systemPrompt: "test",
+      type: "formSubmission",
+      formId: form.id,
+      profileId: profile.id,
+      createdAt,
+      updatedAt: createdAt,
+    })
+
+    const result = await chat.autoCloseAbandonedThreads(now)
+    expect(result).toEqual({ closedSilent: 1, closedAbandoned: 0 })
+
+    const loaded = await chat.getThreadById(thread.id)
+    expect(loaded?.sessionEndedAt).toEqual(expect.any(Number))
+    expect(sendChatCompletedEmail).not.toHaveBeenCalled()
+  })
+
+  it("closes idle sessions after 25 minutes and emails the owner", async () => {
+    const { user, account } = await createUserAccount({
+      name: "Ada Lovelace",
+    })
+    const { profile } = await createProfileForAccount({
+      userId: user.id,
+      accountId: account.id,
+      username: "idle-close",
+    })
+    const { form } = await createFormForAccount({ userId: user.id })
+    const now = Date.now()
+    const lastUserMessageAt = now - 25 * 60 * 1000 - 1
+
+    const thread = await chat.createThread({
+      userId: user.id,
+      title: "Idle session",
+      systemPrompt: "test",
+      type: "formSubmission",
+      formId: form.id,
+      profileId: profile.id,
+    })
+    const submission = await forms.ensureSubmissionForThread({
+      threadId: thread.id,
+      userId: user.id,
+      formId: form.id,
+      formSubmissionId: null,
+    })
+    await chat.updateThread(thread.id, {
+      formSubmissionId: submission.id,
+      lastUserMessageAt,
+    })
+
+    const result = await chat.autoCloseAbandonedThreads(now)
+    expect(result).toEqual({ closedSilent: 0, closedAbandoned: 1 })
+
+    const loaded = await chat.getThreadById(thread.id)
+    expect(loaded?.sessionEndedAt).toEqual(expect.any(Number))
+    expect(sendChatCompletedEmail).toHaveBeenCalledWith({
+      to: user.email,
+      firstName: "Ada",
+      transcriptUrl: expect.stringContaining(
+        `/forms/${form.id}/submissions/${submission.id}/transcript`,
+      ),
+      status: "abandoned",
+    })
+  })
+
+  it("leaves recent form sessions open", async () => {
+    const { user, profile } = await createProfileForAccount({
+      username: "recent-open",
+    })
+    const { form } = await createFormForAccount({ userId: user.id })
+    const now = Date.now()
+
+    const neverStarted = await chat.createThread({
+      userId: user.id,
+      title: "Fresh open",
+      systemPrompt: "test",
+      type: "formSubmission",
+      formId: form.id,
+      profileId: profile.id,
+      createdAt: now - 30 * 60 * 1000,
+      updatedAt: now - 30 * 60 * 1000,
+    })
+
+    const active = await chat.createThread({
+      userId: user.id,
+      title: "Active",
+      systemPrompt: "test",
+      type: "formSubmission",
+      formId: form.id,
+      profileId: profile.id,
+    })
+    const submission = await forms.ensureSubmissionForThread({
+      threadId: active.id,
+      userId: user.id,
+      formId: form.id,
+      formSubmissionId: null,
+    })
+    await chat.updateThread(active.id, {
+      formSubmissionId: submission.id,
+      lastUserMessageAt: now - 5 * 60 * 1000,
+    })
+
+    const result = await chat.autoCloseAbandonedThreads(now)
+    expect(result).toEqual({ closedSilent: 0, closedAbandoned: 0 })
+    expect((await chat.getThreadById(neverStarted.id))?.sessionEndedAt).toBeNull()
+    expect((await chat.getThreadById(active.id))?.sessionEndedAt).toBeNull()
+    expect(sendChatCompletedEmail).not.toHaveBeenCalled()
   })
 })

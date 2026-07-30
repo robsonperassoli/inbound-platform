@@ -1,10 +1,19 @@
-import { asc, eq } from "drizzle-orm"
+import { and, asc, eq, isNull } from "drizzle-orm"
 import { createId } from "@inbound/shared"
 import { db } from "../../db/client"
 import { messages, threads } from "../../db/schema"
 
 export async function getThreadById(id: string) {
   return db.query.threads.findFirst({ where: eq(threads.id, id) })
+}
+
+export async function listOpenFormSubmissionThreads() {
+  return db.query.threads.findMany({
+    where: and(
+      eq(threads.type, "formSubmission"),
+      isNull(threads.sessionEndedAt),
+    ),
+  })
 }
 
 export async function getThreadByFormSubmissionId(formSubmissionId: string) {

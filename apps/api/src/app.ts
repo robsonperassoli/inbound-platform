@@ -18,6 +18,7 @@ import { threadsRoutes } from "./routes/threads"
 import { uploadsRoutes } from "./routes/uploads"
 import { usersRoutes } from "./routes/users"
 import { webhookRoutes } from "./routes/webhooks"
+import { internalRoutes } from "./routes/internal"
 
 const app = new Hono()
   .use("*", logger())
@@ -44,6 +45,7 @@ const app = new Hono()
   .route("/public", publicRoutes)
   .route("/auth", authRoutes)
   .route("/webhooks", webhookRoutes)
+  .route("/internal", internalRoutes)
   .route("/", usersRoutes)
   .route("/", profilesRoutes)
   .route("/", linksRoutes)

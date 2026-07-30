@@ -1,0 +1,1 @@
+CREATE INDEX `threads_type_session_ended_idx` ON `threads` (`type`,`session_ended_at`);

@@ -113,6 +113,7 @@ pnpm stripe:tunnel
 - **Auth:** `/auth/*` — WorkOS login/callback/logout
 - **Webhooks:** `/webhooks/stripe`, `/webhooks/workos` (provider callbacks)
 - **Authenticated resources:** `/me`, `/profiles`, `/links`, `/forms`, `/threads`, `/uploads`, `/billing`, `/analytics`, `/support`, `/team`, `/invitations`, `/system`, etc. (no version prefix)
+- **Internal cron:** `/internal/cron/*` — bearer `CRON_SECRET` (see Production notes)
 
 ## Production notes (later)
 
@@ -120,3 +121,11 @@ pnpm stripe:tunnel
 - When using a local SQLite file/volume, run a **single API replica**.
 - Bio production host: `https://s.uper.bio/<username>`
 - Convex data migration and Railway cutover are intentionally deferred.
+- **Abandoned form sessions auto-close**
+  - **Local (`NODE_ENV=development`):** the API process runs an in-process interval (every 60s) that calls the same close logic — no manual curl needed.
+  - **Production:** use HTTP cron (`POST /internal/cron/auto-close-threads`). The API does **not** schedule itself; until a scheduler calls it, idle sessions stay open.
+  1. Set `CRON_SECRET` on the API service (required in every environment — local `.env` included; see `.env.example`).
+  2. Add a separate Railway **Cron** service in the same project with schedule `*/5 * * * *` (UTC; Railway minimum is 5 minutes).
+  3. Start command must curl the API and **exit** (overlapping runs are skipped if the process stays alive), e.g.  
+     `curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$API_URL/internal/cron/auto-close-threads"`  
+     Give that cron service the same `CRON_SECRET` and the public `API_URL`.

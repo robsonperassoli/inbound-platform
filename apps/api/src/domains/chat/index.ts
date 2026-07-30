@@ -1,4 +1,20 @@
+import * as accounts from "../accounts/index"
+import { env } from "../../lib/env"
+import { sendChatCompletedEmail } from "../../integrations/resend"
 import * as repository from "./repository"
+
+const SILENT_CLOSE_AFTER_MS = 2 * 60 * 60 * 1000
+const ABANDONED_IDLE_AFTER_MS = 25 * 60 * 1000
+
+function getFirstName(name?: string | null) {
+  const trimmed = name?.trim()
+  if (!trimmed) return "there"
+  return trimmed.split(/\s+/)[0] ?? "there"
+}
+
+function formSubmissionTranscriptUrl(formId: string, submissionId: string) {
+  return `${env.DASHBOARD_URL}/forms/${formId}/submissions/${submissionId}/transcript`
+}
 
 export async function getFormSessionMessages(sessionId: string) {
   const rows = await repository.listMessagesByThread(sessionId)
@@ -58,6 +74,52 @@ export async function endFormSession(threadId: string) {
   })
 }
 
+export async function autoCloseAbandonedThreads(now = Date.now()) {
+  const openThreads = await repository.listOpenFormSubmissionThreads()
+  const silentCutoff = now - SILENT_CLOSE_AFTER_MS
+  const abandonedCutoff = now - ABANDONED_IDLE_AFTER_MS
+
+  let closedSilent = 0
+  let closedAbandoned = 0
+
+  for (const thread of openThreads) {
+    const neverStarted = !thread.lastUserMessageAt || !thread.formSubmissionId
+
+    if (neverStarted) {
+      if (thread.createdAt < silentCutoff) {
+        await endFormSession(thread.id)
+        closedSilent += 1
+      }
+      continue
+    }
+
+    if (
+      thread.lastUserMessageAt &&
+      thread.lastUserMessageAt < abandonedCutoff &&
+      thread.formSubmissionId &&
+      thread.formId
+    ) {
+      await endFormSession(thread.id)
+      closedAbandoned += 1
+
+      const owner = await accounts.getUserById(thread.userId)
+      if (owner?.email) {
+        await sendChatCompletedEmail({
+          to: owner.email,
+          firstName: getFirstName(owner.name),
+          transcriptUrl: formSubmissionTranscriptUrl(
+            thread.formId,
+            thread.formSubmissionId,
+          ),
+          status: "abandoned",
+        })
+      }
+    }
+  }
+
+  return { closedSilent, closedAbandoned }
+}
+
 export async function linkFormToThread(threadId: string, formId: string) {
   return repository.updateThread(threadId, {
     formId,
@@ -73,4 +135,5 @@ export {
   listMessagesByThread,
   createMessage,
   updateMessage,
+  listOpenFormSubmissionThreads,
 } from "./repository"

@@ -10,6 +10,7 @@ export default defineConfig({
     env: {
       NODE_ENV: "test",
       SQLITE_PATH: ":memory:",
+      CRON_SECRET: "test-cron-secret",
       STRIPE_STARTER_PRICE_ID: "price_starter_monthly",
       STRIPE_STARTER_PRICE_YEARLY_ID: "price_starter_yearly",
       STRIPE_PRO_PRICE_ID: "price_pro_monthly",

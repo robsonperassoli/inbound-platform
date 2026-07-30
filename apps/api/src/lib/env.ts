@@ -31,6 +31,7 @@ const envSchema = z.object({
   TINYBIRD_URL: z.string().optional(),
   TINYBIRD_TOKEN: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
+  CRON_SECRET: z.string().min(1),
 })
 
 export type Env = z.infer<typeof envSchema>
