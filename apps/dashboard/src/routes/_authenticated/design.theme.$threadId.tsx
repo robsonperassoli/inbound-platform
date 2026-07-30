@@ -1,6 +1,8 @@
 import { Tick02Icon, ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
 import { UserPagePreview } from "@/components/bio/user-page-preview"
 import { Chat } from "@/components/chat"
 import { useSiteHeader } from "@/components/site-header"
@@ -10,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { queryKeys } from "@/hooks/queries/keys"
 import { useSendThreadMessage, useThread } from "@/hooks/queries/threads"
 
 export const Route = createFileRoute("/_authenticated/design/theme/$threadId")({
@@ -22,9 +25,21 @@ function RouteComponent() {
 
   const { threadId } = Route.useParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { data } = useThread(threadId)
   const thread = data?.thread
   const messages = data?.messages ?? []
+  const isAgentBusy = messages.some(
+    (m) => m.status === "pending" || m.status === "streaming",
+  )
+
+  // Catch the final updateTheme that may land just as the agent completes.
+  useEffect(() => {
+    if (isAgentBusy || !thread?.profileId) return
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.profile(thread.profileId),
+    })
+  }, [isAgentBusy, thread?.profileId, queryClient])
 
   const sendMessage = useSendThreadMessage()
 
@@ -36,7 +51,7 @@ function RouteComponent() {
     <div className="flex flex-1">
       <div className="hidden sm:block grow overflow-auto">
         {thread && thread.type === "themeDesigner" && thread.profileId && (
-          <UserPagePreview profileId={thread.profileId} />
+          <UserPagePreview profileId={thread.profileId} live={isAgentBusy} />
         )}
       </div>
 
@@ -63,7 +78,10 @@ function RouteComponent() {
                   {thread &&
                     thread.type === "themeDesigner" &&
                     thread.profileId && (
-                      <UserPagePreview profileId={thread.profileId} />
+                      <UserPagePreview
+                        profileId={thread.profileId}
+                        live={isAgentBusy}
+                      />
                     )}
                 </PopoverContent>
               </Popover>

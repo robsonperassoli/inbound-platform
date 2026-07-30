@@ -38,13 +38,20 @@ function RouteComponent() {
     (m) => m.status === "pending" || m.status === "streaming",
   )
 
-  // Catch the final updateForm that may land just as the agent completes.
+  // Catch the final updateForm / createForm link that may land just as the agent completes.
   useEffect(() => {
-    if (isAgentBusy || !thread?.formId) return
-    void queryClient.invalidateQueries({
-      queryKey: queryKeys.form(thread.formId),
-    })
-  }, [isAgentBusy, thread?.formId, queryClient])
+    if (isAgentBusy) return
+    if (thread?.formId) {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.form(thread.formId),
+      })
+    }
+    if (thread?.profileId) {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.profile(thread.profileId),
+      })
+    }
+  }, [isAgentBusy, thread?.formId, thread?.profileId, queryClient])
 
   const sendMessage = useSendThreadMessage()
 

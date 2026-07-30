@@ -23,7 +23,10 @@ export function useProfiles() {
   })
 }
 
-export function useProfileWithLinks(profileId: string | null | undefined) {
+export function useProfileWithLinks(
+  profileId: string | null | undefined,
+  options?: { refetchInterval?: number | false },
+) {
   return useQuery({
     queryKey: queryKeys.profile(profileId ?? "none"),
     enabled: Boolean(profileId),
@@ -31,6 +34,7 @@ export function useProfileWithLinks(profileId: string | null | undefined) {
       if (!profileId) throw new Error("Missing profile id")
       return getProfile(profileId)
     },
+    refetchInterval: options?.refetchInterval,
   })
 }
 

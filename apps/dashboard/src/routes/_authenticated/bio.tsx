@@ -1,7 +1,7 @@
 import { ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useSiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,8 +9,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { UserPage } from "@/components/user-page"
+import { UserPage, type UserPageLink } from "@/components/user-page"
+import { ChatPopup } from "@/components/user-page/chat-popup"
 import { listProfiles } from "@/api/profiles"
+import { useStartFormSession } from "@/hooks/queries/form-sessions"
 import { queryKeys } from "@/hooks/queries/keys"
 import {
   toUserPageLinks,
@@ -45,6 +47,9 @@ function RouteComponent() {
 
   const { profileId } = Route.useLoaderData()
   const profileData = useSelectedProfile()
+  const startFormSession = useStartFormSession()
+  const [sessionId, setSessionId] = useState<string>()
+  const [chatOpen, setChatOpen] = useState(true)
 
   useEffect(() => {
     setSelectedProfile(profileId)
@@ -58,6 +63,16 @@ function RouteComponent() {
   const previewProfile = toUserPageProfile(profile)
   const previewLinks = toUserPageLinks(links.filter((l) => l.active))
 
+  const onFormLinkClick = async (link: UserPageLink) => {
+    if (!link.formId || startFormSession.isPending || sessionId) return
+    const data = await startFormSession.mutateAsync({
+      profileId: profile.id,
+      formId: link.formId,
+    })
+    setSessionId(data.sessionId)
+    setChatOpen(true)
+  }
+
   return (
     <>
       <div className="flex flex-1">
@@ -70,7 +85,7 @@ function RouteComponent() {
             profile={previewProfile}
             links={previewLinks}
             className="min-h-96 w-full"
-            onFormLinkClick={() => {}}
+            onFormLinkClick={onFormLinkClick}
           />
         </div>
       </div>
@@ -89,10 +104,18 @@ function RouteComponent() {
             profile={previewProfile}
             links={previewLinks}
             className="min-h-[60vh]"
-            onFormLinkClick={() => {}}
+            onFormLinkClick={onFormLinkClick}
           />
         </PopoverContent>
       </Popover>
+      {sessionId ? (
+        <ChatPopup
+          sessionId={sessionId}
+          open={chatOpen}
+          onOpen={() => setChatOpen(true)}
+          onClose={() => setChatOpen(false)}
+        />
+      ) : null}
     </>
   )
 }

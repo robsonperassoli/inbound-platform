@@ -2,8 +2,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   getFormSessionMessages,
   sendFormSessionMessage,
+  startFormSession,
 } from "@/api/form-sessions"
 import { queryKeys } from "./keys"
+
+export function useStartFormSession() {
+  return useMutation({
+    mutationFn: (input: { profileId: string; formId: string }) =>
+      startFormSession(input),
+  })
+}
 
 export function useFormSessionMessages(sessionId: string | null | undefined) {
   return useQuery({

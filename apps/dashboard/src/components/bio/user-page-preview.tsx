@@ -5,8 +5,17 @@ import {
   useProfileWithLinks,
 } from "@/hooks/queries/profiles"
 
-export function UserPagePreview({ profileId }: { profileId: string }) {
-  const { data, isLoading } = useProfileWithLinks(profileId)
+export function UserPagePreview({
+  profileId,
+  live = false,
+}: {
+  profileId: string
+  /** Poll for agent-driven theme updates. */
+  live?: boolean
+}) {
+  const { data, isLoading } = useProfileWithLinks(profileId, {
+    refetchInterval: live ? 500 : false,
+  })
 
   if (isLoading || !data) {
     return null
