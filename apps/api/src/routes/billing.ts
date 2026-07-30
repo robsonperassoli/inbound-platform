@@ -1,6 +1,8 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { z } from "zod"
+import * as profiles from "../domains/profiles/index"
+import { sendSalesLeadEmail } from "../domains/emails/index"
 import {
   createCheckoutSession,
   createCustomerPortalSession,
@@ -58,3 +60,38 @@ export const billingRoutes = new Hono<{
     if (!session) return c.json({ error: "No customer" }, 404)
     return c.json(session)
   })
+  .post(
+    "/billing/sales-lead",
+    zValidator(
+      "json",
+      z.object({
+        email: z.string().email(),
+        phone: z.string().min(1),
+        companyName: z.string().min(1),
+        profileId: z.string().min(1),
+        userAgent: z.string().optional(),
+      }),
+    ),
+    async (c) => {
+      const auth = c.get("auth")
+      const body = c.req.valid("json")
+      const profile = await profiles.getProfileForAccount(
+        body.profileId,
+        auth.account.id,
+      )
+      if (!profile) {
+        return c.json({ error: "Profile not found" }, 404)
+      }
+
+      await sendSalesLeadEmail({
+        email: body.email,
+        phone: body.phone,
+        companyName: body.companyName,
+        leadName: auth.user.name,
+        username: profile.username,
+        userAgent: body.userAgent,
+      })
+
+      return c.json({ ok: true, email: body.email })
+    },
+  )

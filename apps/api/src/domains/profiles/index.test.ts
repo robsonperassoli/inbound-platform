@@ -1,15 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import * as profiles from "./index"
-import {
-  createProfileForAccount,
-  createUserAccount,
-} from "../../test/factories"
 
 vi.mock("../../integrations/storage.ts", () => ({
   resolveAssetUrl: vi.fn(async (key: string | null | undefined) =>
     key ? `https://cdn.example.com/${key}` : null,
   ),
 }))
+
+vi.mock("../emails/index.ts", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../emails/index.ts")>()
+  return {
+    ...actual,
+    sendActivationEmail: vi.fn(async () => ({ id: "dev-email" })),
+  }
+})
+
+import { sendActivationEmail } from "../emails/index"
+import * as profiles from "./index"
+import {
+  createProfileForAccount,
+  createUserAccount,
+} from "../../test/factories"
 
 describe("profiles domain", () => {
   beforeEach(() => {
@@ -27,6 +37,12 @@ describe("profiles domain", () => {
       username: "jane",
       title: "Jane Doe",
       bio: "Hello",
+    })
+
+    expect(sendActivationEmail).toHaveBeenCalledWith({
+      to: user.email,
+      firstName: expect.any(String),
+      username: "jane",
     })
 
     expect(profile).toMatchObject({

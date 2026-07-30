@@ -18,3 +18,13 @@ export async function createPortal() {
   }
   return res.json()
 }
+
+export async function submitSalesLead(
+  input: InferRequestType<(typeof client.billing)["sales-lead"]["$post"]>["json"],
+) {
+  const res = await client.billing["sales-lead"].$post({ json: input })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}

@@ -1,11 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("../integrations/resend.ts", () => ({
-  sendSupportEmail: vi.fn(async () => undefined),
-  sendInviteEmail: vi.fn(async () => undefined),
-}))
+vi.mock("../domains/emails/index.ts", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../domains/emails/index.ts")>()
+  return {
+    ...actual,
+    sendSupportEmail: vi.fn(async () => undefined),
+    sendFeedbackEmail: vi.fn(async () => undefined),
+    sendInviteEmail: vi.fn(async () => undefined),
+    sendActivationEmail: vi.fn(async () => undefined),
+  }
+})
 
-import { sendSupportEmail } from "../integrations/resend"
+import {
+  sendFeedbackEmail,
+  sendSupportEmail,
+} from "../domains/emails/index"
 import { createUserAccount } from "../test/factories"
 import { client, withAuth } from "../test/http"
 
@@ -22,7 +32,10 @@ describe("support routes", () => {
     )
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
-    expect(sendSupportEmail).toHaveBeenCalled()
+    expect(sendSupportEmail).toHaveBeenCalledWith({
+      fromEmail: user.email,
+      message: "Need help",
+    })
   })
 
   it("sends feedback", async () => {
@@ -33,6 +46,9 @@ describe("support routes", () => {
     )
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
-    expect(sendSupportEmail).toHaveBeenCalled()
+    expect(sendFeedbackEmail).toHaveBeenCalledWith({
+      fromEmail: user.email,
+      message: "Love it",
+    })
   })
 })

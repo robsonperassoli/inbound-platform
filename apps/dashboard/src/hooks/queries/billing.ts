@@ -1,5 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
-import { createCheckout, createPortal } from "@/api/billing"
+import {
+  createCheckout,
+  createPortal,
+  submitSalesLead,
+} from "@/api/billing"
 
 export function useCreateCheckout() {
   return useMutation({
@@ -10,5 +14,11 @@ export function useCreateCheckout() {
 export function useCreatePortal() {
   return useMutation({
     mutationFn: createPortal,
+  })
+}
+
+export function useSubmitSalesLead() {
+  return useMutation({
+    mutationFn: submitSalesLead,
   })
 }

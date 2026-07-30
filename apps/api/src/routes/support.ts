@@ -1,7 +1,10 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { z } from "zod"
-import { sendSupportEmail } from "../integrations/resend"
+import {
+  sendFeedbackEmail,
+  sendSupportEmail,
+} from "../domains/emails/index"
 import { requireAuth } from "../middleware/auth"
 import type { AuthContext } from "../middleware/auth"
 
@@ -30,9 +33,9 @@ export const supportRoutes = new Hono<{
     async (c) => {
       const auth = c.get("auth")
       const body = c.req.valid("json")
-      await sendSupportEmail({
+      await sendFeedbackEmail({
         fromEmail: auth.user.email ?? "unknown@inbound.click",
-        message: `[Feedback]\n${body.message}`,
+        message: body.message,
       })
       return c.json({ ok: true })
     },

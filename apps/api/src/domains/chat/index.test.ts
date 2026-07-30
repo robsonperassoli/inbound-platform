@@ -1,10 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("../../integrations/resend.ts", () => ({
-  sendChatCompletedEmail: vi.fn(async () => ({ id: "dev-email" })),
-}))
+vi.mock("../emails/index.ts", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../emails/index.ts")>()
+  return {
+    ...actual,
+    sendChatCompletedEmail: vi.fn(async () => ({ id: "dev-email" })),
+    sendActivationEmail: vi.fn(async () => ({ id: "dev-email" })),
+  }
+})
 
-import { sendChatCompletedEmail } from "../../integrations/resend"
+import { sendChatCompletedEmail } from "../emails/index"
 import * as forms from "../forms/index"
 import * as chat from "./index"
 import {
@@ -205,6 +210,7 @@ describe("chat domain", () => {
       transcriptUrl: expect.stringContaining(
         `/forms/${form.id}/submissions/${submission.id}/transcript`,
       ),
+      formSubmissionId: submission.id,
       status: "abandoned",
     })
   })

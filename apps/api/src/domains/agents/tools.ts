@@ -1,5 +1,11 @@
 import { tool } from "ai"
 import { z } from "zod"
+import {
+  getFirstName,
+  sendChatCompletedEmail,
+  sendNewConversationEmail,
+} from "../emails/index"
+import * as accounts from "../accounts/index"
 import * as forms from "../forms/index"
 import * as profiles from "../profiles/index"
 import * as chat from "../chat/index"
@@ -18,6 +24,60 @@ export const themeSchema = z.object({
   buttonTextColor: z.string(),
 })
 
+async function notifyOwnerNewConversation(input: {
+  userId: string
+  formId: string
+  formSubmissionId: string
+}) {
+  const owner = await accounts.getUserById(input.userId)
+  if (!owner?.email) return
+
+  try {
+    await sendNewConversationEmail({
+      to: owner.email,
+      firstName: getFirstName(owner.name),
+      transcriptUrl: chat.formSubmissionTranscriptUrl(
+        input.formId,
+        input.formSubmissionId,
+      ),
+      formSubmissionId: input.formSubmissionId,
+    })
+  } catch (error) {
+    console.error(
+      `[fillForm] failed to send new-conversation email for ${input.formSubmissionId}`,
+      error,
+    )
+  }
+}
+
+async function notifyOwnerChatCompleted(input: {
+  userId: string
+  formId: string
+  formSubmissionId: string
+  status: "abandoned" | "finished"
+}) {
+  const owner = await accounts.getUserById(input.userId)
+  if (!owner?.email) return
+
+  try {
+    await sendChatCompletedEmail({
+      to: owner.email,
+      firstName: getFirstName(owner.name),
+      transcriptUrl: chat.formSubmissionTranscriptUrl(
+        input.formId,
+        input.formSubmissionId,
+      ),
+      formSubmissionId: input.formSubmissionId,
+      status: input.status,
+    })
+  } catch (error) {
+    console.error(
+      `[submitForm] failed to send chat-completed email for ${input.formSubmissionId}`,
+      error,
+    )
+  }
+}
+
 async function fillFormValues(
   threadId: string,
   values: Record<string, string | number | boolean | string[]>,
@@ -27,6 +87,7 @@ async function fillFormValues(
     throw new Error("Invalid session type")
   }
 
+  const startedNewSubmission = !thread.formSubmissionId
   const submission = await forms.ensureSubmissionForThread({
     threadId,
     userId: thread.userId,
@@ -38,6 +99,14 @@ async function fillFormValues(
     await chat.updateThread(threadId, {
       formSubmissionId: submission.id,
       updatedAt: Date.now(),
+    })
+  }
+
+  if (startedNewSubmission) {
+    await notifyOwnerNewConversation({
+      userId: thread.userId,
+      formId: thread.formId,
+      formSubmissionId: submission.id,
     })
   }
 
@@ -53,12 +122,22 @@ async function completeFormSubmission(threadId: string) {
   if (!thread.formSubmissionId) {
     throw new Error("Submission not found for thread")
   }
+  if (!thread.formId) {
+    throw new Error("Form not found for thread")
+  }
 
   await forms.completeSubmission(thread.formSubmissionId)
   const now = Date.now()
   await chat.updateThread(threadId, {
     sessionEndedAt: now,
     updatedAt: now,
+  })
+
+  await notifyOwnerChatCompleted({
+    userId: thread.userId,
+    formId: thread.formId,
+    formSubmissionId: thread.formSubmissionId,
+    status: "finished",
   })
 }
 

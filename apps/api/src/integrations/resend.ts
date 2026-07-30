@@ -1,4 +1,4 @@
-import { Resend } from "resend"
+import { Resend, type CreateEmailOptions } from "resend"
 import { env } from "../lib/env"
 
 function getResend() {
@@ -6,73 +6,67 @@ function getResend() {
   return new Resend(env.RESEND_API_KEY)
 }
 
-export async function sendEmail(input: {
-  to: string
-  subject: string
-  html: string
-  from?: string
-}) {
+async function deliver(payload: CreateEmailOptions, devLabel: string) {
   const resend = getResend()
   if (!resend) {
-    console.info("[resend:dev]", input.subject, "->", input.to)
+    console.info("[resend:dev]", devLabel, payload)
     return { id: "dev-email" }
   }
 
-  const result = await resend.emails.send({
-    from: input.from ?? "Inbound <noreply@inbound.click>",
-    to: input.to,
-    subject: input.subject,
-    html: input.html,
-  })
-
+  const result = await resend.emails.send(payload)
+  if (result.error) {
+    throw new Error(`Resend error: ${result.error.message}`)
+  }
   return result.data
 }
 
-export async function sendInviteEmail(input: {
+/** Low-level HTML/text send. Prefer domain helpers in `domains/emails`. */
+export async function sendEmail(input: {
   to: string
-  inviteUrl: string
-  inviterName?: string | null
+  subject: string
+  html?: string
+  text?: string
+  from: string
+  replyTo?: string | string[]
 }) {
-  return sendEmail({
-    to: input.to,
-    subject: "You've been invited to Inbound",
-    html: `<p>${input.inviterName ?? "Someone"} invited you to join their Inbound team.</p><p><a href="${input.inviteUrl}">Accept invite</a></p>`,
-  })
-}
-
-export async function sendSupportEmail(input: {
-  fromEmail: string
-  message: string
-}) {
-  if (!env.SUPPORT_EMAIL) {
-    console.info("[support:dev]", input)
-    return { id: "dev-support" }
+  if (!input.html && !input.text) {
+    throw new Error("Email requires html or text content")
   }
 
-  return sendEmail({
-    to: env.SUPPORT_EMAIL,
-    subject: `Support request from ${input.fromEmail}`,
-    html: `<p>From: ${input.fromEmail}</p><p>${input.message}</p>`,
-  })
+  const base = {
+    from: input.from,
+    to: input.to,
+    subject: input.subject,
+    ...(input.replyTo ? { replyTo: input.replyTo } : {}),
+  }
+
+  const payload: CreateEmailOptions = input.html
+    ? { ...base, html: input.html, ...(input.text ? { text: input.text } : {}) }
+    : { ...base, text: input.text! }
+
+  return deliver(payload, `${input.subject} -> ${input.to}`)
 }
 
-export async function sendChatCompletedEmail(input: {
+/** Low-level Resend template send. Prefer domain helpers in `domains/emails`. */
+export async function sendTemplateEmail(input: {
   to: string
-  firstName: string
-  transcriptUrl: string
-  status: "abandoned" | "finished"
+  from: string
+  templateId: string
+  variables: Record<string, string | number>
+  headers?: Record<string, string>
+  subject?: string
 }) {
-  const statusMessage =
-    input.status === "abandoned"
-      ? "The visitor stopped responding before finishing the conversation. You can still review what was captured up to that moment."
-      : "The conversation finished and Hugo collected all the key details. The lead is ready for you to review."
-
-  return sendEmail({
-    to: input.to,
-    subject:
-      input.status === "abandoned"
-        ? "A visitor left a conversation unfinished"
-        : "A new lead conversation is ready",
-    html: `<p>Hi ${input.firstName},</p><p>${statusMessage}</p><p><a href="${input.transcriptUrl}">Review the transcript</a></p>`,
-  })
+  return deliver(
+    {
+      from: input.from,
+      to: input.to,
+      ...(input.subject ? { subject: input.subject } : {}),
+      template: {
+        id: input.templateId,
+        variables: input.variables,
+      },
+      ...(input.headers ? { headers: input.headers } : {}),
+    },
+    `${input.templateId} -> ${input.to}`,
+  )
 }

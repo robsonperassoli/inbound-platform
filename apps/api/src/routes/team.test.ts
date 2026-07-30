@@ -1,11 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("../integrations/resend.ts", () => ({
-  sendInviteEmail: vi.fn(async () => undefined),
-  sendSupportEmail: vi.fn(async () => undefined),
-}))
+vi.mock("../domains/emails/index.ts", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../domains/emails/index.ts")>()
+  return {
+    ...actual,
+    sendInviteEmail: vi.fn(async () => undefined),
+    sendSupportEmail: vi.fn(async () => undefined),
+    sendActivationEmail: vi.fn(async () => undefined),
+  }
+})
 
-import { sendInviteEmail } from "../integrations/resend"
+import { sendInviteEmail } from "../domains/emails/index"
 import { createUserAccount } from "../test/factories"
 import { client, withAuth } from "../test/http"
 

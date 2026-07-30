@@ -12,8 +12,10 @@ import {
 } from "@/components/pricing/pricing-section"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { useSession } from "@/hooks/use-session"
-import { useCreateCheckout } from "@/hooks/queries/billing"
-import { useSendSupport } from "@/hooks/queries/support"
+import {
+  useCreateCheckout,
+  useSubmitSalesLead,
+} from "@/hooks/queries/billing"
 import { type BillingCycle, type PricingPlanId } from "@/lib/pricing"
 import { PRICING_PLANS } from "@/lib/pricing-plans"
 
@@ -25,7 +27,7 @@ function RouteComponent() {
   const session = useSession()
   const profileData = useSelectedProfile()
   const createCheckout = useCreateCheckout()
-  const sendSupport = useSendSupport()
+  const submitSalesLead = useSubmitSalesLead()
 
   const activePlan = session?.plan ?? "free"
 
@@ -63,9 +65,11 @@ function RouteComponent() {
       throw new Error("Profile not selected")
     }
 
-    await sendSupport.mutateAsync(
-      `Sales lead for ${profileData.profile.id}: ${JSON.stringify(values)}`,
-    )
+    await submitSalesLead.mutateAsync({
+      ...values,
+      profileId: profileData.profile.id,
+      userAgent: window.navigator.userAgent,
+    })
   }
 
   return (

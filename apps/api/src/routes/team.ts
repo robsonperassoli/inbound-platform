@@ -3,7 +3,7 @@ import { Hono } from "hono"
 import { z } from "zod"
 import * as accounts from "../domains/accounts/index"
 import * as profiles from "../domains/profiles/index"
-import { sendInviteEmail } from "../integrations/resend"
+import { sendInviteEmail } from "../domains/emails/index"
 import { env } from "../lib/env"
 import { requireAuth, type AuthContext } from "../middleware/auth"
 

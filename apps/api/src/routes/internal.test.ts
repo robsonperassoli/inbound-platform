@@ -1,8 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("../integrations/resend.ts", () => ({
-  sendChatCompletedEmail: vi.fn(async () => ({ id: "dev-email" })),
-}))
+vi.mock("../domains/emails/index.ts", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../domains/emails/index.ts")>()
+  return {
+    ...actual,
+    sendChatCompletedEmail: vi.fn(async () => ({ id: "dev-email" })),
+    sendActivationEmail: vi.fn(async () => ({ id: "dev-email" })),
+  }
+})
 
 import * as chat from "../domains/chat/index"
 import * as forms from "../domains/forms/index"

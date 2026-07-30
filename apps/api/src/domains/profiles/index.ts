@@ -1,6 +1,8 @@
 import { getDefaultTheme } from "@inbound/shared"
 import type { PublicLink, PublicProfile } from "@inbound/shared"
 import { resolveAssetUrl } from "../../integrations/storage"
+import * as accounts from "../accounts/index"
+import { getFirstName, sendActivationEmail } from "../emails/index"
 import * as repository from "./repository"
 
 async function withAssetUrls<T extends {
@@ -52,7 +54,7 @@ export async function createProfile(input: {
   }
 
   const theme = getDefaultTheme()
-  return repository.createProfile({
+  const profile = await repository.createProfile({
     accountId: input.accountId,
     userId: input.userId,
     username: input.username,
@@ -67,6 +69,24 @@ export async function createProfile(input: {
     buttonColor: theme.buttonColor,
     buttonTextColor: theme.buttonTextColor,
   })
+
+  const owner = await accounts.getUserById(input.userId)
+  if (owner?.email) {
+    void sendActivationEmail({
+      to: owner.email,
+      firstName: owner.name?.trim()
+        ? getFirstName(owner.name)
+        : input.title,
+      username: input.username,
+    }).catch((error) => {
+      console.error(
+        `[createProfile] failed to send activation email for ${profile.id}`,
+        error,
+      )
+    })
+  }
+
+  return profile
 }
 
 export async function getProfileForAccount(profileId: string, accountId: string) {

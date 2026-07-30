@@ -1,20 +1,19 @@
 import * as accounts from "../accounts/index"
 import { env } from "../../lib/env"
-import { sendChatCompletedEmail } from "../../integrations/resend"
+import { getFirstName, sendChatCompletedEmail } from "../emails/index"
 import * as repository from "./repository"
 
 const SILENT_CLOSE_AFTER_MS = 2 * 60 * 60 * 1000
 const ABANDONED_IDLE_AFTER_MS = 25 * 60 * 1000
 
-function getFirstName(name?: string | null) {
-  const trimmed = name?.trim()
-  if (!trimmed) return "there"
-  return trimmed.split(/\s+/)[0] ?? "there"
-}
-
-function formSubmissionTranscriptUrl(formId: string, submissionId: string) {
+export function formSubmissionTranscriptUrl(
+  formId: string,
+  submissionId: string,
+) {
   return `${env.DASHBOARD_URL}/forms/${formId}/submissions/${submissionId}/transcript`
 }
+
+export { getFirstName }
 
 export async function getFormSessionMessages(sessionId: string) {
   const rows = await repository.listMessagesByThread(sessionId)
@@ -104,15 +103,23 @@ export async function autoCloseAbandonedThreads(now = Date.now()) {
 
       const owner = await accounts.getUserById(thread.userId)
       if (owner?.email) {
-        await sendChatCompletedEmail({
-          to: owner.email,
-          firstName: getFirstName(owner.name),
-          transcriptUrl: formSubmissionTranscriptUrl(
-            thread.formId,
-            thread.formSubmissionId,
-          ),
-          status: "abandoned",
-        })
+        try {
+          await sendChatCompletedEmail({
+            to: owner.email,
+            firstName: getFirstName(owner.name),
+            transcriptUrl: formSubmissionTranscriptUrl(
+              thread.formId,
+              thread.formSubmissionId,
+            ),
+            formSubmissionId: thread.formSubmissionId,
+            status: "abandoned",
+          })
+        } catch (error) {
+          console.error(
+            `[auto-close] failed to send abandoned email for ${thread.id}`,
+            error,
+          )
+        }
       }
     }
   }
