@@ -19,7 +19,8 @@ export function useThread(threadId: string | null | undefined) {
       const messages = query.state.data?.messages
       if (!messages) return false
       return messages.some(
-        (m: { status?: string }) => m.status === "streaming",
+        (m: { status?: string }) =>
+          m.status === "streaming" || m.status === "pending",
       )
         ? 500
         : false

@@ -32,8 +32,10 @@ export function BioFormChat({ sessionId }: { sessionId: string }) {
   }, [loadMessages])
 
   useEffect(() => {
-    const isStreaming = messages.some((m) => m.status === "streaming")
-    if (!isStreaming) return
+    const isBusy = messages.some(
+      (m) => m.status === "streaming" || m.status === "pending",
+    )
+    if (!isBusy) return
     const id = window.setInterval(() => {
       void loadMessages()
     }, 500)

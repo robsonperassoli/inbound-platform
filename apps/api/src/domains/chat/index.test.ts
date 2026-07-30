@@ -7,22 +7,12 @@ import {
   createUserAccount,
 } from "../../test/factories"
 
-vi.mock("./agents.ts", () => ({
-  runFormSubmissionAgent: vi.fn(async () => undefined),
-}))
-
-import { runFormSubmissionAgent } from "./agents"
-
 describe("chat domain", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it("builds a greeting that includes the profile title", () => {
-    expect(chat.greetingMessage("Acme")).toContain("Acme")
-  })
-
-  it("starts a form session with a greeting message", async () => {
+  it("creates threads and messages as persistence primitives", async () => {
     const { user, profile } = await createProfileForAccount({
       username: "chat-page",
       title: "Chat Page",
@@ -32,21 +22,32 @@ describe("chat domain", () => {
       title: "Lead Capture",
     })
 
-    const sessionId = await chat.startFormSession({
-      profileId: profile.id,
+    const thread = await chat.createThread({
+      userId: user.id,
+      title: `${form.title} Form Session`,
+      systemPrompt: "test prompt",
+      type: "formSubmission",
       formId: form.id,
+      profileId: profile.id,
     })
 
-    const messages = await chat.getFormSessionMessages(sessionId)
+    await chat.createMessage({
+      threadId: thread.id,
+      role: "assistant",
+      content: "Hello",
+      status: "complete",
+    })
+
+    const messages = await chat.getFormSessionMessages(thread.id)
     expect(messages).toHaveLength(1)
     expect(messages[0]).toMatchObject({
       role: "assistant",
       status: "complete",
-      content: chat.greetingMessage("Chat Page"),
+      content: "Hello",
     })
 
-    const thread = await chat.getThreadById(sessionId)
-    expect(thread).toMatchObject({
+    const loaded = await chat.getThreadById(thread.id)
+    expect(loaded).toMatchObject({
       type: "formSubmission",
       formId: form.id,
       profileId: profile.id,
@@ -54,49 +55,31 @@ describe("chat domain", () => {
     })
   })
 
-  it("persists user messages and triggers the agent without awaiting it", async () => {
-    const { user, profile } = await createProfileForAccount({
-      username: "agent-page",
-      title: "Agent Page",
-    })
-    const { form } = await createFormForAccount({ userId: user.id })
-    const sessionId = await chat.startFormSession({
-      profileId: profile.id,
-      formId: form.id,
-    })
-
-    const result = await chat.sendFormSessionMessage({
-      sessionId,
-      message: "Hello Hugo",
-    })
-
-    expect(result).toEqual({ ok: true })
-    expect(runFormSubmissionAgent).toHaveBeenCalledWith(sessionId)
-
-    const messages = await chat.getFormSessionMessages(sessionId)
-    expect(messages).toHaveLength(2)
-    expect(messages[1]).toMatchObject({
-      role: "user",
-      content: "Hello Hugo",
-      status: "complete",
-    })
-  })
-
   it("scopes dashboard threads to the owning user", async () => {
     const owner = await createUserAccount()
     const other = await createUserAccount()
 
-    const threadId = await chat.startThemeDesignerThread({
+    const thread = await chat.createThread({
       userId: owner.user.id,
+      title: "Theme Designer",
+      systemPrompt: "test",
+      type: "themeDesigner",
       profileId: "profile_unused",
     })
 
+    await chat.createMessage({
+      threadId: thread.id,
+      role: "assistant",
+      content: "Hi",
+      status: "complete",
+    })
+
     await expect(
-      chat.getThreadForUser(threadId, other.user.id),
+      chat.getThreadForUser(thread.id, other.user.id),
     ).resolves.toBeNull()
 
-    const owned = await chat.getThreadWithMessages(threadId, owner.user.id)
-    expect(owned?.thread.id).toBe(threadId)
+    const owned = await chat.getThreadWithMessages(thread.id, owner.user.id)
+    expect(owned?.thread.id).toBe(thread.id)
     expect(owned?.messages).toHaveLength(1)
     expect(owned?.messages[0]?.role).toBe("assistant")
   })
@@ -106,42 +89,43 @@ describe("chat domain", () => {
       username: "link-page",
     })
     const { form } = await createFormForAccount({ userId: user.id })
-    const sessionId = await chat.startFormSession({
-      profileId: profile.id,
+
+    const thread = await chat.createThread({
+      userId: user.id,
+      title: "Session",
+      systemPrompt: "test",
+      type: "formSubmission",
       formId: form.id,
+      profileId: profile.id,
+    })
+
+    await chat.createMessage({
+      threadId: thread.id,
+      role: "assistant",
+      content: "Hi",
+      status: "complete",
     })
 
     const submission = await forms.ensureSubmissionForThread({
-      threadId: sessionId,
+      threadId: thread.id,
       userId: user.id,
       formId: form.id,
       formSubmissionId: null,
     })
 
-    await chat.linkFormSubmissionToThread(sessionId, submission.id)
-    await chat.linkFormToThread(sessionId, form.id)
-    await chat.endFormSession(sessionId)
+    await chat.linkFormSubmissionToThread(thread.id, submission.id)
+    await chat.linkFormToThread(thread.id, form.id)
+    await chat.endFormSession(thread.id)
 
-    const thread = await chat.getThreadById(sessionId)
-    expect(thread).toMatchObject({
+    const loaded = await chat.getThreadById(thread.id)
+    expect(loaded).toMatchObject({
       formSubmissionId: submission.id,
       formId: form.id,
     })
-    expect(thread?.sessionEndedAt).toEqual(expect.any(Number))
+    expect(loaded?.sessionEndedAt).toEqual(expect.any(Number))
 
     const transcript = await chat.getSubmissionTranscript(submission.id)
     expect(transcript).toHaveLength(1)
     expect(transcript[0]?.role).toBe("assistant")
-  })
-
-  it("starts form builder threads", async () => {
-    const { user } = await createUserAccount()
-    const threadId = await chat.startFormBuilderThread({
-      userId: user.id,
-    })
-
-    const thread = await chat.getThreadWithMessages(threadId, user.id)
-    expect(thread?.thread.type).toBe("formBuilder")
-    expect(thread?.messages[0]?.content).toContain("form")
   })
 })

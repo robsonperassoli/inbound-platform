@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("../domains/chat/agents.ts", () => ({
-  runFormSubmissionAgent: vi.fn(async () => undefined),
+vi.mock("../domains/agents/execute.ts", () => ({
+  runAgent: vi.fn(async () => undefined),
 }))
 
-import * as chat from "../domains/chat/index"
+import * as agents from "../domains/agents/index"
 import { createProfileForAccount } from "../test/factories"
 import { client, withAuth } from "../test/http"
 
@@ -17,7 +17,7 @@ describe("messages routes", () => {
     const { user, profile } = await createProfileForAccount({
       username: "messages-page",
     })
-    const threadId = await chat.startThemeDesignerThread({
+    const threadId = await agents.startThemeDesignerThread({
       userId: user.id,
       profileId: profile.id,
     })

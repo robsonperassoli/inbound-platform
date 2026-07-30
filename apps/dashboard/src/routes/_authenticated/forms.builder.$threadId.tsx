@@ -1,6 +1,8 @@
 import { Tick02Icon, ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
 import z from "zod"
 import { Chat } from "@/components/chat"
 import { EmptyFormPreview, FormPreview } from "@/components/form-preview"
@@ -11,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { queryKeys } from "@/hooks/queries/keys"
 import { useSendThreadMessage, useThread } from "@/hooks/queries/threads"
 
 export const Route = createFileRoute("/_authenticated/forms/builder/$threadId")(
@@ -27,9 +30,21 @@ function RouteComponent() {
   const { threadId } = Route.useParams()
   const { returnTo } = Route.useSearch()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { data } = useThread(threadId)
   const thread = data?.thread
   const messages = data?.messages ?? []
+  const isAgentBusy = messages.some(
+    (m) => m.status === "pending" || m.status === "streaming",
+  )
+
+  // Catch the final updateForm that may land just as the agent completes.
+  useEffect(() => {
+    if (isAgentBusy || !thread?.formId) return
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.form(thread.formId),
+    })
+  }, [isAgentBusy, thread?.formId, queryClient])
 
   const sendMessage = useSendThreadMessage()
 
@@ -43,7 +58,11 @@ function RouteComponent() {
     <div className="flex flex-1">
       <div className="hidden sm:block grow overflow-auto p-4">
         {thread?.formId ? (
-          <FormPreview formId={thread.formId} onDoneClicked={onDoneClicked} />
+          <FormPreview
+            formId={thread.formId}
+            live={isAgentBusy}
+            onDoneClicked={onDoneClicked}
+          />
         ) : (
           <EmptyFormPreview />
         )}
@@ -72,6 +91,7 @@ function RouteComponent() {
                   {thread?.formId ? (
                     <FormPreview
                       formId={thread.formId}
+                      live={isAgentBusy}
                       onDoneClicked={onDoneClicked}
                     />
                   ) : (

@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { z } from "zod"
-import * as chat from "../domains/chat/index"
+import * as agents from "../domains/agents/index"
 import { requireAuth } from "../middleware/auth"
 import type { AuthContext } from "../middleware/auth"
 
@@ -17,7 +17,7 @@ export const threadsRoutes = new Hono<{
     async (c) => {
       const auth = c.get("auth")
       const body = c.req.valid("json")
-      const threadId = await chat.startThemeDesignerThread({
+      const threadId = await agents.startThemeDesignerThread({
         userId: auth.user.id,
         profileId: body.profileId,
       })
@@ -30,7 +30,7 @@ export const threadsRoutes = new Hono<{
     async (c) => {
       const auth = c.get("auth")
       const body = c.req.valid("json")
-      const threadId = await chat.startFormBuilderThread({
+      const threadId = await agents.startFormBuilderThread({
         userId: auth.user.id,
         profileId: body.profileId,
       })

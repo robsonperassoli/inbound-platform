@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { z } from "zod"
+import * as agents from "../domains/agents/index"
 import * as profiles from "../domains/profiles/index"
 import { requireAuth } from "../middleware/auth"
 import type { AuthContext } from "../middleware/auth"
@@ -116,6 +117,23 @@ export const profilesRoutes = new Hono<{
       return c.json({ profile })
     },
   )
+  .post("/profiles/:id/generate-theme", async (c) => {
+    const auth = c.get("auth")
+    try {
+      const profile = await agents.generateThemeForProfile(
+        c.req.param("id"),
+        auth.account.id,
+      )
+      if (!profile) return c.json({ error: "Not found" }, 404)
+      return c.json({ profile })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Bad request"
+      if (message.includes("not configured")) {
+        return c.json({ error: message }, 503)
+      }
+      throw error
+    }
+  })
   .post(
     "/profiles/:id/links",
     zValidator("json", createLinkBodySchema),

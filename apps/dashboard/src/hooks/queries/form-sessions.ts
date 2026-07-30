@@ -16,7 +16,11 @@ export function useFormSessionMessages(sessionId: string | null | undefined) {
     refetchInterval: (query) => {
       const messages = query.state.data?.messages
       if (!messages) return false
-      return messages.some((m) => m.status === "streaming") ? 500 : false
+      return messages.some(
+        (m) => m.status === "streaming" || m.status === "pending",
+      )
+        ? 500
+        : false
     },
   })
 }

@@ -170,6 +170,9 @@ importers:
       '@tinybirdco/sdk':
         specifier: ^0.0.55
         version: 0.0.55
+      '@toon-format/toon':
+        specifier: ^4.1.0
+        version: 4.1.0
       '@workos-inc/node':
         specifier: ^7.71.0
         version: 7.82.0(express@5.2.1)
@@ -3394,6 +3397,9 @@ packages:
     resolution: {integrity: sha512-LzOocxjdGy1nXD+03zfY3C4ZQSOnH1CbarMajUnwOwi4OwDeJIEA3nohyPxWAxgXXRgH7kfhM/tokavhP+DH0A==}
     engines: {node: '>=20.0.0'}
     hasBin: true
+
+  '@toon-format/toon@4.1.0':
+    resolution: {integrity: sha512-dBB3pkEx9QYvHnHR6rtkaBAh+7x4W/oA5ONur4G0fh7Ow69PbPuM7OFxzNRABqyxC0t6SZ3RixiGbCuaFjPDAQ==}
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
@@ -9092,6 +9098,8 @@ snapshots:
       esbuild: 0.24.2
       picocolors: 1.1.1
       zod: 3.25.76
+
+  '@toon-format/toon@4.1.0': {}
 
   '@ts-morph/common@0.27.0':
     dependencies:

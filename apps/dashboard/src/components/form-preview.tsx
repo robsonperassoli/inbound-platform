@@ -61,11 +61,16 @@ const FIELD_META: Record<FormField["type"], FieldMeta> = {
 export function FormPreview({
   formId,
   onDoneClicked,
+  live = false,
 }: {
   formId: string
   onDoneClicked: () => void
+  /** Poll for agent-driven form updates (create/update tools). */
+  live?: boolean
 }) {
-  const { data: form } = useForm(formId)
+  const { data: form } = useForm(formId, {
+    refetchInterval: live ? 500 : false,
+  })
 
   if (!form) {
     return (

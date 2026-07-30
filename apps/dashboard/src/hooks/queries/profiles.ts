@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   createProfile,
+  generateTheme,
   isUsernameAvailable,
   listProfiles,
   getProfile,
@@ -59,6 +60,19 @@ export function usePublishProfile() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => publishProfile(id),
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.profiles })
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.profile(data.profile.id),
+      })
+    },
+  })
+}
+
+export function useGenerateTheme() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => generateTheme(id),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.profiles })
       await queryClient.invalidateQueries({

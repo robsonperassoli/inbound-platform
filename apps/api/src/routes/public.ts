@@ -5,6 +5,7 @@ import {
 } from "@inbound/shared"
 import { Hono } from "hono"
 import { z } from "zod"
+import * as agents from "../domains/agents/index"
 import * as analytics from "../domains/analytics/index"
 import * as chat from "../domains/chat/index"
 import * as profiles from "../domains/profiles/index"
@@ -73,7 +74,7 @@ export const publicRoutes = new Hono()
     zValidator("json", startFormSessionInputSchema),
     async (c) => {
       const body = c.req.valid("json")
-      const sessionId = await chat.startFormSession(body)
+      const sessionId = await agents.startFormSession(body)
       return c.json({ sessionId })
     },
   )
@@ -86,7 +87,7 @@ export const publicRoutes = new Hono()
     zValidator("json", sendFormSessionMessageBodySchema),
     async (c) => {
       const body = c.req.valid("json")
-      await chat.sendFormSessionMessage({
+      await agents.sendFormSessionMessage({
         sessionId: c.req.param("sessionId"),
         message: body.message,
       })

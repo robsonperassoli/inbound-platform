@@ -31,6 +31,7 @@
     "@hono/zod-validator": "^0.7.6",
     "@inbound/shared": "workspace:*",
     "@tinybirdco/sdk": "^0.0.55",
+    "@toon-format/toon": "^4.1.0",
     "@workos-inc/node": "^7.71.0",
     "ai": "^6.0.116",
     "better-sqlite3": "^11.9.1",

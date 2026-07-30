@@ -1,43 +1,28 @@
 import { PaintBoardIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { themes } from "@inbound/shared"
-import { useUpdateProfile } from "@/hooks/queries/profiles"
+import { useGenerateTheme } from "@/hooks/queries/profiles"
 
 interface GenerateThemeButtonProps {
   profileId: string
 }
 
 export function GenerateThemeButton({ profileId }: GenerateThemeButtonProps) {
-  const [loading, setLoading] = useState(false)
-  const updateProfile = useUpdateProfile()
+  const generateTheme = useGenerateTheme()
 
   const handleClick = async () => {
     try {
-      setLoading(true)
-      const theme = themes[Math.floor(Math.random() * themes.length)]!
-      await updateProfile.mutateAsync({
-        id: profileId,
-        theme: theme.name,
-        backgroundColor: theme.backgroundColor,
-        fontFamily: theme.fontFamily,
-        textColor: theme.textColor,
-        buttonShape: theme.buttonShape,
-        buttonStyle: theme.buttonStyle,
-        buttonColor: theme.buttonColor,
-        buttonTextColor: theme.buttonTextColor,
-      })
+      await generateTheme.mutateAsync(profileId)
       toast.success("Magic theme generated!")
     } catch (error) {
       console.error(error)
       toast.error("Could not generate theme")
-    } finally {
-      setLoading(false)
     }
   }
+
+  const loading = generateTheme.isPending
 
   return (
     <Button

@@ -22,14 +22,19 @@ export function useForms() {
   })
 }
 
-export function useForm(formId: string | null | undefined) {
+export function useForm(
+  formId: string | null | undefined,
+  options?: { refetchInterval?: number | false },
+) {
   return useQuery({
     queryKey: queryKeys.form(formId ?? "none"),
     enabled: Boolean(formId),
     queryFn: async () => {
       if (!formId) throw new Error("Missing form id")
-      return (await getForm(formId)).form
+        const result = await getForm(formId)
+      return result.form
     },
+    refetchInterval: options?.refetchInterval,
   })
 }
 

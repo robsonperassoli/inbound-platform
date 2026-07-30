@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator"
 import { Hono } from "hono"
 import { z } from "zod"
+import * as agents from "../domains/agents/index"
 import * as chat from "../domains/chat/index"
 import { requireAuth } from "../middleware/auth"
 import type { AuthContext } from "../middleware/auth"
@@ -29,7 +30,7 @@ export const messagesRoutes = new Hono<{
       if (!thread) return c.json({ error: "Not found" }, 404)
 
       const body = c.req.valid("json")
-      await chat.sendThreadMessage({
+      await agents.sendThreadMessage({
         threadId: thread.id,
         message: body.message,
       })

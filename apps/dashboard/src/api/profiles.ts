@@ -59,3 +59,13 @@ export async function updateProfile(id: string, body: UpdateProfileBody) {
 export async function publishProfile(id: string) {
   return updateProfile(id, { publishedAt: Date.now() })
 }
+
+export async function generateTheme(id: string) {
+  const res = await client.profiles[":id"]["generate-theme"].$post({
+    param: { id },
+  })
+  if (!res.ok) {
+    throw new ApiError(res.status, (await res.text()) || res.statusText)
+  }
+  return res.json()
+}
