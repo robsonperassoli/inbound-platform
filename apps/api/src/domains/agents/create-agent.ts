@@ -1,7 +1,7 @@
-import { openai } from "@ai-sdk/openai"
 import { stepCountIs, ToolLoopAgent, type ToolSet } from "ai"
 import type { getThreadById } from "../chat/index"
 import * as agentTools from "./tools"
+import { model } from "./"
 
 type Thread = NonNullable<Awaited<ReturnType<typeof getThreadById>>>
 
@@ -42,7 +42,7 @@ export function createAgent(thread: Thread) {
   }
 
   return new ToolLoopAgent({
-    model: openai(thread.model || "gpt-4o-mini"),
+    model,
     instructions: thread.systemPrompt,
     tools,
     stopWhen: [stepCountIs(20)],

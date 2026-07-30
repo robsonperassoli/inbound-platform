@@ -1,6 +1,9 @@
 import { createId } from "@inbound/shared"
 import { generateText, Output } from "ai"
-import { openai } from "@ai-sdk/openai"
+import {
+  openai,
+  type OpenAILanguageModelResponsesOptions,
+} from "@ai-sdk/openai"
 import * as forms from "../forms/index"
 import * as profiles from "../profiles/index"
 import * as chat from "../chat/index"
@@ -10,6 +13,8 @@ import * as formSubmission from "./form-submission"
 import * as formBuilder from "./form-builder"
 import * as themeDesigner from "./theme-designer"
 import { themeSchema } from "./tools"
+
+export const model = openai("gpt-5.6-luna")
 
 export { runAgent }
 
@@ -163,19 +168,31 @@ export async function generateTheme(input: {
   }
 
   const vibeResult = await generateText({
-    model: openai("gpt-4o-mini"),
+    model,
     prompt: `Give me one strong visual vibe for a link in bio page based on this profile. Keep it short, specific, and creative. Describe the overall feel, the color direction, the typography vibe, and the button style in plain English. Do not give me multiple options. Avoid generic blue startup-style themes unless it clearly fits.
     Username: ${input.username}
     Title: ${input.title}
     Subtitle: ${input.subtitle}
     `,
+    providerOptions: {
+      openai: {
+        reasoningEffort: "none",
+        textVerbosity: "low",
+      } satisfies OpenAILanguageModelResponsesOptions,
+    },
   })
 
   const result = await generateText({
-    model: openai("gpt-4o-mini"),
+    model,
     system: themeDesigner.oneShootSystemPrompt,
     prompt: `Please generate a theme with this vibe: ${vibeResult.text}`,
     output: Output.object({ schema: themeSchema }),
+    providerOptions: {
+      openai: {
+        reasoningEffort: "high",
+        textVerbosity: "low",
+      } satisfies OpenAILanguageModelResponsesOptions,
+    },
   })
 
   return result.output
