@@ -64,6 +64,30 @@ Then run the apps as usual with `pnpm dev`.
 
 Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` in the API environment to your Tinybird cloud host and workspace token. Deploy schemas with `pnpm tinybird:deploy`.
 
+### Backblaze B2 (uploads)
+
+Used for avatar/background uploads via S3-compatible presigned URLs. Fill the `B2_*` vars from `.env.example` — create a **public** bucket, an application key scoped to it, and keep `B2_ENDPOINT` / `B2_REGION` / `B2_PUBLIC_URL` on the same region.
+
+The dashboard uploads from the browser, so apply CORS on the bucket (CLI required — upload rules aren’t fully available in the web UI):
+
+```bash
+# brew install b2-tools
+b2 account authorize
+
+b2 bucket update --cors-rules '[
+  {
+    "corsRuleName": "dashboardUpload",
+    "allowedOrigins": ["http://localhost:3000"],
+    "allowedHeaders": ["*"],
+    "allowedOperations": ["s3_put", "s3_get", "s3_head"],
+    "exposeHeaders": ["ETag"],
+    "maxAgeSeconds": 3600
+  }
+]' <bucket-name> allPublic
+```
+
+For staging/production, add the dashboard origin(s) to `allowedOrigins`.
+
 For Stripe webhooks (ngrok required — localhost can’t be a Stripe endpoint):
 
 ```bash
