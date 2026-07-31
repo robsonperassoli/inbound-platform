@@ -1,16 +1,11 @@
 import { Chat01Icon, Close } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Popover } from "radix-ui"
-import type { CSSProperties } from "react"
 import { cn } from "../lib/utils"
 import { Chat, type ChatMessage } from "./chat"
+import { getChatThemeStyle, type ChatPopupTheme } from "./chat-theme"
 
-export type ChatPopupTheme = {
-  backgroundColor: string
-  textColor: string
-  buttonColor: string
-  buttonTextColor: string
-}
+export type { ChatPopupTheme }
 
 export function ChatPopup({
   sessionId,
@@ -29,12 +24,7 @@ export function ChatPopup({
   sendMessage?: (message: string) => Promise<void>
   theme: ChatPopupTheme
 }) {
-  const themeStyle = {
-    "--up-background": theme.backgroundColor,
-    "--up-foreground": theme.textColor,
-    "--up-button-background": theme.buttonColor,
-    "--up-button-foreground": theme.buttonTextColor,
-  } as CSSProperties
+  const themeStyle = getChatThemeStyle(theme)
 
   return (
     <Popover.Root open={open}>
@@ -48,11 +38,11 @@ export function ChatPopup({
               type="button"
               onClick={open ? onClose : onOpen}
               className={cn(
-                "transition-all ease-in-out text-up-button-foreground rounded-full shadow-lg text-xs",
+                "transition-all ease-in-out rounded-full shadow-lg text-xs",
+                "bg-up-button text-up-button-foreground hover:brightness-105",
                 !open &&
-                  "h-10 w-24 flex items-center justify-center gap-x-1 bg-up-button/80 hover:bg-up-button",
-                open &&
-                  "size-10 flex items-center justify-center p-1 bg-up-foreground/40 hover:bg-up-foreground/50",
+                  "h-10 w-24 flex items-center justify-center gap-x-1",
+                open && "size-10 flex items-center justify-center p-1",
               )}
             >
               <HugeiconsIcon
@@ -73,15 +63,9 @@ export function ChatPopup({
           style={themeStyle}
           className={cn(
             "relative isolate rounded-2xl w-screen sm:w-full sm:max-w-sm h-[80vh] md:h-120 overflow-hidden",
-            "text-up-foreground",
-            "backdrop-blur-xl backdrop-saturate-150",
-            "bg-up-background/80",
-            "border border-[color:color-mix(in_srgb,var(--color-up-foreground)_18%,transparent)]",
-            "shadow-[0_1px_0_color-mix(in_srgb,var(--color-up-background)_55%,transparent)_inset,0_24px_70px_color-mix(in_srgb,var(--color-up-foreground)_22%,transparent)]",
-            "before:-z-10 before:pointer-events-none before:absolute before:inset-0 before:content-['']",
-            "before:bg-[radial-gradient(70%_55%_at_20%_0%,color-mix(in_srgb,var(--color-up-background)_75%,transparent),transparent_60%)]",
-            "after:-z-10 after:pointer-events-none after:absolute after:inset-0 after:content-['']",
-            "after:bg-[radial-gradient(120%_90%_at_50%_110%,color-mix(in_srgb,var(--color-up-foreground)_10%,transparent),transparent_55%)]",
+            "bg-[var(--chat-surface)] text-up-foreground",
+            "border border-[color:var(--chat-border)]",
+            "shadow-[0_24px_70px_var(--chat-shadow)]",
             "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0",
             "data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=top]:slide-in-from-bottom-2",
           )}
