@@ -352,7 +352,7 @@ export async function listSystemUsers() {
       }
     })
     .filter((row): row is NonNullable<typeof row> => row !== null)
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       const byRole = roleOrder[a.role] - roleOrder[b.role]
       if (byRole !== 0) return byRole
       const byName = a.name.localeCompare(b.name)

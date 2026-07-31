@@ -286,7 +286,7 @@ function LinkPerformanceCard({
         }
       }) ?? []
 
-    return data.sort((a, b) => {
+    return data.toSorted((a, b) => {
       const aVal = sortField === "clicks" ? a.clicks : a.ctr
       const bVal = sortField === "clicks" ? b.clicks : b.ctr
       return sortDirection === "desc" ? bVal - aVal : aVal - bVal
@@ -436,6 +436,22 @@ function LinkPerformanceCard({
 // Device Breakdown
 // ============================================================================
 
+function getDeviceIcon(device: string) {
+  const d = device.toLowerCase()
+  if (d === "mobile" || d === "phone") {
+    return <HugeiconsIcon icon={SmartPhoneIcon} className="h-4 w-4" />
+  }
+  return <HugeiconsIcon icon={ComputerIcon} className="h-4 w-4" />
+}
+
+function formatReferrer(referrer: string) {
+  if (referrer.toLowerCase() === "direct") return "Direct"
+  return referrer
+    .split(/[\s_]+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+}
+
 function DeviceBreakdownCard({
   deviceBreakdown,
   totalViews,
@@ -456,14 +472,6 @@ function DeviceBreakdownCard({
   }, [deviceBreakdown, totalViews])
 
   const isEmpty = !deviceBreakdown || deviceBreakdown.length === 0
-
-  const getDeviceIcon = (device: string) => {
-    const d = device.toLowerCase()
-    if (d === "mobile" || d === "phone") {
-      return <HugeiconsIcon icon={SmartPhoneIcon} className="h-4 w-4" />
-    }
-    return <HugeiconsIcon icon={ComputerIcon} className="h-4 w-4" />
-  }
 
   return (
     <Card className="h-[260px]">
@@ -529,7 +537,7 @@ function ReferrerBreakdownCard({
   const data = useMemo(() => {
     if (!referrerBreakdown) return []
     // Sort: put "direct" first, then by views desc, then "other" last
-    const sorted = [...referrerBreakdown].sort((a, b) => {
+    const sorted = referrerBreakdown.toSorted((a, b) => {
       const aLower = a.referrer.toLowerCase()
       const bLower = b.referrer.toLowerCase()
       if (aLower === "direct") return -1
@@ -545,15 +553,6 @@ function ReferrerBreakdownCard({
   }, [referrerBreakdown, totalViews])
 
   const isEmpty = !referrerBreakdown || referrerBreakdown.length === 0
-
-  const formatReferrer = (referrer: string) => {
-    if (referrer.toLowerCase() === "direct") return "Direct"
-    // Capitalize first letter of each word
-    return referrer
-      .split(/[\s_]+/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ")
-  }
 
   return (
     <Card className="h-65">

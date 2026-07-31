@@ -126,7 +126,7 @@ type TeamRow = TeamMember | TeamInvitation
 
 function addSelectedPagesValidation(
   profiles: string[],
-  ctx: z.core.$RefinementCtx<unknown>,
+  ctx: z.core.$RefinementCtx,
 ) {
   if (profiles.length === 0) {
     ctx.addIssue({
@@ -219,7 +219,7 @@ function RouteComponent() {
         invitation,
       }),
     ),
-  ].sort((a, b) => {
+  ].toSorted((a, b) => {
     if (a.type === "member" && b.type === "invitation") return -1
     if (a.type === "invitation" && b.type === "member") return 1
     if (a.type === "member") {
@@ -624,11 +624,7 @@ function PermissionsField({
                     onSelect={(event) => event.preventDefault()}
                     onCheckedChange={(checked) => {
                       onChange(
-                        toggleSelectedProfile(
-                          profiles,
-                          profile.id,
-                          checked === true,
-                        ),
+                        toggleSelectedProfile(profiles, profile.id, checked),
                       )
                     }}
                   >
@@ -700,8 +696,7 @@ function InviteDialogContent({
         await createInvitation.mutateAsync({
           email: value.email.trim().toLowerCase(),
           role: value.role,
-          profiles:
-            value.role === "admin" ? ["all"] : (value.profiles as TeamProfiles),
+          profiles: value.role === "admin" ? ["all"] : value.profiles,
         })
         onSuccess()
       } catch (error) {
@@ -785,7 +780,7 @@ function InviteDialogContent({
                       errors={field.state.meta.errors}
                       onChange={(profiles) => field.handleChange(profiles)}
                       profileOptions={profileOptions}
-                      profiles={field.state.value as TeamProfiles}
+                      profiles={field.state.value}
                     />
                   )}
                 </form.Field>
@@ -842,7 +837,7 @@ function MemberPermissionsDialogContent({
 
   const form = useForm({
     defaultValues: {
-      profiles: member.profiles as string[],
+      profiles: member.profiles,
     },
     validators: {
       onSubmit: memberPermissionsSchema,
@@ -854,7 +849,7 @@ function MemberPermissionsDialogContent({
       try {
         await updateMemberPermissions.mutateAsync({
           membershipId: member.membershipId,
-          profiles: value.profiles as TeamProfiles,
+          profiles: value.profiles,
         })
         onSuccess()
       } catch (error) {
@@ -897,7 +892,7 @@ function MemberPermissionsDialogContent({
                 errors={field.state.meta.errors}
                 onChange={(profiles) => field.handleChange(profiles)}
                 profileOptions={profileOptions}
-                profiles={field.state.value as TeamProfiles}
+                profiles={field.state.value}
               />
             )}
           </form.Field>

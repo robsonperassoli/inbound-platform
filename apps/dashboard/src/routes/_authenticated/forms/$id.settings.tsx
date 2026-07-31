@@ -178,7 +178,7 @@ function SettingsEditor({
   const typeLabelByValue = useMemo(() => {
     return Object.fromEntries(
       fieldTypes.map((fieldType) => [fieldType.value, fieldType.label]),
-    ) as Record<FormFieldType, string>
+    )
   }, [])
 
   return (
@@ -389,7 +389,7 @@ function FieldEditorSheet({
   const fieldForm = useForm({
     defaultValues: {
       label: initialField?.label ?? "",
-      type: initialField?.type ?? ("shortText" as FormFieldType),
+      type: initialField?.type ?? "shortText",
       required: initialField?.required ?? false,
       optionsText: initialField?.options?.join("\n") ?? "",
     },
@@ -478,9 +478,7 @@ function FieldEditorSheet({
                     <FieldLabel>Type</FieldLabel>
                     <Select
                       value={field.state.value}
-                      onValueChange={(value) =>
-                        field.handleChange(value as FormFieldType)
-                      }
+                      onValueChange={(value) => field.handleChange(value)}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Field type" />

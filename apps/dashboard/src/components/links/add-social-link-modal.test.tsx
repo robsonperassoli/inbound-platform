@@ -112,7 +112,7 @@ describe("AddSocialLinkModal", () => {
         open
         onClose={() => {}}
         order={3}
-        profileId={"profile_123" as never}
+        profileId="profile_123"
       />,
     )
 
@@ -141,7 +141,7 @@ describe("AddSocialLinkModal", () => {
         open
         onClose={onClose}
         order={7}
-        profileId={"profile_123" as never}
+        profileId="profile_123"
       />,
     )
 
@@ -173,7 +173,7 @@ describe("AddSocialLinkModal", () => {
         open
         onClose={() => {}}
         order={1}
-        profileId={"profile_123" as never}
+        profileId="profile_123"
       />,
     )
 

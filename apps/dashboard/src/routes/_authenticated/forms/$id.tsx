@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/forms/$id")({
   component: RouteComponent,
   params: {
     parse: (params) => ({
-      id: params.id as string,
+      id: params.id,
     }),
   },
 })

@@ -3,11 +3,7 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 import type { LegendPayload } from "recharts/types/component/DefaultLegendContent"
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent"
+import type { Payload } from "recharts/types/component/DefaultTooltipContent"
 import type { Props as LegendProps } from "recharts/types/component/Legend"
 import type { TooltipContentProps } from "recharts/types/component/Tooltip"
 
@@ -30,7 +26,7 @@ type ChartContextProps = {
   config: ChartConfig
 }
 
-export type CustomTooltipProps = TooltipContentProps<ValueType, NameType> & {
+export type CustomTooltipProps = TooltipContentProps & {
   className?: string
   hideLabel?: boolean
   hideIndicator?: boolean
@@ -109,7 +105,7 @@ function ChartContainer({
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme || config.color,
+    ([, itemConfig]) => itemConfig.theme || itemConfig.color,
   )
 
   if (!colorConfig.length) {
@@ -165,12 +161,12 @@ function ChartTooltipContent({
     }
 
     const [item] = payload
-    const key = `${labelKey || String(item?.dataKey ?? item?.name ?? "value")}`
+    const key = labelKey || String(item?.dataKey ?? item?.name ?? "value")
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
     const value = (() => {
       const v =
         !labelKey && typeof label === "string"
-          ? (config[label as keyof typeof config]?.label ?? label)
+          ? (config[label]?.label ?? label)
           : itemConfig?.label
 
       return typeof v === "string" || typeof v === "number" ? v : undefined
@@ -215,7 +211,7 @@ function ChartTooltipContent({
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
-          const key = `${nameKey || String(item.name ?? item.dataKey ?? "value")}`
+          const key = nameKey || String(item.name ?? item.dataKey ?? "value")
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
           const indicatorColor = color || item.payload.fill || item.color
 
@@ -307,7 +303,7 @@ function ChartLegendContent({
       )}
     >
       {payload.map((item) => {
-        const key = `${nameKey || String(item.dataKey ?? "value")}`
+        const key = nameKey || String(item.dataKey ?? "value")
         const itemConfig = getPayloadConfigFromPayload(config, item, key)
 
         return (
@@ -358,20 +354,16 @@ function getPayloadConfigFromPayload(
     key in payload &&
     typeof payload[key as keyof typeof payload] === "string"
   ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
+    configLabelKey = payload[key as keyof typeof payload]
   } else if (
     payloadPayload &&
     key in payloadPayload &&
     typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
   ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
+    configLabelKey = payloadPayload[key as keyof typeof payloadPayload]
   }
 
-  return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config]
+  return configLabelKey in config ? config[configLabelKey] : config[key]
 }
 
 export {

@@ -186,6 +186,8 @@ describe("profiles domain", () => {
     })
 
     const ids = await profiles.listAccountProfileIds(account.id)
-    expect(ids.sort()).toEqual([first.profile.id, second.profile.id].sort())
+    expect(ids.toSorted()).toEqual(
+      [first.profile.id, second.profile.id].toSorted(),
+    )
   })
 })

@@ -28,7 +28,7 @@ export function Chat({
   }, [messages])
 
   const reversedMessages = useMemo(
-    () => (messages ? Array.from(messages).reverse() : []),
+    () => (messages ? Array.from(messages).toReversed() : []),
     [messages],
   )
 

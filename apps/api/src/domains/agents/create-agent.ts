@@ -37,8 +37,10 @@ export function createAgent(thread: Thread) {
       }
       break
 
-    default:
-      throw new Error(`Unknown agent type: ${(thread as Thread).type}`)
+    default: {
+      thread satisfies never
+      throw new Error("Unknown agent type")
+    }
   }
 
   return new ToolLoopAgent({

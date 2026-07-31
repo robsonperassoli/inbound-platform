@@ -91,17 +91,17 @@ export function ProfileSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Pages
             </DropdownMenuLabel>
-            {profiles?.map((profile, index) => (
+            {profiles?.map((item, index) => (
               <DropdownMenuItem
-                key={profile.username}
-                onClick={() => setSelectedProfile(profile.id)}
+                key={item.username}
+                onClick={() => setSelectedProfile(item.id)}
                 className="gap-2 p-2"
               >
                 <Avatar size="sm">
-                  {/*<AvatarImage src={profile.avatarUrl} />*/}
-                  <AvatarFallback>{getInitials(profile.title)}</AvatarFallback>
+                  {/*<AvatarImage src={item.avatarUrl} />*/}
+                  <AvatarFallback>{getInitials(item.title)}</AvatarFallback>
                 </Avatar>
-                {profile.title}
+                {item.title}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}

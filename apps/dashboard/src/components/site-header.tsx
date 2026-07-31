@@ -89,7 +89,7 @@ export function SiteHeaderProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const resolvedEntries = useMemo(
-    () => [...entries].sort((a, b) => a.order - b.order),
+    () => [...entries].toSorted((a, b) => a.order - b.order),
     [entries],
   )
 

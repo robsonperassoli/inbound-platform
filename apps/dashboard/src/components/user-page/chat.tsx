@@ -34,7 +34,7 @@ export function Chat({
   }, [messages])
 
   const reversedMessages = useMemo(
-    () => (messages ? Array.from(messages).reverse() : []),
+    () => (messages ? Array.from(messages).toReversed() : []),
     [messages],
   )
 
@@ -46,12 +46,12 @@ export function Chat({
             <p className="italic animate-pulse text-primary">Thinking...</p>
           </div>
         )}
-        {reversedMessages.map((message) => {
-          const isUserMessage = message.role === "user"
+        {reversedMessages.map((chatMessage) => {
+          const isUserMessage = chatMessage.role === "user"
 
           return (
             <div
-              key={message.id}
+              key={chatMessage.id}
               className={cn("w-full", isUserMessage && "flex justify-end")}
             >
               <ChatMessageContent
@@ -61,7 +61,7 @@ export function Chat({
                     : "w-full mx-auto",
                 )}
               >
-                {message.content}
+                {chatMessage.content}
               </ChatMessageContent>
             </div>
           )

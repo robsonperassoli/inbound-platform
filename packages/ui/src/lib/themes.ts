@@ -325,7 +325,7 @@ export const themes: Theme[] = [
 ]
 
 export function getDefaultTheme() {
-  const theme = themes.find((theme) => theme.name === defaultThemeName)
+  const theme = themes.find((t) => t.name === defaultThemeName)
   if (!theme) {
     throw new Error(`Default theme '${defaultThemeName}' not found`)
   }

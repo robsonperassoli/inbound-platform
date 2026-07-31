@@ -51,6 +51,14 @@ const profileHeaderSchema = z.object({
 
 type ProfileHeaderValues = z.infer<typeof profileHeaderSchema>
 
+function normalizeValues(values: ProfileHeaderValues): ProfileHeaderValues {
+  return {
+    username: values.username.trim(),
+    title: values.title.trim(),
+    bio: values.bio.trim(),
+  }
+}
+
 function RouteComponent() {
   useSiteHeader({ title: "Settings", titleMode: "append" })
 
@@ -70,14 +78,6 @@ function SettingsForm({ profile }: { profile: Profile }) {
   const updateProfile = useUpdateProfile()
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
-
-  const normalizeValues = (
-    values: ProfileHeaderValues,
-  ): ProfileHeaderValues => ({
-    username: values.username.trim(),
-    title: values.title.trim(),
-    bio: values.bio.trim(),
-  })
 
   const form = useForm({
     defaultValues: {
