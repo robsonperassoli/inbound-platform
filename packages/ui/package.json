@@ -40,7 +40,6 @@
     "react-markdown": "^10.1.0",
     "react-textarea-autosize": "catalog:",
     "remark-gfm": "^4.0.1",
-    "shadcn": "catalog:",
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {

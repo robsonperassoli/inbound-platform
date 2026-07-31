@@ -34,13 +34,13 @@ export function Chat({
   )
 
   return (
-    <div className="flex h-full w-full flex-col items-center py-4">
+    <div className="flex h-full w-full flex-col items-center py-4 text-up-foreground">
       <div className="flex w-full flex-1 grow flex-col-reverse gap-y-4 overflow-auto scroll-smooth py-8 pr-2 pl-4">
         {(lastMessage?.status === "pending" ||
           lastMessage?.status === "streaming") &&
         !lastMessage.content ? (
           <div className="mx-auto w-full max-w-prose">
-            <p className="animate-pulse italic text-teal-700">Thinking...</p>
+            <p className="animate-pulse italic text-up-button">Thinking...</p>
           </div>
         ) : null}
         {reversedMessages.map((item) => {
@@ -54,7 +54,7 @@ export function Chat({
               <ChatMessageContent
                 className={cn(
                   isUserMessage
-                    ? "max-w-[min(75%,36rem)] rounded-2xl rounded-br-md border border-teal-700/20 bg-teal-700/10 px-4 py-3 shadow-sm prose-p:my-0 prose-headings:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-code:text-foreground prose-blockquote:text-foreground/90 prose-li:marker:text-foreground/70"
+                    ? "max-w-[min(75%,36rem)] rounded-2xl rounded-br-md border border-up-button/20 bg-up-button/10 px-4 py-3 shadow-sm prose-p:my-0"
                     : "mx-auto w-full max-w-prose",
                 )}
               >
@@ -67,7 +67,7 @@ export function Chat({
       <div className="w-full shrink-0 px-4">
         <form
           ref={formRef}
-          className="flex items-end gap-2 rounded-2xl border bg-white/70 p-2 shadow-sm backdrop-blur"
+          className="flex items-end gap-2 rounded-2xl border border-[color:color-mix(in_srgb,var(--color-up-foreground)_16%,transparent)] bg-up-background/70 p-2 shadow-sm backdrop-blur"
           onSubmit={async (e) => {
             e.preventDefault()
             if (message.trim().length === 0 || sending) return
@@ -81,7 +81,7 @@ export function Chat({
           }}
         >
           <TextareaAutosize
-            className="min-h-10 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-sm outline-none"
+            className="min-h-10 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-sm text-up-foreground outline-none placeholder:text-up-foreground/50"
             placeholder="Answer here..."
             value={message}
             onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -95,7 +95,7 @@ export function Chat({
           <button
             type="submit"
             disabled={message.trim().length === 0 || sending}
-            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-700 text-white disabled:opacity-50"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-up-button text-up-button-foreground disabled:opacity-50"
           >
             <HugeiconsIcon icon={ArrowUp02Icon} size={18} />
           </button>

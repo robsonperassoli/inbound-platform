@@ -1,8 +1,16 @@
 import { Chat01Icon, Close } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Popover } from "radix-ui"
+import type { CSSProperties } from "react"
 import { cn } from "../lib/utils"
 import { Chat, type ChatMessage } from "./chat"
+
+export type ChatPopupTheme = {
+  backgroundColor: string
+  textColor: string
+  buttonColor: string
+  buttonTextColor: string
+}
 
 export function ChatPopup({
   sessionId,
@@ -11,6 +19,7 @@ export function ChatPopup({
   onOpen,
   messages = [],
   sendMessage,
+  theme,
 }: {
   sessionId: string
   open: boolean
@@ -18,21 +27,32 @@ export function ChatPopup({
   onClose: () => void
   messages?: ChatMessage[]
   sendMessage?: (message: string) => Promise<void>
+  theme: ChatPopupTheme
 }) {
+  const themeStyle = {
+    "--up-background": theme.backgroundColor,
+    "--up-foreground": theme.textColor,
+    "--up-button-background": theme.buttonColor,
+    "--up-button-foreground": theme.buttonTextColor,
+  } as CSSProperties
+
   return (
     <Popover.Root open={open}>
       <Popover.Anchor asChild>
         {sessionId && (
-          <div className="fixed bottom-4 sm:bottom-10 right-4 sm:right-10">
+          <div
+            className="fixed bottom-4 sm:bottom-10 right-4 sm:right-10"
+            style={themeStyle}
+          >
             <button
               type="button"
               onClick={open ? onClose : onOpen}
               className={cn(
-                "transition-all ease-in-out",
+                "transition-all ease-in-out text-up-button-foreground rounded-full shadow-lg text-xs",
                 !open &&
-                  "h-10 w-24 flex items-center justify-center gap-x-1 bg-teal-700/70 hover:bg-teal-700/80 text-white rounded-full shadow-lg text-xs",
+                  "h-10 w-24 flex items-center justify-center gap-x-1 bg-up-button/80 hover:bg-up-button",
                 open &&
-                  "size-10 flex items-center justify-center p-1 bg-black/40 hover:bg-black/50 text-white rounded-full shadow-lg",
+                  "size-10 flex items-center justify-center p-1 bg-up-foreground/40 hover:bg-up-foreground/50",
               )}
             >
               <HugeiconsIcon
@@ -50,28 +70,18 @@ export function ChatPopup({
           align="end"
           side="top"
           sideOffset={10}
+          style={themeStyle}
           className={cn(
-            "relative isolate border rounded-2xl shadow-lg w-screen sm:w-full sm:max-w-sm h-[80vh] md:h-120 overflow-hidden",
-
-            // gradients
-            "text-slate-900 dark:text-slate-50",
+            "relative isolate rounded-2xl w-screen sm:w-full sm:max-w-sm h-[80vh] md:h-120 overflow-hidden",
+            "text-up-foreground",
             "backdrop-blur-xl backdrop-saturate-150",
-            "bg-linear-to-br",
-            "from-white/80 via-white/70 to-white/55",
-            "dark:from-slate-950/65 dark:via-slate-950/55 dark:to-slate-950/40",
-            "border border-white/40 dark:border-white/10",
-            "shadow-[0_1px_0_rgba(255,255,255,0.55)_inset,0_24px_70px_rgba(2,6,23,0.22)]",
-
-            // 'before:-z-10' to push the sheen behind the text
+            "bg-up-background/80",
+            "border border-[color:color-mix(in_srgb,var(--color-up-foreground)_18%,transparent)]",
+            "shadow-[0_1px_0_color-mix(in_srgb,var(--color-up-background)_55%,transparent)_inset,0_24px_70px_color-mix(in_srgb,var(--color-up-foreground)_22%,transparent)]",
             "before:-z-10 before:pointer-events-none before:absolute before:inset-0 before:content-['']",
-            "before:bg-[radial-gradient(70%_55%_at_20%_0%,rgba(255,255,255,0.75),transparent_60%)]",
-
-            // 'after:-z-10' to push the vignette behind the text
+            "before:bg-[radial-gradient(70%_55%_at_20%_0%,color-mix(in_srgb,var(--color-up-background)_75%,transparent),transparent_60%)]",
             "after:-z-10 after:pointer-events-none after:absolute after:inset-0 after:content-['']",
-            "after:bg-[radial-gradient(120%_90%_at_50%_110%,rgba(2,6,23,0.10),transparent_55%)]",
-            "dark:after:bg-[radial-gradient(120%_90%_at_50%_110%,rgba(0,0,0,0.35),transparent_55%)]",
-
-            // animations
+            "after:bg-[radial-gradient(120%_90%_at_50%_110%,color-mix(in_srgb,var(--color-up-foreground)_10%,transparent),transparent_55%)]",
             "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0",
             "data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=top]:slide-in-from-bottom-2",
           )}

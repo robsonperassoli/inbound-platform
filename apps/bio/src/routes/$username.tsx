@@ -150,7 +150,17 @@ function UsernamePage() {
         className="min-h-screen"
         onFormLinkClick={onFormLinkClick}
       />
-      {sessionId ? <BioFormChat sessionId={sessionId} /> : null}
+      {sessionId ? (
+        <BioFormChat
+          sessionId={sessionId}
+          theme={{
+            backgroundColor: profile.backgroundColor,
+            textColor: profile.textColor,
+            buttonColor: profile.buttonColor,
+            buttonTextColor: profile.buttonTextColor,
+          }}
+        />
+      ) : null}
     </>
   )
 }

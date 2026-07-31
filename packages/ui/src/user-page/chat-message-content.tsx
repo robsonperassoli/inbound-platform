@@ -13,7 +13,7 @@ export function ChatMessageContent({
     <div
       className={cn(
         className,
-        "prose prose-sm text-foreground dark:prose-invert prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none prose-pre:bg-muted prose-pre:text-foreground prose-blockquote:text-muted-foreground prose-blockquote:border-border prose-hr:border-border prose-li:marker:text-muted-foreground prose-table:text-sm prose-th:text-foreground prose-td:text-foreground",
+        "prose prose-sm text-up-foreground prose-headings:text-up-foreground prose-strong:text-up-foreground prose-a:text-up-button hover:prose-a:text-up-button/80 prose-code:text-up-foreground prose-code:before:content-none prose-code:after:content-none prose-pre:bg-up-button/10 prose-pre:text-up-foreground prose-blockquote:text-up-foreground/70 prose-blockquote:border-up-foreground/20 prose-hr:border-up-foreground/20 prose-li:marker:text-up-foreground/60 prose-table:text-sm prose-th:text-up-foreground prose-td:text-up-foreground",
       )}
     >
       <Markdown remarkPlugins={[remarkGfm]}>{children}</Markdown>

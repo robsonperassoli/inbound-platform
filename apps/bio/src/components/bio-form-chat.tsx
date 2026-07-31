@@ -1,4 +1,4 @@
-import type { ChatMessage } from "@inbound/ui"
+import type { ChatMessage, ChatPopupTheme } from "@inbound/ui"
 import { ChatPopup } from "@inbound/ui"
 import { useCallback, useEffect, useState } from "react"
 import { getFormSessionMessages, sendFormSessionMessage } from "@/lib/api"
@@ -7,7 +7,13 @@ type SessionMessage = ChatMessage & {
   status?: "pending" | "complete" | "streaming" | "error"
 }
 
-export function BioFormChat({ sessionId }: { sessionId: string }) {
+export function BioFormChat({
+  sessionId,
+  theme,
+}: {
+  sessionId: string
+  theme: ChatPopupTheme
+}) {
   const [open, setOpen] = useState(true)
   const [messages, setMessages] = useState<SessionMessage[]>([])
 
@@ -49,6 +55,7 @@ export function BioFormChat({ sessionId }: { sessionId: string }) {
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       messages={messages}
+      theme={theme}
       sendMessage={async (message) => {
         await sendFormSessionMessage(sessionId, message)
         await loadMessages()
