@@ -2,7 +2,6 @@ import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import { env } from "./lib/env"
-import { sqlitePath } from "./db/client"
 import { authRoutes } from "./routes/auth"
 import { analyticsRoutes } from "./routes/analytics"
 import { billingRoutes } from "./routes/billing"
@@ -38,7 +37,6 @@ const app = new Hono()
     c.json({
       ok: true,
       service: "api",
-      sqlitePath,
       env: env.NODE_ENV,
     }),
   )
