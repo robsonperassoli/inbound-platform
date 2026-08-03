@@ -5,7 +5,9 @@ const envSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   PORT: z.coerce.number().default(8787),
-  SQLITE_PATH: z.string().default("data/inbound.sqlite"),
+  // Relative paths resolve against process.cwd() (pnpm filter scripts → apps/api)
+  SQLITE_PATH: z.string().default("../../data/inbound.sqlite"),
+  MIGRATIONS_PATH: z.string().default("drizzle"),
   API_URL: z.string().default("http://localhost:8787"),
   BIO_URL: z.string().default("http://localhost:3001"),
   DASHBOARD_URL: z.string().default("http://localhost:3000"),

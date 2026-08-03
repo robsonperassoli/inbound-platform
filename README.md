@@ -125,8 +125,12 @@ pnpm stripe:tunnel
 
 ## Production notes (later)
 
-- Configure all values via environment variables (12-factor).
-- When using a local SQLite file/volume, run a **single API replica**.
+Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/data`, 1 replica), **dashboard** (Vite SPA), **bio** (TanStack Start SSR), **cron** (curl → API every 5m). Object uploads stay on Backblaze B2 (`B2_*`); do not use a Railway bucket for media.
+
+- Configure all values via environment variables (12-factor). Pin `RAILPACK_NODE_VERSION=24`.
+- When using a local SQLite file/volume, run a **single API replica**. Set absolute `SQLITE_PATH=/data/inbound.sqlite` on the API service. Relative `SQLITE_PATH` / `MIGRATIONS_PATH` resolve against `process.cwd()` (`apps/api` under `pnpm --filter`).
+- API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup; production start is `pnpm --filter @inbound/api start:prod` (`node dist/migrate.js` then `node dist/index.js`). Local `dev` still uses `tsx`.
+- Dashboard: `pnpm --filter @inbound/dashboard build` → static `apps/dashboard/dist`; production start is `serve -s dist` (SPA fallback).
 - Bio production host: `https://s.uper.bio/<username>`
 - Convex data migration and Railway cutover are intentionally deferred.
 - **Abandoned form sessions auto-close**
