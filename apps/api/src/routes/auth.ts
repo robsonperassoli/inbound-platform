@@ -13,11 +13,14 @@ const SESSION_COOKIE = "inbound_session"
 const WORKOS_SID_COOKIE = "workos_sid"
 
 function sessionCookieOptions() {
+  // Dashboard and API are different sites in production, so the session cookie
+  // must be SameSite=None (and Secure) or credentialed /me calls never send it.
+  const crossSite = env.NODE_ENV === "production"
   return {
     httpOnly: true,
-    sameSite: "Lax" as const,
+    sameSite: crossSite ? ("None" as const) : ("Lax" as const),
     path: "/",
-    secure: env.NODE_ENV === "production",
+    secure: crossSite,
   }
 }
 
