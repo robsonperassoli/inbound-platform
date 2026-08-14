@@ -442,3 +442,8 @@
     animation: none !important;
   }
 }
+
+/* INB-59: make the dashboard background green */
+body {
+  background-color: #22c55e;
+}
