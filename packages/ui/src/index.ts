@@ -1,5 +1,6 @@
 export { UserPage } from "./user-page"
 export { Button as UserPageButton } from "./user-page/button"
+export { PoweredBy, INBOUND_HOME_URL } from "./user-page/powered-by"
 export { SocialLink } from "./user-page/social-link"
 export { ChatPopup } from "./user-page/chat-popup"
 export type { ChatPopupTheme } from "./user-page/chat-theme"

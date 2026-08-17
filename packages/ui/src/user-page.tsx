@@ -9,6 +9,7 @@ import { getRelativeLuminance } from "./lib/colors"
 import { loadFont } from "./lib/load-font"
 import { cn } from "./lib/utils"
 import { Button } from "./user-page/button"
+import { PoweredBy } from "./user-page/powered-by"
 import { SocialLink } from "./user-page/social-link"
 
 export type { UserPageLink, UserPageProfile }
@@ -18,11 +19,13 @@ export function UserPage({
   links,
   className,
   onFormLinkClick,
+  showBranding = true,
 }: {
   profile: UserPageProfile
   links: UserPageLink[]
   className?: string
   onFormLinkClick: (link: UserPageLink) => void
+  showBranding?: boolean
 }) {
   useEffect(() => {
     if (profile.fontFamily) {
@@ -52,7 +55,7 @@ export function UserPage({
   return (
     <div
       className={cn(
-        "relative flex @container/user-page bg-up-background text-up-foreground",
+        "relative flex flex-col @container/user-page bg-up-background text-up-foreground",
         fontClassName,
         className,
       )}
@@ -78,9 +81,9 @@ export function UserPage({
 
       <div
         className={cn(
-          "relative z-0 mx-auto flex-1 max-w-xl bg-up-background",
+          "relative z-0 mx-auto flex w-full max-w-xl flex-1 flex-col bg-up-background",
           "px-4 py-8 @xl/user-page:px-8 @xl/user-page:py-12",
-          "@xl/user-page:shadow-2xl @xl/user-page:mt-8 @xl/user-page:rounded-t-[3rem]",
+          "@xl/user-page:mt-8 @xl/user-page:rounded-t-[3rem] @xl/user-page:shadow-2xl",
         )}
         style={{
           backgroundImage: profile.backgroundImageUrl
@@ -96,60 +99,68 @@ export function UserPage({
               : "0 28px 80px rgb(15 23 42 / 0.14)",
         }}
       >
-        <header className="space-y-5 @md/user-page:space-y-6">
-          {profile.avatarUrl && (
-            <Avatar className="mx-auto block size-24 shadow-lg @md/user-page:size-28">
-              <AvatarImage src={profile.avatarUrl} />
-            </Avatar>
-          )}
-
-          <div className="space-y-1.5 text-center @md/user-page:space-y-2">
-            <h1
-              className={cn(
-                "text-[1.9rem] leading-none font-semibold @md/user-page:text-[2.35rem]",
-                fontTracking.heading,
-              )}
-            >
-              {profile.title}
-            </h1>
-            {profile.bio && (
-              <p className="text-base leading-snug @md/user-page:text-lg">
-                {profile.bio}
-              </p>
+        <div className="flex-1">
+          <header className="space-y-5 @md/user-page:space-y-6">
+            {profile.avatarUrl && (
+              <Avatar className="mx-auto block size-24 shadow-lg @md/user-page:size-28">
+                <AvatarImage src={profile.avatarUrl} />
+              </Avatar>
             )}
-          </div>
-        </header>
 
-        <ul className="mx-auto mt-8 flex max-w-md flex-col justify-center gap-y-4 @md/user-page:mt-9 @md/user-page:gap-y-4.5">
-          {buttonLinks.map((link) => (
-            <li key={link.id} className="min-w-0 flex">
-              <Button
-                {...(link.type === "url"
-                  ? { href: link.url }
-                  : { onClick: () => onFormLinkClick(link) })}
-                shape={profile.buttonShape}
-                buttonStyle={profile.buttonStyle}
-                className="truncate text-ellipsis"
-                labelClassName={cn(
-                  "block truncate text-ellipsis",
-                  fontTracking.body,
+            <div className="space-y-1.5 text-center @md/user-page:space-y-2">
+              <h1
+                className={cn(
+                  "text-[1.9rem] leading-none font-semibold @md/user-page:text-[2.35rem]",
+                  fontTracking.heading,
                 )}
               >
-                {link.title}
-              </Button>
-            </li>
-          ))}
-        </ul>
+                {profile.title}
+              </h1>
+              {profile.bio && (
+                <p className="text-base leading-snug @md/user-page:text-lg">
+                  {profile.bio}
+                </p>
+              )}
+            </div>
+          </header>
 
-        {socialLinks.length > 0 && (
-          <ul className="mt-8 flex justify-center @md/user-page:mt-9">
-            {socialLinks.map((l) => (
-              <li key={l.id}>
-                <SocialLink link={l} />
+          <ul className="mx-auto mt-8 flex max-w-md flex-col justify-center gap-y-4 @md/user-page:mt-9 @md/user-page:gap-y-4.5">
+            {buttonLinks.map((link) => (
+              <li key={link.id} className="flex min-w-0">
+                <Button
+                  {...(link.type === "url"
+                    ? { href: link.url }
+                    : { onClick: () => onFormLinkClick(link) })}
+                  shape={profile.buttonShape}
+                  buttonStyle={profile.buttonStyle}
+                  className="truncate text-ellipsis"
+                  labelClassName={cn(
+                    "block truncate text-ellipsis",
+                    fontTracking.body,
+                  )}
+                >
+                  {link.title}
+                </Button>
               </li>
             ))}
           </ul>
-        )}
+
+          {socialLinks.length > 0 && (
+            <ul className="mt-8 flex justify-center @md/user-page:mt-9">
+              {socialLinks.map((l) => (
+                <li key={l.id}>
+                  <SocialLink link={l} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {showBranding ? (
+          <footer className="mt-10 flex justify-center @md/user-page:mt-12">
+            <PoweredBy />
+          </footer>
+        ) : null}
       </div>
     </div>
   )
