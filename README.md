@@ -62,7 +62,13 @@ pnpm tinybird:dev
 
 Then run the apps as usual with `pnpm dev`.
 
-Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` on the Railway **api** service. That service's pre-deploy command runs `pnpm --filter @inbound/api predeploy` (SQLite migrations, then `tinybird deploy`) before the new release starts.
+Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` on the Railway **api** service. Pipes deploy during that service's **build** (`pnpm --filter @inbound/api release` = `tinybird deploy && tsup`). The process then migrates SQLite on boot (the volume is only mounted at runtime). Do not use a Railway pre-deploy command.
+
+Railway **api** commands:
+
+- **Build command:** `pnpm install --frozen-lockfile && pnpm --filter @inbound/api release`
+- **Start command:** `pnpm --filter @inbound/api start:prod`
+- **Pre-deploy command:** empty
 
 ### Backblaze B2 (uploads)
 
@@ -129,7 +135,7 @@ Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/
 
 - Configure all values via environment variables (12-factor). Pin `RAILPACK_NODE_VERSION=24`.
 - When using a local SQLite file/volume, run a **single API replica**. Set absolute `SQLITE_PATH=/data/inbound.sqlite` on the API service. Relative `SQLITE_PATH` / `MIGRATIONS_PATH` resolve against `process.cwd()` (`apps/api` under `pnpm --filter`).
-- API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup; production start is `pnpm --filter @inbound/api start:prod`. Local `dev` still uses `tsx`. Railway pre-deploy runs `pnpm --filter @inbound/api predeploy` (`node dist/migrate.js` then `tinybird deploy`).
+- API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup (local/turbo). Railway build is `pnpm --filter @inbound/api release` (`tinybird deploy && tsup`). Start is `pnpm --filter @inbound/api start:prod` (`node dist/index.js`), which applies Drizzle migrations then listens. Local `dev` still uses `tsx` and also migrates on boot. Leave Railway pre-deploy empty — volumes are not mounted there.
 - Dashboard: `pnpm --filter @inbound/dashboard build` → static `apps/dashboard/dist`; production start is `serve -s dist` (SPA fallback).
 - Bio production host: `https://s.uper.bio/<username>`
 - Convex data migration and Railway cutover are intentionally deferred.
