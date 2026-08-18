@@ -37,7 +37,7 @@
     "@toon-format/toon": "^4.1.0",
     "@workos-inc/node": "^7.71.0",
     "ai": "^6.0.116",
-    "better-sqlite3": "^11.9.1",
+    "better-sqlite3": "^12.11.1",
     "drizzle-orm": "^0.43.1",
     "hono": "^4.7.7",
     "resend": "^6.18.1",
