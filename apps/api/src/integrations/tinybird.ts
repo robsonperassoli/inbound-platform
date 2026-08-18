@@ -76,43 +76,40 @@ export const overview = defineEndpoint("overview", {
       name: "views",
       sql: `
         SELECT
-          profile_id,
           count() AS total_page_views,
           uniqExact(visitor_id) AS unique_visitors
         FROM page_views
         WHERE profile_id = {{String(profile_id)}}
           AND timestamp >= {{DateTime(start_date)}}
           AND timestamp <= {{DateTime(end_date)}}
-        GROUP BY profile_id
       `,
     }),
     node({
       name: "clicks",
       sql: `
         SELECT
-          profile_id,
           count() AS total_link_clicks
         FROM link_clicks
         WHERE profile_id = {{String(profile_id)}}
           AND timestamp >= {{DateTime(start_date)}}
           AND timestamp <= {{DateTime(end_date)}}
-        GROUP BY profile_id
       `,
     }),
     node({
       name: "final",
       sql: `
         SELECT
-          coalesce(v.profile_id, c.profile_id) AS profile_id,
-          coalesce(v.total_page_views, 0) AS total_page_views,
-          coalesce(v.unique_visitors, 0) AS unique_visitors,
-          coalesce(c.total_link_clicks, 0) AS total_link_clicks,
-          if(coalesce(v.total_page_views, 0) = 0,
-             0,
-             coalesce(c.total_link_clicks, 0) / coalesce(v.total_page_views, 0)
+          {{String(profile_id)}} AS profile_id,
+          v.total_page_views,
+          v.unique_visitors,
+          c.total_link_clicks,
+          if(
+            v.total_page_views = 0,
+            0,
+            c.total_link_clicks / v.total_page_views
           ) AS average_ctr
         FROM views v
-        FULL OUTER JOIN clicks c USING (profile_id)
+        CROSS JOIN clicks c
       `,
     }),
   ],

@@ -62,7 +62,7 @@ pnpm tinybird:dev
 
 Then run the apps as usual with `pnpm dev`.
 
-Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` in the API environment to your Tinybird cloud host and workspace token. Deploy schemas with `pnpm tinybird:deploy`.
+Production: set `TINYBIRD_URL` / `TINYBIRD_TOKEN` on the Railway **api** service. That service's pre-deploy command runs `pnpm --filter @inbound/api predeploy` (SQLite migrations, then `tinybird deploy`) before the new release starts.
 
 ### Backblaze B2 (uploads)
 
@@ -129,7 +129,7 @@ Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/
 
 - Configure all values via environment variables (12-factor). Pin `RAILPACK_NODE_VERSION=24`.
 - When using a local SQLite file/volume, run a **single API replica**. Set absolute `SQLITE_PATH=/data/inbound.sqlite` on the API service. Relative `SQLITE_PATH` / `MIGRATIONS_PATH` resolve against `process.cwd()` (`apps/api` under `pnpm --filter`).
-- API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup; production start is `pnpm --filter @inbound/api start:prod` (`node dist/migrate.js` then `node dist/index.js`). Local `dev` still uses `tsx`.
+- API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup; production start is `pnpm --filter @inbound/api start:prod`. Local `dev` still uses `tsx`. Railway pre-deploy runs `pnpm --filter @inbound/api predeploy` (`node dist/migrate.js` then `tinybird deploy`).
 - Dashboard: `pnpm --filter @inbound/dashboard build` → static `apps/dashboard/dist`; production start is `serve -s dist` (SPA fallback).
 - Bio production host: `https://s.uper.bio/<username>`
 - Convex data migration and Railway cutover are intentionally deferred.
