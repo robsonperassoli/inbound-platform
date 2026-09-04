@@ -71,6 +71,17 @@ const structuredData = {
 
     <!-- Structured data -->
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <!-- Google Ads -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18367021115" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18367021115', {
+        linker: { domains: ['inbound.click', 'dashboard.inbound.click'] }
+      });
+    </script>
   </head>
   <body>
     <slot />
