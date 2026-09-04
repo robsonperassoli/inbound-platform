@@ -19,7 +19,8 @@
     "tinybird:dev": "pnpm --filter @inbound/api tinybird:dev",
     "tinybird:build": "pnpm --filter @inbound/api tinybird:build",
     "tinybird:deploy": "pnpm --filter @inbound/api tinybird:deploy",
-    "tinybird:preview": "pnpm --filter @inbound/api tinybird:preview"
+    "tinybird:preview": "pnpm --filter @inbound/api tinybird:preview",
+    "deploy:website": "fly deploy . --config apps/website/fly.toml --dockerfile apps/website/Dockerfile"
   },
   "devDependencies": {
     "oxfmt": "^0.35.0",

@@ -1,0 +1,320 @@
+---
+import { APP_SIGNIN_URL } from '../consts';
+---
+
+<section class="hero">
+  <div class="container">
+    <p class="hero-kicker">
+      <span class="dot dot-coral"></span>
+      <span class="dot dot-yellow"></span>
+      <span class="dot dot-mint"></span>
+      Zero-setup lead capture for creators
+    </p>
+    <h1 class="hero-title">
+      Stop leaking traffic.<br />
+      Turn followers into{' '}
+      <span class="highlight">qualified leads</span>.
+    </h1>
+    <p class="hero-lede">
+      Built for Instagram, TikTok, YouTube, and every social presence you own.
+      Zero-setup conversational AI that stops you leaking social traffic and
+      starts capturing high-intent leads, qualifying prospects in real time.
+    </p>
+
+    <div class="typewriter" aria-label="Example profile links">
+      <span class="prefix">s.uper.bio/</span><span
+        class="typed"
+        id="typed-username"
+        data-usernames='["mariafit", "studiokraft", "alexsells", "thecoachjo", "casaverde", "leadgenlab"]'
+        >mariafit</span
+      ><span class="caret" aria-hidden="true"></span>
+    </div>
+
+    <div class="hero-actions">
+      <a href={APP_SIGNIN_URL} class="btn btn-coral">Claim your link — it's free</a>
+      <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+    </div>
+    <p class="hero-note">Build and preview your page free. Just talk to the AI.</p>
+
+    <div class="hero-connector" aria-hidden="true">
+      <svg
+        viewBox="0 0 120 150"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="connector-svg"
+      >
+        <path
+          d="M20 6 C 20 50, 100 40, 100 78 C 100 110, 44 100, 52 134"
+          stroke="var(--coral)"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-dasharray="1 10"
+        ></path>
+        <path
+          d="M42 126 L 52 138 L 62 127"
+          stroke="var(--coral)"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </svg>
+      <span class="connector-label">See it in action</span>
+    </div>
+
+    <div class="hero-video">
+      <video
+        id="hero-demo"
+        src="/hero.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-label="Product demo of Inbound.click"
+      ></video>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(5rem, 12vw, 9rem) clamp(5rem, 10vw, 8rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before,
+  .hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .hero::before {
+    width: 480px;
+    height: 480px;
+    background: var(--mint);
+    top: -180px;
+    right: -120px;
+  }
+
+  .hero::after {
+    width: 420px;
+    height: 420px;
+    background: var(--coral);
+    bottom: -220px;
+    left: -140px;
+    opacity: 0.22;
+  }
+
+  .container {
+    position: relative;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--white);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+  }
+
+  .dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+  }
+
+  .dot-coral {
+    background: var(--coral);
+  }
+
+  .dot-yellow {
+    background: var(--yellow);
+  }
+
+  .dot-mint {
+    background: var(--mint);
+  }
+
+  .hero-title {
+    font-size: clamp(2.75rem, 7.5vw, 5.5rem);
+    font-weight: 700;
+    margin-top: 1.75rem;
+    max-width: 15ch;
+  }
+
+  .highlight {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .highlight::after {
+    content: '';
+    position: absolute;
+    left: -0.05em;
+    right: -0.05em;
+    bottom: 0.04em;
+    height: 0.32em;
+    background: var(--yellow);
+    z-index: -1;
+    border-radius: 4px;
+  }
+
+  .hero-lede {
+    font-size: clamp(1.1875rem, 2vw, 1.4375rem);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin-top: 1.75rem;
+  }
+
+  .typewriter {
+    margin-top: 2.75rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.375rem, 3.2vw, 2.25rem);
+    letter-spacing: -0.02em;
+    background: var(--ink);
+    color: var(--cream);
+    display: inline-block;
+    padding: 0.85rem 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: 8px 8px 0 var(--mint);
+  }
+
+  .prefix {
+    opacity: 0.55;
+  }
+
+  .typed {
+    color: var(--yellow);
+  }
+
+  .caret {
+    display: inline-block;
+    width: 3px;
+    height: 1.1em;
+    margin-left: 3px;
+    background: var(--coral);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .hero-note {
+    margin-top: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  .hero-connector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    margin-left: clamp(0.5rem, 4vw, 3rem);
+    width: fit-content;
+  }
+
+  .connector-svg {
+    width: clamp(80px, 10vw, 120px);
+    height: auto;
+  }
+
+  .connector-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    transform: rotate(-4deg);
+    align-self: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .hero-video {
+    margin-top: 0.5rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 3px solid var(--ink);
+    box-shadow: 12px 12px 0 var(--coral);
+    max-width: 960px;
+    background: var(--ink);
+  }
+
+  .hero-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>
+
+<script>
+  const video = document.getElementById('hero-demo') as HTMLVideoElement | null;
+  if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    video.removeAttribute('autoplay');
+    video.pause();
+    video.controls = true;
+  }
+
+  const el = document.getElementById('typed-username');
+  if (el) {
+    const usernames: string[] = JSON.parse(el.dataset.usernames ?? '[]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reduceMotion && usernames.length > 1) {
+      let index = 0;
+      let char = usernames[0].length;
+      let deleting = true;
+
+      const tick = () => {
+        const word = usernames[index];
+        if (deleting) {
+          char--;
+          el.textContent = word.slice(0, char);
+          if (char === 0) {
+            deleting = false;
+            index = (index + 1) % usernames.length;
+            setTimeout(tick, 400);
+            return;
+          }
+          setTimeout(tick, 45);
+        } else {
+          char++;
+          el.textContent = usernames[index].slice(0, char);
+          if (char === usernames[index].length) {
+            deleting = true;
+            setTimeout(tick, 2200);
+            return;
+          }
+          setTimeout(tick, 95);
+        }
+      };
+
+      setTimeout(tick, 1800);
+    }
+  }
+</script>

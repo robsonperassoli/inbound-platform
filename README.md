@@ -1,11 +1,12 @@
 # Inbound Platform
 
-Monorepo for the inbound.click platform: Hono API, SPA dashboard, SSR bio renderer, and shared UI.
+Monorepo for the inbound.click platform: marketing site, Hono API, SPA dashboard, SSR bio renderer, and shared UI.
 
 ## Apps
 
 | App | Path | Port | Role |
 |-----|------|------|------|
+| Website | `apps/website` | 4321 | Astro marketing site (`inbound.click`, Fly.io) |
 | API | `apps/api` | 8787 | Hono + Drizzle + SQLite |
 | Dashboard | `apps/dashboard` | 3000 | Vite SPA |
 | Bio | `apps/bio` | 3001 | TanStack Start SSR (`s.uper.bio/<username>`) |
@@ -116,6 +117,7 @@ Or tunnel alone while `pnpm dev` is already up:
 pnpm stripe:tunnel
 ```
 
+- Website: http://localhost:4321
 - API health: http://localhost:8787/health
 - Public profile: http://localhost:8787/public/profiles/demo
 - Bio page: http://localhost:3001/demo
@@ -131,13 +133,14 @@ pnpm stripe:tunnel
 
 ## Production notes (later)
 
-Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/data`, 1 replica), **dashboard** (Vite SPA), **bio** (TanStack Start SSR), **cron** (curl → API every 5m). Object uploads stay on Backblaze B2 (`B2_*`); do not use a Railway bucket for media.
+Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/data`, 1 replica), **dashboard** (Vite SPA), **bio** (TanStack Start SSR), **cron** (curl → API every 5m). Object uploads stay on Backblaze B2 (`B2_*`); do not use a Railway bucket for media. The marketing site is **not** on Railway — it stays on Fly.io (`inbound-website`, `https://inbound.click`). Deploy from the repo root with `pnpm deploy:website` (`fly deploy . --config apps/website/fly.toml --dockerfile apps/website/Dockerfile`).
 
 - Configure all values via environment variables (12-factor). Pin `RAILPACK_NODE_VERSION=24`.
 - When using a local SQLite file/volume, run a **single API replica**. Set absolute `SQLITE_PATH=/data/inbound.sqlite` on the API service. Relative `SQLITE_PATH` / `MIGRATIONS_PATH` resolve against `process.cwd()` (`apps/api` under `pnpm --filter`).
 - API: `pnpm --filter @inbound/api build` emits ESM to `apps/api/dist/` via tsup (local/turbo). Railway build is `pnpm --filter @inbound/api release` (`tinybird deploy && tsup`). Start is `pnpm --filter @inbound/api start:prod` (`node dist/migrate.js && node dist/index.js`). Local `dev` still uses `tsx`. Leave Railway pre-deploy empty — volumes are not mounted there.
 - Dashboard: `pnpm --filter @inbound/dashboard build` → static `apps/dashboard/dist`; production start is `serve -s dist` (SPA fallback).
 - Bio production host: `https://s.uper.bio/<username>`
+- Website: `pnpm --filter @inbound/website build` → static `apps/website/dist`, served by nginx on Fly.io. Always deploy from the repo root (`pnpm deploy:website`); do not `cd apps/website && fly deploy`.
 - Convex data migration and Railway cutover are intentionally deferred.
 - **Abandoned form sessions auto-close**
   - **Local (`NODE_ENV=development`):** the API process runs an in-process interval (every 60s) that calls the same close logic — no manual curl needed.

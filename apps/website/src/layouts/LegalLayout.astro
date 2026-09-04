@@ -1,0 +1,105 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import CtaFooter from '../components/CtaFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pageTitle: string;
+  effectiveDate: string;
+  image?: string;
+}
+
+const { title, description, pageTitle, effectiveDate, image } = Astro.props;
+---
+
+<Layout title={title} description={description} image={image}>
+  <Header />
+  <main>
+    <section class="section legal">
+      <div class="container legal-container">
+        <p class="eyebrow">Legal</p>
+        <h1 class="legal-title">{pageTitle}</h1>
+        <p class="legal-date">Effective Date: {effectiveDate}</p>
+
+        <div class="legal-content">
+          <slot />
+        </div>
+      </div>
+    </section>
+  </main>
+  <CtaFooter />
+</Layout>
+
+<style>
+  .legal {
+    padding-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .legal-container {
+    max-width: 780px;
+  }
+
+  .legal-title {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 700;
+    margin-top: 1rem;
+  }
+
+  .legal-date {
+    margin-top: 0.75rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .legal-content {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  .legal-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2.75rem;
+  }
+
+  .legal-content :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .legal-content :global(p) {
+    margin-top: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .legal-content :global(ul) {
+    margin: 1rem 0 0;
+    padding-left: 1.25rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .legal-content :global(a) {
+    color: var(--coral-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .legal-content :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .legal-content :global(code) {
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    padding: 0.15em 0.4em;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+</style>

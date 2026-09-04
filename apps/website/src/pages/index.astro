@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Features from '../components/Features.astro';
+import Pricing from '../components/Pricing.astro';
+import Contact from '../components/Contact.astro';
+import CtaFooter from '../components/CtaFooter.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <Header />
+  <main>
+    <Hero />
+    <HowItWorks />
+    <Features />
+    <Pricing />
+    <Contact />
+  </main>
+  <CtaFooter />
+</Layout>

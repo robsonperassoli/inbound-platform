@@ -1,0 +1,28 @@
+---
+import { SUPPORT_EMAIL } from '../consts';
+---
+
+<section class="section" id="contact">
+  <div class="container">
+    <h2 class="section-title">Questions? Talk to us.</h2>
+    <p class="section-lede">
+      Whether you&rsquo;re weighing plans, need a hand with setup, or want
+      custom pricing for your team, drop us a line.
+    </p>
+    <a href={`mailto:${SUPPORT_EMAIL}`} class="btn btn-primary contact-btn">
+      {SUPPORT_EMAIL}
+    </a>
+  </div>
+</section>
+
+<style>
+  #contact {
+    scroll-margin-top: 4.5rem;
+    background: var(--cream-deep);
+    padding-block: clamp(3.5rem, 6vw, 5.5rem);
+  }
+
+  .contact-btn {
+    margin-top: 3rem;
+  }
+</style>
