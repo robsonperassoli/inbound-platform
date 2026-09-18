@@ -19,7 +19,7 @@ Monorepo for the inbound.click platform: marketing site, Hono API, SPA dashboard
 
 ## Stack
 
-- Node + pnpm + Turborepo
+- mise + Node + pnpm + Turborepo
 - TypeScript 7
 - Oxlint (type-aware) + Oxfmt
 - SQLite with **WAL mode**, Drizzle ORM, **UUID v7** IDs
@@ -27,14 +27,20 @@ Monorepo for the inbound.click platform: marketing site, Hono API, SPA dashboard
 
 ## Setup
 
+Install [mise](https://mise.jdx.dev) and enable its shell hook. Then:
+
 ```bash
+mise trust
+mise install
+cp .env.example .env.local
 pnpm install
-cp .env.example .env
 pnpm db:generate
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
 ```
+
+Fill secrets in `.env.local` (gitignored). Mise loads that file into the shell. If you already have a root `.env`, `mv .env .env.local`.
 
 ### Tinybird (analytics)
 
@@ -47,7 +53,7 @@ tb token copy "admin local_testing@tinybird.co"
 
 Put the copied token in **both**:
 
-1. Root `.env` — used by the API at runtime
+1. Root `.env.local` — used by the API at runtime
 2. `apps/api/.env.local` — used by the Tinybird CLI (next to `tinybird.config.json`)
 
 ```bash
@@ -145,7 +151,7 @@ Railway layout (project `Inbound Platform`): **api** (Hono + SQLite volume at `/
 - **Abandoned form sessions auto-close**
   - **Local (`NODE_ENV=development`):** the API process runs an in-process interval (every 60s) that calls the same close logic — no manual curl needed.
   - **Production:** use HTTP cron (`POST /internal/cron/auto-close-threads`). The API does **not** schedule itself; until a scheduler calls it, idle sessions stay open.
-  1. Set `CRON_SECRET` on the API service (required in every environment — local `.env` included; see `.env.example`).
+  1. Set `CRON_SECRET` on the API service (required in every environment — local `.env.local` included; see `.env.example`).
   2. Add a separate Railway **Cron** service in the same project with schedule `*/5 * * * *` (UTC; Railway minimum is 5 minutes).
   3. Start command must curl the API and **exit** (overlapping runs are skipped if the process stays alive), e.g.  
      `curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$API_URL/internal/cron/auto-close-threads"`  

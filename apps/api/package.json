@@ -7,7 +7,7 @@
     ".": "./src/app.ts"
   },
   "scripts": {
-    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "start:prod": "node dist/migrate.js && node dist/index.js",
     "build": "tsup",
@@ -16,9 +16,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx --env-file=../../.env src/scripts/migrate.ts",
+    "db:migrate": "tsx src/scripts/migrate.ts",
     "db:migrate:prod": "node dist/migrate.js",
-    "db:seed": "tsx --env-file=../../.env src/scripts/seed.ts",
+    "db:seed": "tsx src/scripts/seed.ts",
     "stripe-tunnel": "ngrok http 8787 --domain=factual-worm-mostly.ngrok-free.app",
     "tb:start": "./tb_start.sh",
     "tinybird:dev": "tinybird dev",
