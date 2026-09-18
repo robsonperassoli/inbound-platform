@@ -8,4 +8,7 @@ export default defineConfig({
   trailingSlash: 'never',
   compressHTML: true,
   integrations: [sitemap()],
+  vite: {
+    clearScreen: false,
+  },
 });
