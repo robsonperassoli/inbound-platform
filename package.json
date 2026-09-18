@@ -3,8 +3,8 @@
   "private": true,
   "packageManager": "pnpm@11.5.2",
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "dev:webhooks": "turbo run dev stripe-tunnel --parallel",
+    "dev": "turbo run dev",
+    "dev:webhooks": "turbo run dev stripe-tunnel",
     "stripe:tunnel": "pnpm --filter @inbound/api stripe-tunnel",
     "build": "turbo run build",
     "lint": "oxlint --type-aware",
