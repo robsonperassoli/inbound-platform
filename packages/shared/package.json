@@ -10,7 +10,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "uuid": "^11.1.0",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@inbound/config": "workspace:*",
     "@types/uuid": "^10.0.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^4.1.10"
   }
 }

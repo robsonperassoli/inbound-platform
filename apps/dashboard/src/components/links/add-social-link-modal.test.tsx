@@ -154,11 +154,9 @@ describe("AddSocialLinkModal", () => {
       expect(addLinkMock).toHaveBeenCalledWith({
         profileId: "profile_123",
         title: "Instagram",
-        details: {
-          type: "social",
-          platform: "instagram",
-          url: "https://instagram.com/creator_name",
-        },
+        type: "social",
+        platform: "instagram",
+        url: "https://instagram.com/creator_name",
         order: 7,
         active: true,
       })
