@@ -10,6 +10,8 @@
     "**/dist/**",
     "**/.output/**",
     "**/.turbo/**",
-    "**/pnpm-lock.yaml"
+    "**/pnpm-lock.yaml",
+    "**/routeTree.gen.ts",
+    "**/drizzle/**"
   ]
 }

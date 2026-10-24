@@ -37,7 +37,9 @@ describe("forms domain", () => {
       title: "Owner Form",
     })
 
-    await expect(forms.getFormForUser(form.id, other.user.id)).resolves.toBeNull()
+    await expect(
+      forms.getFormForUser(form.id, other.user.id),
+    ).resolves.toBeNull()
     await expect(
       forms.updateFormForUser(form.id, other.user.id, { title: "Hacked" }),
     ).resolves.toBeNull()

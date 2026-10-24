@@ -4,12 +4,12 @@ Monorepo for the inbound.click platform: marketing site, Hono API, SPA dashboard
 
 ## Apps
 
-| App | Path | Port | Role |
-|-----|------|------|------|
-| Website | `apps/website` | 4321 | Astro marketing site (`inbound.click`, Fly.io) |
-| API | `apps/api` | 8787 | Hono + Drizzle + SQLite |
-| Dashboard | `apps/dashboard` | 3000 | Vite SPA |
-| Bio | `apps/bio` | 3001 | TanStack Start SSR (`s.uper.bio/<username>`) |
+| App       | Path             | Port | Role                                           |
+| --------- | ---------------- | ---- | ---------------------------------------------- |
+| Website   | `apps/website`   | 4321 | Astro marketing site (`inbound.click`, Fly.io) |
+| API       | `apps/api`       | 8787 | Hono + Drizzle + SQLite                        |
+| Dashboard | `apps/dashboard` | 3000 | Vite SPA                                       |
+| Bio       | `apps/bio`       | 3001 | TanStack Start SSR (`s.uper.bio/<username>`)   |
 
 ## Packages
 

@@ -47,10 +47,8 @@ export function useSelectedProfile() {
 export function useUpdateProfile() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      ...body
-    }: { id: string } & UpdateProfileBody) => updateProfile(id, body),
+    mutationFn: ({ id, ...body }: { id: string } & UpdateProfileBody) =>
+      updateProfile(id, body),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.profiles })
       await queryClient.invalidateQueries({

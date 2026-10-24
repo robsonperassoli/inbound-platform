@@ -91,7 +91,8 @@ describe("agent form tools emails", () => {
       { values: [{ fieldId: "email", value: "lead@example.com" }] },
       {} as never,
     )
-    const submissionId = (await chat.getThreadById(thread.id))!.formSubmissionId!
+    const submissionId = (await chat.getThreadById(thread.id))!
+      .formSubmissionId!
 
     const submitForm = createSubmitFormTool(thread.id)
     await submitForm.execute!({}, {} as never)

@@ -55,8 +55,9 @@ function resolveTitle(entries: SiteHeaderEntry[]) {
     return null
   }
 
-  if (segments.length === 1) {
-    return segments[0].node
+  const only = segments[0]
+  if (segments.length === 1 && only) {
+    return only.node
   }
 
   return segments.map((segment, index) => (

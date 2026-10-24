@@ -284,9 +284,12 @@ export function SidebarContactModals({
             `Type: feature`,
             `Email: ${validation.data.email}`,
             `Area: ${validation.data.area}`,
+            `Title: ${validation.data.title}`,
             `Impact: ${validation.data.impact?.trim() || "n/a"}`,
             "",
-            validation.data.message,
+            validation.data.summary,
+            "",
+            validation.data.requestedChange,
           ].join("\n"),
         )
         setFeedbackSuccessEmail(validation.data.email)
@@ -319,9 +322,12 @@ export function SidebarContactModals({
           `Type: bug`,
           `Email: ${validation.data.email}`,
           `Area: ${validation.data.area}`,
+          `Title: ${validation.data.title}`,
           `Repro: ${validation.data.reproSteps?.trim() || "n/a"}`,
           "",
-          validation.data.message,
+          validation.data.summary,
+          "",
+          validation.data.expectedBehavior,
         ].join("\n"),
       )
       setFeedbackSuccessEmail(validation.data.email)

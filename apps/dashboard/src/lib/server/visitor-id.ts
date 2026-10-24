@@ -1,5 +1,3 @@
-import { parse, serialize } from "cookie"
-
 const VISITOR_ID_COOKIE_NAME = "visitor_id"
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365
 
@@ -8,8 +6,22 @@ export type VisitorIdResult = {
   setCookieHeader?: string
 }
 
+function parseCookies(header: string | null): Record<string, string> {
+  if (!header) return {}
+  return Object.fromEntries(
+    header
+      .split(";")
+      .map((part) => {
+        const [rawKey, ...rest] = part.trim().split("=")
+        if (!rawKey) return null
+        return [rawKey, decodeURIComponent(rest.join("=") || "")] as const
+      })
+      .filter((entry) => entry !== null),
+  )
+}
+
 export function getOrCreateVisitorId(request: Request): VisitorIdResult {
-  const cookies = parse(request.headers.get("cookie") ?? "")
+  const cookies = parseCookies(request.headers.get("cookie"))
   const existingVisitorId = cookies[VISITOR_ID_COOKIE_NAME]
 
   if (existingVisitorId) {
@@ -21,14 +33,17 @@ export function getOrCreateVisitorId(request: Request): VisitorIdResult {
   const isSecure =
     forwardedProto === "https" || new URL(request.url).protocol === "https:"
 
+  const parts = [
+    `${VISITOR_ID_COOKIE_NAME}=${encodeURIComponent(visitorId)}`,
+    "Path=/",
+    `Max-Age=${ONE_YEAR_IN_SECONDS}`,
+    "SameSite=Lax",
+    "HttpOnly",
+  ]
+  if (isSecure) parts.push("Secure")
+
   return {
     visitorId,
-    setCookieHeader: serialize(VISITOR_ID_COOKIE_NAME, visitorId, {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: ONE_YEAR_IN_SECONDS,
-      path: "/",
-      secure: isSecure,
-    }),
+    setCookieHeader: parts.join("; "),
   }
 }

@@ -46,8 +46,7 @@ export async function ensureUserFromWorkOS(input: {
     await repository.updateUser(existing.id, {
       email: input.email ?? existing.email,
       name: input.name ?? existing.name,
-      profilePictureUrl:
-        input.profilePictureUrl ?? existing.profilePictureUrl,
+      profilePictureUrl: input.profilePictureUrl ?? existing.profilePictureUrl,
     })
     return existing
   }

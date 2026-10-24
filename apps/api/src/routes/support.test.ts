@@ -12,10 +12,7 @@ vi.mock("../domains/emails/index.ts", async (importOriginal) => {
   }
 })
 
-import {
-  sendFeedbackEmail,
-  sendSupportEmail,
-} from "../domains/emails/index"
+import { sendFeedbackEmail, sendSupportEmail } from "../domains/emails/index"
 import { createUserAccount } from "../test/factories"
 import { client, withAuth } from "../test/http"
 

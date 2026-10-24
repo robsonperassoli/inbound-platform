@@ -31,7 +31,7 @@ export function useForm(
     enabled: Boolean(formId),
     queryFn: async () => {
       if (!formId) throw new Error("Missing form id")
-        const result = await getForm(formId)
+      const result = await getForm(formId)
       return result.form
     },
     refetchInterval: options?.refetchInterval,
@@ -57,7 +57,8 @@ export function useSubmissionTranscript(
     queryKey: queryKeys.transcript(formId ?? "none", submissionId ?? "none"),
     enabled: Boolean(formId && submissionId),
     queryFn: async () => {
-      if (!formId || !submissionId) throw new Error("Missing form or submission id")
+      if (!formId || !submissionId)
+        throw new Error("Missing form or submission id")
       return getSubmissionTranscript(formId, submissionId)
     },
   })
@@ -75,10 +76,8 @@ export function useCreateForm() {
 export function useUpdateForm() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({
-      id,
-      ...body
-    }: { id: string } & UpdateFormBody) => updateForm(id, body),
+    mutationFn: ({ id, ...body }: { id: string } & UpdateFormBody) =>
+      updateForm(id, body),
     onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.forms })
       void queryClient.invalidateQueries({

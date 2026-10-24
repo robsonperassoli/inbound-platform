@@ -105,11 +105,7 @@ export async function syncSubscription(input: {
   }
 
   const accountId = input.accountId ?? existing?.accountId
-  if (
-    accountId &&
-    input.planType === "teams" &&
-    input.status === "active"
-  ) {
+  if (accountId && input.planType === "teams" && input.status === "active") {
     await accounts.setAccountType(accountId, "team")
   }
 }
@@ -124,8 +120,12 @@ export async function markSubscriptionCanceled(stripeSubscriptionId: string) {
   })
 }
 
-export async function getMeBillingState(accountId: string, accountType: string) {
-  const subscription = await repository.getLatestSubscriptionByAccount(accountId)
+export async function getMeBillingState(
+  accountId: string,
+  accountType: string,
+) {
+  const subscription =
+    await repository.getLatestSubscriptionByAccount(accountId)
   const subscribed =
     subscription?.status === "active" ||
     subscription?.status === "trialing" ||

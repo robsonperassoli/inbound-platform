@@ -9,9 +9,15 @@ export const Route = createFileRoute("/")({
       await getSession()
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
-        throw redirect({ to: "/signin" })
+        throw redirect({
+          to: "/signin",
+          search: { returnPathname: "/bio", workos: undefined },
+        })
       }
-      throw redirect({ to: "/signin" })
+      throw redirect({
+        to: "/signin",
+        search: { returnPathname: "/bio", workos: undefined },
+      })
     }
 
     const { profiles } = await listProfiles()

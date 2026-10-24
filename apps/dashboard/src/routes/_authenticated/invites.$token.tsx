@@ -8,10 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  useAcceptInvitation,
-  useInvitation,
-} from "@/hooks/queries/invitations"
+import { useAcceptInvitation, useInvitation } from "@/hooks/queries/invitations"
 
 export const Route = createFileRoute("/_authenticated/invites/$token")({
   component: RouteComponent,

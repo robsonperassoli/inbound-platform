@@ -254,7 +254,9 @@ describe("chat domain", () => {
 
     const result = await chat.autoCloseAbandonedThreads(now)
     expect(result).toEqual({ closedSilent: 0, closedAbandoned: 0 })
-    expect((await chat.getThreadById(neverStarted.id))?.sessionEndedAt).toBeNull()
+    expect(
+      (await chat.getThreadById(neverStarted.id))?.sessionEndedAt,
+    ).toBeNull()
     expect((await chat.getThreadById(active.id))?.sessionEndedAt).toBeNull()
     expect(sendChatCompletedEmail).not.toHaveBeenCalled()
   })

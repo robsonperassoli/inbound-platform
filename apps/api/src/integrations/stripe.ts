@@ -128,9 +128,7 @@ export async function processStripeEvent(event: Stripe.Event) {
     case "customer.subscription.updated": {
       const subscription = event.data.object
       const accountId =
-        subscription.metadata.orgId ||
-        subscription.metadata.accountId ||
-        null
+        subscription.metadata.orgId || subscription.metadata.accountId || null
       const userId = subscription.metadata.userId || null
       const stripeCustomerId = subscriptionCustomerId(subscription.customer)
 

@@ -129,10 +129,7 @@ export async function createMembership(input: {
   return (await getMembershipById(id))!
 }
 
-export async function updateMembershipProfiles(
-  id: string,
-  profiles: string[],
-) {
+export async function updateMembershipProfiles(id: string, profiles: string[]) {
   await db
     .update(accountMembers)
     .set({ profiles })
@@ -204,10 +201,7 @@ export async function revokeInvitation(id: string) {
   return getInvitationById(id)
 }
 
-export async function acceptInvitation(
-  id: string,
-  acceptedByUserId: string,
-) {
+export async function acceptInvitation(id: string, acceptedByUserId: string) {
   await db
     .update(invitations)
     .set({

@@ -52,15 +52,14 @@ export const teamRoutes = new Hono<{
       const body = c.req.valid("json")
 
       try {
-        const { invitation, token, expiresAt } = await accounts.createInvitation(
-          {
+        const { invitation, token, expiresAt } =
+          await accounts.createInvitation({
             accountId: auth.account.id,
             invitedByUserId: auth.user.id,
             email: body.email,
             role: body.role,
             profiles: body.profiles,
-          },
-        )
+          })
 
         await sendInviteEmail({
           to: invitation.email,

@@ -266,9 +266,7 @@ function isAllPages(profiles: TeamProfiles) {
 }
 
 function getSelectedProfileIds(profiles: TeamProfiles) {
-  return profiles.filter(
-    (profile): profile is string => profile !== "all",
-  )
+  return profiles.filter((profile): profile is string => profile !== "all")
 }
 
 function toggleSelectedProfile(
@@ -340,11 +338,7 @@ function PermissionsSummary({
   return (
     <div className="flex flex-wrap gap-1.5">
       {selectedProfiles.slice(0, 2).map((profile) => (
-        <Badge
-          key={profile.id}
-          variant="outline"
-          className="max-w-32 truncate"
-        >
+        <Badge key={profile.id} variant="outline" className="max-w-32 truncate">
           {profile.title}
         </Badge>
       ))}

@@ -226,15 +226,17 @@ async function handleAddSocialLink({
   profileId,
   value,
 }: {
-  addLink: { mutateAsync: (args: {
-    profileId: string
-    title: string
-    type: "social"
-    platform: SocialPlatform
-    url: string
-    order: number
-    active: boolean
-  }) => Promise<unknown> }
+  addLink: {
+    mutateAsync: (args: {
+      profileId: string
+      title: string
+      type: "social"
+      platform: SocialPlatform
+      url: string
+      order: number
+      active: boolean
+    }) => Promise<unknown>
+  }
   onClose: () => void
   order: number
   profileId: string

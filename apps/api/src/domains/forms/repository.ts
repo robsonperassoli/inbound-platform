@@ -83,7 +83,10 @@ export async function listSubmissionsByForm(formId: string) {
   })
 }
 
-export async function getSubmissionForForm(formId: string, submissionId: string) {
+export async function getSubmissionForForm(
+  formId: string,
+  submissionId: string,
+) {
   return db.query.formSubmissions.findFirst({
     where: and(
       eq(formSubmissions.id, submissionId),

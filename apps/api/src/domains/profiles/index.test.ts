@@ -118,10 +118,7 @@ describe("profiles domain", () => {
     })
     expect(reordered).toBe(true)
 
-    const withLinks = await profiles.getProfileWithLinks(
-      profile.id,
-      account.id,
-    )
+    const withLinks = await profiles.getProfileWithLinks(profile.id, account.id)
     expect(withLinks?.links.map((link) => link.id)).toEqual([
       second!.id,
       first!.id,
@@ -151,9 +148,8 @@ describe("profiles domain", () => {
       active: true,
     })
 
-    const publicProfile = await profiles.getPublicProfileByUsername(
-      "public-jane",
-    )
+    const publicProfile =
+      await profiles.getPublicProfileByUsername("public-jane")
 
     expect(publicProfile).toMatchObject({
       profile: {

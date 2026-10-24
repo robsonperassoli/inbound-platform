@@ -84,9 +84,7 @@ export function CreateFormPrompt({
       })
     } catch (err) {
       console.error(err)
-      toast.error(
-        err instanceof Error ? err.message : "Could not create form",
-      )
+      toast.error(err instanceof Error ? err.message : "Could not create form")
     } finally {
       setSubmitting(false)
     }
