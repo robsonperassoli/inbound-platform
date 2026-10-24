@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Create or update the main branch ruleset and repo merge settings.
+# Create or update the main branch ruleset, merge settings, and security features.
 # Idempotent. Safe to re-run. Requires `gh` as a repository admin.
 # Required status check is `ci` only. Add `e2e` in Step 8.
 set -euo pipefail
@@ -32,7 +32,7 @@ if [[ ! "$name" =~ ^[A-Za-z0-9._-]+$ ]]; then
   exit 1
 fi
 
-echo "Applying ruleset '${name}' and merge settings to ${REPO}."
+echo "Applying ruleset '${name}', merge settings, and security features to ${REPO}."
 echo "This needs repository admin. It does not add the e2e check (Step 8)."
 
 list_ids() {
@@ -96,6 +96,55 @@ for (const key of Object.keys(expected)) {
 }
 EOF
 
+# Security updates require alerts. Push protection requires secret scanning.
+echo "Enabling Dependabot alerts, Dependabot security updates, secret scanning, and push protection."
+gh api --method PUT "repos/${REPO}/vulnerability-alerts" --input /dev/null >/dev/null
+gh api --method PUT "repos/${REPO}/automated-security-fixes" --input /dev/null >/dev/null
+gh api --method PATCH "repos/${REPO}" --input - >/dev/null <<'EOF'
+{
+  "security_and_analysis": {
+    "secret_scanning": { "status": "enabled" }
+  }
+}
+EOF
+gh api --method PATCH "repos/${REPO}" --input - >/dev/null <<'EOF'
+{
+  "security_and_analysis": {
+    "secret_scanning_push_protection": { "status": "enabled" }
+  }
+}
+EOF
+
+gh api "repos/${REPO}/vulnerability-alerts" >/dev/null
+fixes_state="$(gh api "repos/${REPO}/automated-security-fixes" --jq '{enabled,paused}')"
+security_state="$(
+  gh api "repos/${REPO}" --jq '{
+    secret_scanning: .security_and_analysis.secret_scanning.status,
+    push_protection: .security_and_analysis.secret_scanning_push_protection.status
+  }'
+)"
+
+FIXES_STATE="$fixes_state" SECURITY_STATE="$security_state" node --input-type=module <<'EOF'
+const fixes = JSON.parse(process.env.FIXES_STATE ?? "")
+const scanning = JSON.parse(process.env.SECURITY_STATE ?? "")
+if (fixes.enabled !== true || fixes.paused === true) {
+  console.error(
+    `Dependabot security updates mismatch: enabled=${fixes.enabled} paused=${fixes.paused}`,
+  )
+  process.exit(1)
+}
+const expected = {
+  secret_scanning: "enabled",
+  push_protection: "enabled",
+}
+for (const key of Object.keys(expected)) {
+  if (scanning[key] !== expected[key]) {
+    console.error(`Security setting mismatch: ${key}=${scanning[key]}`)
+    process.exit(1)
+  }
+}
+EOF
+
 echo
 echo "Active ruleset:"
 read_ids
@@ -119,6 +168,8 @@ for id in "${ids[@]}"; do
 done
 
 cat <<'EOF'
+
+Dependabot alerts, Dependabot security updates, secret scanning, and push protection are enabled.
 
 Note: required status check "e2e" is not part of this ruleset yet. Add it in Step 8.
 

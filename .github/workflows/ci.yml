@@ -48,6 +48,10 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
       - name: Check formatting
         run: pnpm format:check
 
