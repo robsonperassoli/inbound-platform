@@ -35,8 +35,4 @@ From the repo root:
 
 ## Branch protection
 
-Apply with admin `gh`: `./scripts/apply-github-settings.sh`
-
-- 1 approval; dismiss stale reviews; resolve threads; branch up to date.
-- Check `ci` (`e2e` in Step 8). Source: `.github/rulesets/main.json`.
-- Admin bypass only. Squash merge, delete head branch, auto-merge.
+- PR, 1 approval, dismiss stale reviews, resolve threads, up to date, check `ci`.
