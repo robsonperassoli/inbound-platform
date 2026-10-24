@@ -53,6 +53,7 @@
       "passThroughEnv": ["CI", "ASTRO_TELEMETRY_DISABLED"]
     },
     "test": {
+      "outputs": ["coverage/**"],
       "passThroughEnv": ["CI"]
     },
     "lint": {

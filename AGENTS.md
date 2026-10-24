@@ -29,6 +29,8 @@ From the repo root:
 - Never commit secrets.
 - New env vars: `.env.example` and `apps/api/.env.local.example`.
 - Do not hand-edit a Drizzle migration after it has merged.
+- API coverage thresholds live in `apps/api/vitest.config.ts`. `pnpm test` fails if coverage drops.
+- Ship schema changes with `pnpm db:generate`. `pnpm db:check` fails when a migration is missing.
 - Branch from Linear: `robsonperassoli/inb-XX-...`
 - PR title includes the INB id.
 - Keep formatting changes out of logic PRs.
