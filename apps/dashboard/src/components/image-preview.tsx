@@ -1,6 +1,6 @@
 "use client"
 
-import {  ViewIcon } from "@hugeicons/core-free-icons"
+import { ViewIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"

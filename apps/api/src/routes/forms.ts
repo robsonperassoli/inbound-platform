@@ -56,22 +56,18 @@ export const formsRoutes = new Hono<{
     if (!form) return c.json({ error: "Not found" }, 404)
     return c.json({ form })
   })
-  .patch(
-    "/forms/:id",
-    zValidator("json", updateFormBodySchema),
-    async (c) => {
-      const auth = c.get("auth")
-      const body = c.req.valid("json")
+  .patch("/forms/:id", zValidator("json", updateFormBodySchema), async (c) => {
+    const auth = c.get("auth")
+    const body = c.req.valid("json")
 
-      const form = await forms.updateFormForUser(
-        c.req.param("id"),
-        auth.user.id,
-        body,
-      )
-      if (!form) return c.json({ error: "Not found" }, 404)
-      return c.json({ form })
-    },
-  )
+    const form = await forms.updateFormForUser(
+      c.req.param("id"),
+      auth.user.id,
+      body,
+    )
+    if (!form) return c.json({ error: "Not found" }, 404)
+    return c.json({ form })
+  })
   .get("/forms/:id/submissions", async (c) => {
     const auth = c.get("auth")
     const result = await forms.listSubmissionsForUserForm(

@@ -162,8 +162,7 @@ describe("billing domain", () => {
         email: "later@example.com",
       })
 
-      const unlinked =
-        await billing.getCustomerByStripeCustomerId("cus_later")
+      const unlinked = await billing.getCustomerByStripeCustomerId("cus_later")
       expect(unlinked).toMatchObject({
         accountId: null,
         userId: null,
@@ -194,8 +193,7 @@ describe("billing domain", () => {
         planType: null,
       })
 
-      const subscription =
-        await billing.getSubscriptionByStripeId("sub_orphan")
+      const subscription = await billing.getSubscriptionByStripeId("sub_orphan")
       expect(subscription).toMatchObject({
         stripeSubscriptionId: "sub_orphan",
         accountId: null,
@@ -212,8 +210,7 @@ describe("billing domain", () => {
 
       await billing.markSubscriptionCanceled("sub_cancel")
 
-      const subscription =
-        await billing.getSubscriptionByStripeId("sub_cancel")
+      const subscription = await billing.getSubscriptionByStripeId("sub_cancel")
       expect(subscription?.status).toBe("canceled")
     })
   })

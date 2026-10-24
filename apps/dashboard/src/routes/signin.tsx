@@ -4,7 +4,9 @@ import { getWorkOsLoginUrl } from "@/lib/auth"
 export const Route = createFileRoute("/signin")({
   validateSearch: (search: Record<string, unknown>) => ({
     returnPathname:
-      typeof search.returnPathname === "string" ? search.returnPathname : "/bio",
+      typeof search.returnPathname === "string"
+        ? search.returnPathname
+        : "/bio",
     workos: typeof search.workos === "string" ? search.workos : undefined,
   }),
   beforeLoad: ({ search }) => {

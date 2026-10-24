@@ -78,8 +78,7 @@ describe("processStripeEvent", () => {
       }),
     )
 
-    const customer =
-      await billing.getCustomerByStripeCustomerId("cus_unlinked")
+    const customer = await billing.getCustomerByStripeCustomerId("cus_unlinked")
     expect(customer).toMatchObject({
       stripeCustomerId: "cus_unlinked",
       email: "unlinked@example.com",
@@ -97,16 +96,14 @@ describe("processStripeEvent", () => {
       }),
     )
 
-    const customer =
-      await billing.getCustomerByStripeCustomerId("cus_from_sub")
+    const customer = await billing.getCustomerByStripeCustomerId("cus_from_sub")
     expect(customer).toMatchObject({
       stripeCustomerId: "cus_from_sub",
       accountId: null,
       userId: null,
     })
 
-    const subscription =
-      await billing.getSubscriptionByStripeId("sub_unlinked")
+    const subscription = await billing.getSubscriptionByStripeId("sub_unlinked")
     expect(subscription).toMatchObject({
       stripeSubscriptionId: "sub_unlinked",
       stripeCustomerId: "cus_from_sub",

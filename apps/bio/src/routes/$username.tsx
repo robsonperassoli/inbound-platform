@@ -7,7 +7,12 @@ import { useState } from "react"
 import { BioFormChat } from "@/components/bio-form-chat"
 import { UnpublishedProfilePage } from "@/components/unpublished-profile-page"
 import { extractReferrerName } from "@/lib/analytics"
-import { ApiError, getPublicProfile, startFormSession, trackPageView } from "@/lib/api"
+import {
+  ApiError,
+  getPublicProfile,
+  startFormSession,
+  trackPageView,
+} from "@/lib/api"
 import { getOrCreateVisitorId } from "@/lib/server/visitor-id"
 
 const trackPageViewMiddleware = createMiddleware().server(

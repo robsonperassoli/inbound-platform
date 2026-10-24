@@ -20,7 +20,9 @@ export async function createPortal() {
 }
 
 export async function submitSalesLead(
-  input: InferRequestType<(typeof client.billing)["sales-lead"]["$post"]>["json"],
+  input: InferRequestType<
+    (typeof client.billing)["sales-lead"]["$post"]
+  >["json"],
 ) {
   const res = await client.billing["sales-lead"].$post({ json: input })
   if (!res.ok) {

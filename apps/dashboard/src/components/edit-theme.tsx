@@ -2,10 +2,7 @@ import type { Profile } from "@/lib/types"
 import { Delete01Icon, Image03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useFileUpload } from "@/hooks/use-file-upload"
-import {
-  useProfileWithLinks,
-  useUpdateProfile,
-} from "@/hooks/queries/profiles"
+import { useProfileWithLinks, useUpdateProfile } from "@/hooks/queries/profiles"
 import { fonts } from "@/lib/themes"
 import { FileUpload } from "./file-upload"
 import { ImagePreview } from "./image-preview"

@@ -142,6 +142,7 @@ export function FormPreview({
 
 function PreviewField({ field, index }: { field: FormField; index: number }) {
   const typeMeta = FIELD_META[field.type]
+  if (!typeMeta) return null
   const options = field.options?.filter(Boolean) ?? []
   const optionPreview =
     field.type === "select" && options.length > 0

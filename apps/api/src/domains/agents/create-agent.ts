@@ -39,7 +39,7 @@ export function createAgent(thread: Thread) {
 
     default: {
       const _exhaustive: never = thread.type
-      throw new Error(`Unknown agent type: ${_exhaustive}`)
+      throw new Error(`Unknown agent type: ${String(_exhaustive)}`)
     }
   }
 

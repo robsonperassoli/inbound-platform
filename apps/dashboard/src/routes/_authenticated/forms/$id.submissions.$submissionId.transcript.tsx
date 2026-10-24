@@ -38,7 +38,9 @@ function RouteComponent() {
       <SheetContent>
         <div className="flex flex-col-reverse gap-y-4 overflow-auto p-4">
           {transcriptQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Loading transcript...</p>
+            <p className="text-sm text-muted-foreground">
+              Loading transcript...
+            </p>
           ) : reversedMessages.length === 0 ? (
             <p className="text-sm text-muted-foreground">No messages yet.</p>
           ) : (

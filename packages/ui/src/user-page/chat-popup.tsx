@@ -40,8 +40,7 @@ export function ChatPopup({
               className={cn(
                 "transition-all ease-in-out rounded-full shadow-lg text-xs",
                 "bg-up-button text-up-button-foreground hover:brightness-105",
-                !open &&
-                  "h-10 w-24 flex items-center justify-center gap-x-1",
+                !open && "h-10 w-24 flex items-center justify-center gap-x-1",
                 open && "size-10 flex items-center justify-center p-1",
               )}
             >

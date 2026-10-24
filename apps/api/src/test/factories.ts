@@ -51,9 +51,7 @@ export async function createProfileForAccount(input?: {
   bio?: string
 }) {
   const owner =
-    input?.accountId && input?.userId
-      ? null
-      : await createUserAccount()
+    input?.accountId && input?.userId ? null : await createUserAccount()
 
   const accountId = input?.accountId ?? owner!.account.id
   const userId = input?.userId ?? owner!.user.id

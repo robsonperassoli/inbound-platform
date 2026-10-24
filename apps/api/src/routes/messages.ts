@@ -26,7 +26,10 @@ export const messagesRoutes = new Hono<{
     zValidator("json", z.object({ message: z.string().min(1) })),
     async (c) => {
       const auth = c.get("auth")
-      const thread = await chat.getThreadForUser(c.req.param("id"), auth.user.id)
+      const thread = await chat.getThreadForUser(
+        c.req.param("id"),
+        auth.user.id,
+      )
       if (!thread) return c.json({ error: "Not found" }, 404)
 
       const body = c.req.valid("json")

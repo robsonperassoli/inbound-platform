@@ -51,9 +51,7 @@ export const invitations = sqliteTable("invitations", {
   token: text("token").notNull(),
   email: text("email").notNull(),
   role: text("role", { enum: ["owner", "admin", "member"] }).notNull(),
-  profiles: text("profiles", { mode: "json" })
-    .$type<string[]>()
-    .notNull(),
+  profiles: text("profiles", { mode: "json" }).$type<string[]>().notNull(),
   status: text("status", {
     enum: ["pending", "accepted", "revoked"],
   }).notNull(),

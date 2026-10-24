@@ -12,10 +12,7 @@ import {
 } from "@/components/pricing/pricing-section"
 import { useSelectedProfile } from "@/hooks/use-selected-profile"
 import { useSession } from "@/hooks/use-session"
-import {
-  useCreateCheckout,
-  useSubmitSalesLead,
-} from "@/hooks/queries/billing"
+import { useCreateCheckout, useSubmitSalesLead } from "@/hooks/queries/billing"
 import { type BillingCycle, type PricingPlanId } from "@/lib/pricing"
 import { PRICING_PLANS } from "@/lib/pricing-plans"
 

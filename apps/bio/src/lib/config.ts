@@ -1,7 +1,4 @@
-function env(
-  keys: { vite: string; node: string },
-  fallback: string,
-): string {
+function env(keys: { vite: string; node: string }, fallback: string): string {
   if (typeof process !== "undefined" && process.env[keys.node]) {
     return process.env[keys.node]!
   }

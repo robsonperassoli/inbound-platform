@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("../integrations/storage.ts", () => ({
-  createUploadUrl: vi.fn(async (key: string) => `https://upload.example.com/${key}`),
+  createUploadUrl: vi.fn(
+    async (key: string) => `https://upload.example.com/${key}`,
+  ),
   resolveAssetUrl: vi.fn(async () => null),
 }))
 

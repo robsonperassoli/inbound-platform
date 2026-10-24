@@ -53,8 +53,7 @@ export function ProfileSwitcher({
   const session = useSession()
   const [isCreateProfileOpen, setIsCreateProfileOpen] = useState(false)
   const canCreateProfile =
-    session?.membership.role === "owner" ||
-    session?.membership.role === "admin"
+    session?.membership.role === "owner" || session?.membership.role === "admin"
 
   if (!profile) {
     return null

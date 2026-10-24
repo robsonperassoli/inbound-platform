@@ -1,7 +1,6 @@
 {
   "name": "inbound-platform",
   "private": true,
-  "packageManager": "pnpm@11.5.2",
   "scripts": {
     "dev": "turbo run dev",
     "dev:webhooks": "turbo run dev stripe-tunnel",
@@ -28,5 +27,6 @@
     "oxlint-tsgolint": "^7.0.0",
     "turbo": "^2.5.4",
     "typescript": "catalog:"
-  }
+  },
+  "packageManager": "pnpm@11.5.2"
 }

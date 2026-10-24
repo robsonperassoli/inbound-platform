@@ -68,11 +68,11 @@ export async function getSubmissionTranscript(
   formId: string,
   submissionId: string,
 ) {
-  const res = await client.forms[":id"].submissions[":submissionId"].transcript.$get(
-    {
-      param: { id: formId, submissionId },
-    },
-  )
+  const res = await client.forms[":id"].submissions[
+    ":submissionId"
+  ].transcript.$get({
+    param: { id: formId, submissionId },
+  })
   if (!res.ok) {
     throw new ApiError(res.status, (await res.text()) || res.statusText)
   }

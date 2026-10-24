@@ -11,10 +11,6 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit"
   },
-  "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
   "dependencies": {
     "@fontsource-variable/dm-sans": "catalog:",
     "@fontsource-variable/inter": "catalog:",
@@ -49,5 +45,9 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

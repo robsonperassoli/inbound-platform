@@ -69,10 +69,7 @@ export async function getSubmissionForUserForm(
 ) {
   const form = await getFormForUser(formId, userId)
   if (!form) return null
-  const submission = await repository.getSubmissionForForm(
-    formId,
-    submissionId,
-  )
+  const submission = await repository.getSubmissionForForm(formId, submissionId)
   if (!submission) return null
   return { form, submission }
 }

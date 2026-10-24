@@ -16,7 +16,7 @@ function Avatar({
       data-size={size}
       className={cn(
         "size-8 rounded-full after:rounded-full data-[size=lg]:size-10 data-[size=sm]:size-6 after:border-up-foreground/15 group/avatar relative flex shrink-0 select-none after:absolute after:inset-0 after:border",
-        className
+        className,
       )}
       {...props}
     />
@@ -32,7 +32,7 @@ function AvatarImage({
       data-slot="avatar-image"
       className={cn(
         "rounded-full aspect-square size-full object-cover",
-        className
+        className,
       )}
       {...props}
     />
@@ -48,7 +48,7 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       className={cn(
         "bg-up-button/15 text-up-foreground rounded-full flex size-full items-center justify-center text-sm group-data-[size=sm]/avatar:text-xs",
-        className
+        className,
       )}
       {...props}
     />
@@ -64,7 +64,7 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
         "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden",
         "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2",
         "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2",
-        className
+        className,
       )}
       {...props}
     />
@@ -77,7 +77,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="avatar-group"
       className={cn(
         "*:data-[slot=avatar]:ring-up-background group/avatar-group flex -space-x-2 *:data-[slot=avatar]:ring-2",
-        className
+        className,
       )}
       {...props}
     />

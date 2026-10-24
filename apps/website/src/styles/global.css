@@ -1,5 +1,5 @@
-@import '@fontsource-variable/sora';
-@import '@fontsource-variable/inter';
+@import "@fontsource-variable/sora";
+@import "@fontsource-variable/inter";
 
 :root {
   --coral: #ee775f;
@@ -14,8 +14,8 @@
   --cream-deep: #f7efe3;
   --white: #ffffff;
 
-  --font-display: 'Sora Variable', system-ui, sans-serif;
-  --font-body: 'Inter Variable', system-ui, sans-serif;
+  --font-display: "Sora Variable", system-ui, sans-serif;
+  --font-body: "Inter Variable", system-ui, sans-serif;
 
   --radius-lg: 28px;
   --radius-md: 18px;
@@ -96,7 +96,7 @@ svg {
 }
 
 .eyebrow::before {
-  content: '';
+  content: "";
   width: 2rem;
   height: 3px;
   border-radius: 2px;
@@ -131,7 +131,10 @@ svg {
   border: 2px solid transparent;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 .btn:active {

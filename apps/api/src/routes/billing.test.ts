@@ -23,10 +23,7 @@ vi.mock("../domains/emails/index.ts", async (importOriginal) => {
 
 import { sendSalesLeadEmail } from "../domains/emails/index"
 import { createCheckoutSession } from "../integrations/stripe"
-import {
-  createProfileForAccount,
-  createUserAccount,
-} from "../test/factories"
+import { createProfileForAccount, createUserAccount } from "../test/factories"
 import { client, withAuth } from "../test/http"
 
 describe("billing routes", () => {

@@ -10,7 +10,10 @@ export function useFileUpload() {
     try {
       setUploading(true)
       const key = `uploads/${createId()}-${file.name.replace(/\s+/g, "-")}`
-      const { url } = await presignUpload(key, file.type || "application/octet-stream")
+      const { url } = await presignUpload(
+        key,
+        file.type || "application/octet-stream",
+      )
 
       const result = await fetch(url, {
         method: "PUT",

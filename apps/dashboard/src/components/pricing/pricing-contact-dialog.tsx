@@ -49,8 +49,9 @@ export function PricingContactDialog({
 }: PricingContactDialogProps) {
   const [contactValues, setContactValues] =
     useState<PricingContactFormValues>(emptyContactValues)
-  const [contactErrors, setContactErrors] =
-    useState<PricingContactFormErrors>({})
+  const [contactErrors, setContactErrors] = useState<PricingContactFormErrors>(
+    {},
+  )
   const [contactSubmitting, setContactSubmitting] = useState(false)
   const [contactSubmitted, setContactSubmitted] = useState(false)
   const [contactFormError, setContactFormError] = useState("")

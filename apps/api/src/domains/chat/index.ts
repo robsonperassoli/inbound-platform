@@ -41,8 +41,7 @@ export async function getThreadWithMessages(threadId: string, userId: string) {
 }
 
 export async function getSubmissionTranscript(formSubmissionId: string) {
-  const thread =
-    await repository.getThreadByFormSubmissionId(formSubmissionId)
+  const thread = await repository.getThreadByFormSubmissionId(formSubmissionId)
   if (!thread) return []
 
   const rows = await repository.listMessagesByThread(thread.id)

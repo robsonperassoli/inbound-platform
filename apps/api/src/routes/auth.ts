@@ -60,7 +60,9 @@ export const authRoutes = new Hono()
       maxAge: 60 * 60 * 24 * 30,
     })
 
-    const workosSessionId = getWorkOsSessionIdFromAccessToken(result.accessToken)
+    const workosSessionId = getWorkOsSessionIdFromAccessToken(
+      result.accessToken,
+    )
     if (workosSessionId) {
       setCookie(c, WORKOS_SID_COOKIE, workosSessionId, {
         ...cookieOptions,

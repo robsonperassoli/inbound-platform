@@ -5,10 +5,12 @@ import * as accounts from "../accounts/index"
 import { getFirstName, sendActivationEmail } from "../emails/index"
 import * as repository from "./repository"
 
-async function withAssetUrls<T extends {
-  avatarKey: string | null
-  backgroundImageKey: string | null
-}>(profile: T) {
+async function withAssetUrls<
+  T extends {
+    avatarKey: string | null
+    backgroundImageKey: string | null
+  },
+>(profile: T) {
   return {
     ...profile,
     avatarUrl: await resolveAssetUrl(profile.avatarKey),
@@ -22,8 +24,7 @@ export async function listAccountProfileIds(accountId: string) {
 }
 
 export async function listTeamProfiles(accountId: string) {
-  const rows =
-    await repository.listProfilesByAccountOrderedByTitle(accountId)
+  const rows = await repository.listProfilesByAccountOrderedByTitle(accountId)
   return rows.map((p) => ({
     id: p.id,
     title: p.title,
@@ -74,9 +75,7 @@ export async function createProfile(input: {
   if (owner?.email) {
     void sendActivationEmail({
       to: owner.email,
-      firstName: owner.name?.trim()
-        ? getFirstName(owner.name)
-        : input.title,
+      firstName: owner.name?.trim() ? getFirstName(owner.name) : input.title,
       username: input.username,
     }).catch((error) => {
       console.error(
@@ -89,13 +88,19 @@ export async function createProfile(input: {
   return profile
 }
 
-export async function getProfileForAccount(profileId: string, accountId: string) {
+export async function getProfileForAccount(
+  profileId: string,
+  accountId: string,
+) {
   const profile = await repository.getProfileById(profileId)
   if (!profile || profile.accountId !== accountId) return null
   return profile
 }
 
-export async function getProfileWithLinks(profileId: string, accountId: string) {
+export async function getProfileWithLinks(
+  profileId: string,
+  accountId: string,
+) {
   const profile = await getProfileForAccount(profileId, accountId)
   if (!profile) return null
 
@@ -123,13 +128,7 @@ export async function createLinkForProfile(input: {
   title: string
   type: "url" | "social" | "form"
   url?: string
-  platform?:
-    | "instagram"
-    | "tiktok"
-    | "x"
-    | "youtube"
-    | "facebook"
-    | "linkedin"
+  platform?: "instagram" | "tiktok" | "x" | "youtube" | "facebook" | "linkedin"
   formId?: string
   order?: number
   active?: boolean
