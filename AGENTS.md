@@ -38,6 +38,12 @@ From the repo root:
 - The Node version is set in `mise.toml`. CI reads that file.
 - Dependabot groups weekly npm and GitHub Actions updates. Patch updates auto-merge after `ci`. Minor and major stay for review.
 
+## Tests
+
+Colocate `*.test.ts` and `*.test.tsx` beside the source. Root `pnpm test` runs each package's `vitest run` through Turbo.
+
+Component tests render with Testing Library in jsdom. Query by role, label, or text, and drive input with `userEvent`. Mock network and hooks with `vi.mock`. Assert behavior, not snapshots.
+
 ## Branch protection
 
 - PR, 1 approval, dismiss stale reviews, resolve threads, up to date, check `ci`.

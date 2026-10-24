@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "start": "serve -s dist -l tcp://0.0.0.0:${PORT:-3000}",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@base-ui/react": "catalog:",
@@ -69,9 +70,11 @@
     "@tailwindcss/vite": "catalog:",
     "@tanstack/router-cli": "^1.167.21",
     "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
+    "jsdom": "^26.1.0",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
