@@ -45,7 +45,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
-    "framer-motion": "^12.34.3",
+    "framer-motion": "^14.5.0",
     "hono": "^4.12.32",
     "next-themes": "catalog:",
     "radix-ui": "catalog:",
