@@ -1,25 +1,63 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "envMode": "loose",
+  "envMode": "strict",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".output/**", ".vinxi/**", ".tanstack/**"]
+      "outputs": ["dist/**", ".output/**", ".vinxi/**", ".tanstack/**"],
+      "env": ["NODE_ENV", "VITE_*", "API_URL", "BIO_URL"],
+      "passThroughEnv": ["CI", "ASTRO_TELEMETRY_DISABLED"]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["NODE_ENV", "VITE_*", "API_URL", "BIO_URL", "DASHBOARD_URL"],
+      "passThroughEnv": [
+        "CI",
+        "PORT",
+        "ASTRO_TELEMETRY_DISABLED",
+        "SQLITE_PATH",
+        "MIGRATIONS_PATH",
+        "CRON_SECRET",
+        "WORKOS_API_KEY",
+        "WORKOS_CLIENT_ID",
+        "WORKOS_COOKIE_PASSWORD",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+        "STRIPE_STARTER_PRICE_ID",
+        "STRIPE_STARTER_PRICE_YEARLY_ID",
+        "STRIPE_PRO_PRICE_ID",
+        "STRIPE_PRO_PRICE_YEARLY_ID",
+        "RESEND_API_KEY",
+        "SUPPORT_EMAIL",
+        "SALES_EMAIL",
+        "FEEDBACK_EMAIL",
+        "B2_ENDPOINT",
+        "B2_REGION",
+        "B2_BUCKET",
+        "B2_KEY_ID",
+        "B2_APPLICATION_KEY",
+        "B2_PUBLIC_URL",
+        "TINYBIRD_URL",
+        "TINYBIRD_TOKEN",
+        "OPENAI_API_KEY"
+      ]
     },
     "stripe-tunnel": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "passThroughEnv": ["NGROK_AUTHTOKEN"]
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["CI", "ASTRO_TELEMETRY_DISABLED"]
     },
-    "test": {},
+    "test": {
+      "passThroughEnv": ["CI"]
+    },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["CI"]
     }
   }
 }
