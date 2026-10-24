@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # pnpm workspace. Dependabot reads the root pnpm-lock.yaml.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # First match wins. Family groups stay above the minor+patch group.
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+      fontsource:
+        patterns:
+          - "@fontsource*"
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - minor
+          - patch
