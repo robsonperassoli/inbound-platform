@@ -1,0 +1,43 @@
+name: dependabot-automerge
+
+on:
+  pull_request:
+
+# Dependabot pull_request runs are read-only unless permissions are set.
+# These two scopes are the minimum for `gh pr merge --auto`.
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  automerge:
+    name: automerge
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ github.token }}
+
+      # --auto waits for the main ruleset. Required check is `ci`.
+      # Minor and major updates do not match, so they stay manual.
+      - name: Enable auto-merge for patch updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          enabled="$(gh pr view "$PR_URL" --json autoMergeRequest --jq '.autoMergeRequest != null')"
+          if [[ "$enabled" == "true" ]]; then
+            echo "Auto-merge already enabled."
+            exit 0
+          fi
+          gh pr merge --auto --squash "$PR_URL"

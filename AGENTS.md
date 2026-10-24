@@ -33,6 +33,11 @@ From the repo root:
 - PR title includes the INB id.
 - Keep formatting changes out of logic PRs.
 
+## Dependencies
+
+- The Node version is set in `mise.toml`. CI reads that file.
+- Dependabot groups weekly npm and GitHub Actions updates. Patch updates auto-merge after `ci`. Minor and major stay for review.
+
 ## Tests
 
 Colocate `*.test.ts` and `*.test.tsx` beside the source. Root `pnpm test` runs each package's `vitest run` through Turbo.
