@@ -1,20 +1,14 @@
 import { defineConfig } from "vitest/config"
+import { testEnv } from "./src/test/test-env.ts"
 
 export default defineConfig({
   test: {
     environment: "node",
     include: ["src/**/*.test.ts"],
-    setupFiles: ["./src/test/setup.ts"],
+    // test-env.ts must run before setup.ts, which imports the database and env.
+    setupFiles: ["./src/test/test-env.ts", "./src/test/setup.ts"],
     pool: "forks",
     fileParallelism: true,
-    env: {
-      NODE_ENV: "test",
-      SQLITE_PATH: ":memory:",
-      CRON_SECRET: "test-cron-secret",
-      STRIPE_STARTER_PRICE_ID: "price_starter_monthly",
-      STRIPE_STARTER_PRICE_YEARLY_ID: "price_starter_yearly",
-      STRIPE_PRO_PRICE_ID: "price_pro_monthly",
-      STRIPE_PRO_PRICE_YEARLY_ID: "price_pro_yearly",
-    },
+    env: { ...testEnv },
   },
 })
