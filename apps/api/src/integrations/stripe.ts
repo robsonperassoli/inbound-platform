@@ -2,12 +2,12 @@ import Stripe from "stripe"
 import * as billing from "../domains/billing/index"
 import { env } from "../lib/env"
 
-export function getStripe() {
+function getStripe() {
   if (!env.STRIPE_SECRET_KEY) return null
   return new Stripe(env.STRIPE_SECRET_KEY)
 }
 
-export async function getOrCreateStripeCustomer(input: {
+async function getOrCreateStripeCustomer(input: {
   accountId: string
   userId: string
   email?: string | null

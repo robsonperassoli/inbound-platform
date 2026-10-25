@@ -37,7 +37,6 @@
     "@inbound/shared": "workspace:*",
     "@inbound/ui": "workspace:*",
     "@js-temporal/polyfill": "^0.5.1",
-    "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-form": "^1.0.0",
     "@tanstack/react-query": "^5.90.21",
     "@tanstack/react-router": "catalog:",

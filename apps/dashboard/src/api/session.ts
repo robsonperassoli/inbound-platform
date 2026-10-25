@@ -8,11 +8,3 @@ export async function getSession(): Promise<Session> {
   }
   return res.json()
 }
-
-export async function logout() {
-  const res = await client.auth.logout.$post()
-  if (!res.ok) {
-    throw new ApiError(res.status, (await res.text()) || res.statusText)
-  }
-  return res.json()
-}

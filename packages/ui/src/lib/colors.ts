@@ -3,7 +3,7 @@ const toLinear = (channel: number) => {
   return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
 }
 
-export function hexToRgb(hex: string) {
+function hexToRgb(hex: string) {
   const value = hex.trim().replace("#", "")
 
   if (!/^[\da-f]{3}$|^[\da-f]{6}$/i.test(value)) {

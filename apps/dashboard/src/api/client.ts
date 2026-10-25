@@ -1,8 +1,6 @@
 import { hc } from "hono/client"
-import type { AppType, PricingPlanId } from "@inbound/api"
+import type { AppType } from "@inbound/api"
 import { API_URL } from "@/lib/config"
-
-export type { PricingPlanId }
 
 export class ApiError extends Error {
   status: number

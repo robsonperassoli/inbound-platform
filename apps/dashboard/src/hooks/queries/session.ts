@@ -4,7 +4,7 @@ import type { Session } from "@/lib/types"
 import { queryKeys } from "./keys"
 
 /** Flattened session shape used by dashboard UI components */
-export type DashboardSession = {
+type DashboardSession = {
   id: string
   name: string | null
   email: string | null
@@ -40,7 +40,7 @@ function toDashboardSession(session: Session): DashboardSession {
   }
 }
 
-export function useSessionQuery() {
+function useSessionQuery() {
   return useQuery({
     queryKey: queryKeys.session,
     queryFn: async () => toDashboardSession(await getSession()),

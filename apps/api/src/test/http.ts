@@ -3,7 +3,7 @@ import { app } from "../app"
 
 export const client = testClient(app)
 
-export function sessionCookie(userId: string) {
+function sessionCookie(userId: string) {
   return `inbound_session=${userId}`
 }
 

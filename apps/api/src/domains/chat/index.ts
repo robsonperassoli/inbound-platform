@@ -13,8 +13,6 @@ export function formSubmissionTranscriptUrl(
   return `${env.DASHBOARD_URL}/forms/${formId}/submissions/${submissionId}/transcript`
 }
 
-export { getFirstName }
-
 export async function getFormSessionMessages(sessionId: string) {
   const rows = await repository.listMessagesByThread(sessionId)
   return rows.map((m) => ({
@@ -135,11 +133,9 @@ export async function linkFormToThread(threadId: string, formId: string) {
 
 export {
   getThreadById,
-  getThreadByFormSubmissionId,
   createThread,
   updateThread,
   listMessagesByThread,
   createMessage,
   updateMessage,
-  listOpenFormSubmissionThreads,
 } from "./repository"
