@@ -61,8 +61,15 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Check migration drift
+        run: pnpm db:check
+
       - name: Test
         run: pnpm test
+
+      - name: API coverage summary
+        if: always()
+        run: node scripts/write-api-coverage-summary.mjs
 
       - name: Build
         run: pnpm build
