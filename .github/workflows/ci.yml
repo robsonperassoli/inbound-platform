@@ -26,6 +26,8 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
+          # fallow audit compares the PR to its base commit.
+          fetch-depth: 0
 
       # Node from mise.toml; pnpm from packageManager (pnpm@11.5.2).
       - name: Setup pnpm
@@ -66,3 +68,11 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Fallow audit
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          FALLOW_AUDIT_BASE: ${{ github.event.pull_request.base.sha }}
+          FALLOW_FORMAT: github-summary
+        run: pnpm fallow:audit | tee -a "$GITHUB_STEP_SUMMARY"

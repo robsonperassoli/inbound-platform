@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": [
+    // TanStack Start routes, router, and start instance (apps/bio).
+    "apps/bio/src/routes/**/*.{ts,tsx}",
+    "apps/bio/src/router.tsx",
+    "apps/bio/src/start.ts",
+    // Vite SPA and TanStack Router routes (apps/dashboard).
+    "apps/dashboard/index.html",
+    "apps/dashboard/src/main.tsx",
+    "apps/dashboard/src/routes/**/*.{ts,tsx}",
+    // Astro pages and layouts (apps/website).
+    "apps/website/src/pages/**/*.astro",
+    "apps/website/src/layouts/**/*.astro",
+    // Hono server and operational scripts (apps/api).
+    "apps/api/src/index.ts",
+    "apps/api/src/app.ts",
+    "apps/api/src/scripts/**/*.ts",
+  ],
+  "ignorePatterns": [
+    // Generated TanStack route trees. The route files above are the entries.
+    "**/*.gen.ts",
+    "**/.output/**",
+    "**/.tanstack/**",
+    "**/.nitro/**",
+    "**/.astro/**",
+    "**/dist/**",
+  ],
+  // Invoked from the root script, not imported.
+  "ignoreDependencies": ["fallow"],
+}
