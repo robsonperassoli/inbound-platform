@@ -40,7 +40,7 @@ catalog:
   sonner: "^2.0.7"
   tailwind-merge: "^3.4.0"
   tailwindcss: "^4.1.18"
-  typescript: "^7.0.0"
+  typescript: "^7.0.2"
   vite: "^7.1.7"
   vite-tsconfig-paths: "^6.0.2"
   zod: "^4.1.11"
