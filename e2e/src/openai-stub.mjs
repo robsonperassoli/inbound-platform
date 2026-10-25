@@ -31,6 +31,7 @@ function response(body) {
 function toolCall(name, argumentsJson) {
   return {
     id: `resp_${name}`,
+    created_at: Math.floor(Date.now() / 1000),
     output: [
       {
         type: "function_call",
@@ -46,6 +47,7 @@ function toolCall(name, argumentsJson) {
 function text(value) {
   return {
     id: "resp_text",
+    created_at: Math.floor(Date.now() / 1000),
     output: [
       {
         type: "message",

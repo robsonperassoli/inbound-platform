@@ -72,11 +72,27 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "retain-on-failure",
   },
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
+  projects: hasE2ESecrets
+    ? [
+        {
+          name: "chromium",
+          testMatch: "**/smoke.spec.ts",
+          use: { ...devices["Desktop Chrome"] },
+        },
+        {
+          // Onboarding in this file creates the signed-in user's profile, so it
+          // has to follow the smoke test, which expects that profile to be absent.
+          name: "flows",
+          testMatch: "**/flows.spec.ts",
+          dependencies: ["chromium"],
+          use: { ...devices["Desktop Chrome"] },
+        },
+      ]
+    : [
+        {
+          name: "chromium",
+          use: { ...devices["Desktop Chrome"] },
+        },
+      ],
   webServer: hasE2ESecrets ? servers : undefined,
 })
