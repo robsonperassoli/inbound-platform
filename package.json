@@ -9,6 +9,7 @@
     "lint": "oxlint --type-aware",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
+    "fallow:audit": "fallow audit",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "db:generate": "pnpm --filter @inbound/api db:generate",
@@ -23,6 +24,7 @@
     "deploy:website": "fly deploy . --config apps/website/fly.toml --dockerfile apps/website/Dockerfile"
   },
   "devDependencies": {
+    "fallow": "^3.35.0",
     "oxfmt": "^0.35.0",
     "oxlint": "^1.43.0",
     "oxlint-tsgolint": "^7.0.0",

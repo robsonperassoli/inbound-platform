@@ -18,6 +18,7 @@ From the repo root:
 - `pnpm dev`
 - `pnpm lint`
 - `pnpm format` — CI checks with `pnpm format:check`
+- `pnpm fallow:audit` — changed-file Fallow check (non-blocking in CI)
 - `pnpm typecheck`
 - `pnpm test`
 - `pnpm build`
