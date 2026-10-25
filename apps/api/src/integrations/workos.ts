@@ -42,22 +42,7 @@ export async function authenticateWithCode(code: string) {
   })
 }
 
-/** Extract WorkOS session id (`sid`) from an access token JWT payload. */
-export function getWorkOsSessionIdFromAccessToken(
-  accessToken: string | null | undefined,
-): string | null {
-  if (!accessToken) return null
-  const parts = accessToken.split(".")
-  if (parts.length < 2 || !parts[1]) return null
-
-  try {
-    const json = Buffer.from(parts[1], "base64url").toString("utf8")
-    const payload = JSON.parse(json) as { sid?: unknown }
-    return typeof payload.sid === "string" ? payload.sid : null
-  } catch {
-    return null
-  }
-}
+export { getWorkOsSessionIdFromAccessToken } from "../lib/session"
 
 export function getWorkOsLogoutUrl(sessionId: string, returnTo?: string) {
   const workos = getWorkOS()
