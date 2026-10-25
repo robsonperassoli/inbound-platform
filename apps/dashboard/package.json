@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@base-ui/react": "catalog:",
     "@dnd-kit/helpers": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@fontsource-variable/dm-sans": "catalog:",
@@ -53,6 +54,7 @@
     "react-dom": "catalog:",
     "react-markdown": "^10.1.0",
     "react-textarea-autosize": "catalog:",
+    "recharts": "catalog:",
     "remark-gfm": "^4.0.1",
     "serve": "^14.2.6",
     "shadcn": "catalog:",

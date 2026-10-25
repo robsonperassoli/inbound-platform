@@ -2,7 +2,7 @@ import { WorkOS } from "@workos-inc/node"
 import * as accounts from "../domains/accounts/index"
 import { env } from "../lib/env"
 
-function getWorkOS() {
+export function getWorkOS() {
   if (!env.WORKOS_API_KEY || !env.WORKOS_CLIENT_ID) return null
   return new WorkOS(env.WORKOS_API_KEY, { clientId: env.WORKOS_CLIENT_ID })
 }
