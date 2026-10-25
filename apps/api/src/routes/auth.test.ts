@@ -5,14 +5,16 @@ vi.mock("../integrations/workos.ts", () => ({
   authenticateWithCode: vi.fn(),
   ensureUserFromWorkOS: vi.fn(),
   getWorkOsLogoutUrl: vi.fn(),
-  getWorkOsSessionIdFromAccessToken: vi.fn(() => null),
   getWorkOS: vi.fn(() => null),
 }))
 
 import { app } from "../app"
-import { getAuthorizationUrl } from "../integrations/workos"
-import { createUserAccount } from "../test/factories"
-import { client, withAuth } from "../test/http"
+import {
+  authenticateWithCode,
+  ensureUserFromWorkOS,
+  getAuthorizationUrl,
+} from "../integrations/workos"
+import { client } from "../test/http"
 
 describe("auth routes", () => {
   beforeEach(() => {
@@ -54,89 +56,50 @@ describe("auth routes", () => {
     )
   })
 
-  it("is off when NODE_ENV is production, even if the bypass flag is set", async () => {
-    const previousNodeEnv = process.env.NODE_ENV
-    const previousBypass = process.env.E2E_AUTH_BYPASS
-    process.env.NODE_ENV = "production"
-    process.env.E2E_AUTH_BYPASS = "1"
+  it("sets the session cookie from the WorkOS callback and redirects to the dashboard", async () => {
+    vi.mocked(authenticateWithCode).mockResolvedValue({
+      accessToken: accessToken({ sid: "session_123" }),
+      refreshToken: "refresh",
+      user: {
+        object: "user",
+        id: "user_workos",
+        email: "ada@example.com",
+        emailVerified: true,
+        profilePictureUrl: null,
+        firstName: "Ada",
+        lastName: "Lovelace",
+        lastSignInAt: null,
+        locale: null,
+        createdAt: "2026-01-01T00:00:00.000Z",
+        updatedAt: "2026-01-01T00:00:00.000Z",
+        externalId: null,
+        metadata: {},
+      },
+    })
+    vi.mocked(ensureUserFromWorkOS).mockResolvedValue({
+      id: "local-user",
+      authId: "user_workos",
+      email: "ada@example.com",
+      name: "Ada Lovelace",
+      profilePictureUrl: null,
+      createdAt: 0,
+    })
 
-    try {
-      const res = await app.request("/auth/e2e-login")
-      expect(res.status).toBe(404)
-      expect(await res.json()).toEqual({ error: "Not found" })
-      expect(res.headers.get("set-cookie")).toBeNull()
-    } finally {
-      process.env.NODE_ENV = previousNodeEnv
-      if (previousBypass === undefined) delete process.env.E2E_AUTH_BYPASS
-      else process.env.E2E_AUTH_BYPASS = previousBypass
-    }
-  })
+    const res = await app.request("/auth/callback?code=abc", {
+      redirect: "manual",
+    })
 
-  it("stays off when the bypass flag is unset", async () => {
-    const previousBypass = process.env.E2E_AUTH_BYPASS
-    delete process.env.E2E_AUTH_BYPASS
-
-    try {
-      const res = await app.request("/auth/e2e-login?persona=fresh")
-      expect(res.status).toBe(404)
-    } finally {
-      if (previousBypass === undefined) delete process.env.E2E_AUTH_BYPASS
-      else process.env.E2E_AUTH_BYPASS = previousBypass
-    }
-  })
-
-  it("signs in a harness user and marks the account subscribed without Stripe", async () => {
-    const previousBypass = process.env.E2E_AUTH_BYPASS
-    process.env.E2E_AUTH_BYPASS = "1"
-
-    try {
-      const first = await app.request("/auth/e2e-login")
-      const second = await app.request("/auth/e2e-login")
-      expect(first.status).toBe(302)
-      expect(first.headers.get("location")).toBe("http://localhost:3000")
-
-      const firstUserId = sessionUserId(first)
-      const secondUserId = sessionUserId(second)
-      expect(firstUserId).toBeTruthy()
-      expect(secondUserId).toBe(firstUserId)
-
-      const me = await client.me.$get(undefined, withAuth(firstUserId!))
-      expect(me.status).toBe(200)
-      const body = await me.json()
-      expect(body.user.email).toBe("e2e@inbound.click")
-      expect(body.subscribed).toBe(true)
-
-      const fresh = await app.request("/auth/e2e-login?persona=fresh")
-      expect(sessionUserId(fresh)).not.toBe(firstUserId)
-    } finally {
-      if (previousBypass === undefined) delete process.env.E2E_AUTH_BYPASS
-      else process.env.E2E_AUTH_BYPASS = previousBypass
-    }
-  })
-
-  it("signs in the seeded demo user and rejects a missing seed", async () => {
-    const previousBypass = process.env.E2E_AUTH_BYPASS
-    process.env.E2E_AUTH_BYPASS = "1"
-
-    try {
-      const missing = await app.request("/auth/e2e-login?persona=seed")
-      expect(missing.status).toBe(500)
-
-      const { user } = await createUserAccount({
-        email: "dev@inbound.click",
-        name: "Dev User",
-      })
-      const res = await app.request("/auth/e2e-login?persona=seed")
-      expect(res.status).toBe(302)
-      expect(sessionUserId(res)).toBe(user.id)
-    } finally {
-      if (previousBypass === undefined) delete process.env.E2E_AUTH_BYPASS
-      else process.env.E2E_AUTH_BYPASS = previousBypass
-    }
+    expect(res.status).toBe(302)
+    expect(res.headers.get("location")).toBe("http://localhost:3000")
+    const cookies = res.headers.getSetCookie().join("\n")
+    expect(cookies).toContain("inbound_session=local-user")
+    expect(cookies).toContain("workos_sid=session_123")
+    expect(cookies).toContain("HttpOnly")
+    expect(cookies.toLowerCase()).not.toContain("secure")
   })
 })
 
-function sessionUserId(res: Response) {
-  const cookie = res.headers.get("set-cookie") ?? ""
-  return cookie.match(/inbound_session=([^;]+)/)?.[1]
+function accessToken(payload: unknown) {
+  const body = Buffer.from(JSON.stringify(payload)).toString("base64url")
+  return `eyJhbGciOiJub25lIn0.${body}.sig`
 }

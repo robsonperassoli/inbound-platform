@@ -597,6 +597,9 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.20.1
+      '@workos-inc/node':
+        specifier: ^7.71.0
+        version: 7.82.0(express@5.2.1)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2

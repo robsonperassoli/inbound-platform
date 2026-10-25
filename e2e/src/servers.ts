@@ -1,16 +1,23 @@
 import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { loadE2EEnv, missingE2ESecrets } from "./env"
 
 const e2eDir = path.dirname(fileURLToPath(import.meta.url))
 
 export const repoRoot = path.resolve(e2eDir, "../..")
 
-export const API_URL = "http://127.0.0.1:8787"
-export const DASHBOARD_URL = "http://127.0.0.1:3000"
-export const BIO_URL = "http://127.0.0.1:3001"
+loadE2EEnv()
+
+export const API_URL = "http://localhost:8787"
+export const DASHBOARD_URL = "http://localhost:3000"
+export const BIO_URL = "http://localhost:3001"
+export const OPENAI_STUB_URL = "http://127.0.0.1:8799"
 
 export const sqlitePath = path.join(os.tmpdir(), "inbound-e2e.sqlite")
+export const storageStatePath = path.join(e2eDir, "../.auth/user.json")
+
+export const hasE2ESecrets = missingE2ESecrets().length === 0
 
 const clearedSecrets = {
   WORKOS_API_KEY: "",
@@ -28,9 +35,8 @@ const clearedSecrets = {
   B2_KEY_ID: "",
   B2_APPLICATION_KEY: "",
   B2_PUBLIC_URL: "",
-  TINYBIRD_URL: "",
   TINYBIRD_TOKEN: "",
-  OPENAI_API_KEY: "",
+  TINYBIRD_URL: OPENAI_STUB_URL,
 }
 
 export const apiEnv: Record<string, string> = {
@@ -43,7 +49,8 @@ export const apiEnv: Record<string, string> = {
   BIO_URL,
   DASHBOARD_URL,
   CRON_SECRET: "e2e-cron-secret",
-  E2E_AUTH_BYPASS: "1",
+  OPENAI_API_KEY: "sk-e2e-local",
+  OPENAI_BASE_URL: `${OPENAI_STUB_URL}/v1`,
 }
 
 export const webEnv: Record<string, string> = {

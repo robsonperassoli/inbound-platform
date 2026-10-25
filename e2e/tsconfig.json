@@ -1,9 +1,14 @@
 {
   "extends": "@inbound/config/tsconfig.node.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "..",
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["playwright.config.ts", "src/**/*.ts", "tests/**/*.ts"]
+  "include": [
+    "playwright.config.ts",
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "../apps/api/src/lib/session.ts"
+  ]
 }

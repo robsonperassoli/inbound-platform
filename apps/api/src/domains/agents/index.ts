@@ -7,7 +7,6 @@ import {
 import * as forms from "../forms/index"
 import * as profiles from "../profiles/index"
 import * as chat from "../chat/index"
-import { isE2EHarnessEnabled } from "../../lib/e2e-harness"
 import { env } from "../../lib/env"
 import { runAgent } from "./execute"
 import * as formSubmission from "./form-submission"
@@ -164,7 +163,7 @@ export async function generateTheme(input: {
   title: string
   subtitle: string
 }) {
-  if (isE2EHarnessEnabled() || !env.OPENAI_API_KEY) {
+  if (!env.OPENAI_API_KEY) {
     throw new Error("AI is not configured in this environment")
   }
 

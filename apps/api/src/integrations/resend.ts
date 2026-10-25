@@ -1,9 +1,8 @@
 import { Resend, type CreateEmailOptions } from "resend"
-import { isE2EHarnessEnabled } from "../lib/e2e-harness"
 import { env } from "../lib/env"
 
 function getResend() {
-  if (isE2EHarnessEnabled() || !env.RESEND_API_KEY) return null
+  if (!env.RESEND_API_KEY) return null
   return new Resend(env.RESEND_API_KEY)
 }
 

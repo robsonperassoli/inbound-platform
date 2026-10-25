@@ -40,8 +40,7 @@
         "B2_PUBLIC_URL",
         "TINYBIRD_URL",
         "TINYBIRD_TOKEN",
-        "OPENAI_API_KEY",
-        "E2E_AUTH_BYPASS"
+        "OPENAI_API_KEY"
       ]
     },
     "stripe-tunnel": {
@@ -68,7 +67,10 @@
         "HOME",
         "TMPDIR",
         "PLAYWRIGHT_BROWSERS_PATH",
-        "E2E_AUTH_BYPASS"
+        "WORKOS_API_KEY",
+        "WORKOS_CLIENT_ID",
+        "E2E_USER_EMAIL",
+        "E2E_USER_PASSWORD"
       ]
     }
   }

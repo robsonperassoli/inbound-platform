@@ -1,10 +1,9 @@
 import Stripe from "stripe"
 import * as billing from "../domains/billing/index"
-import { isE2EHarnessEnabled } from "../lib/e2e-harness"
 import { env } from "../lib/env"
 
 export function getStripe() {
-  if (isE2EHarnessEnabled() || !env.STRIPE_SECRET_KEY) return null
+  if (!env.STRIPE_SECRET_KEY) return null
   return new Stripe(env.STRIPE_SECRET_KEY)
 }
 

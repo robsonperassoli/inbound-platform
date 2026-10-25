@@ -34,8 +34,6 @@ const envSchema = z.object({
   TINYBIRD_TOKEN: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   CRON_SECRET: z.string().min(1),
-  // Playwright login and external stubs. Ignored when NODE_ENV is production.
-  E2E_AUTH_BYPASS: z.string().optional(),
 })
 
 export type Env = z.infer<typeof envSchema>
