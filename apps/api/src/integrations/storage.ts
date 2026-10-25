@@ -24,10 +24,6 @@ function createClient() {
 
 const client = createClient()
 
-export function isStorageConfigured() {
-  return Boolean(client && env.B2_BUCKET)
-}
-
 export async function createUploadUrl(key: string, contentType: string) {
   if (!client || !env.B2_BUCKET) {
     throw new Error("Backblaze storage is not configured")
@@ -42,7 +38,7 @@ export async function createUploadUrl(key: string, contentType: string) {
   return getSignedUrl(client, command, { expiresIn: 60 * 15 })
 }
 
-export async function createDownloadUrl(key: string) {
+async function createDownloadUrl(key: string) {
   if (env.B2_PUBLIC_URL) {
     return `${env.B2_PUBLIC_URL.replace(/\/$/, "")}/${key}`
   }

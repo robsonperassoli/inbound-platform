@@ -1,9 +1,4 @@
-import type { InferResponseType } from "hono/client"
 import { ApiError, client } from "./client"
-
-export type InvitationByToken = InferResponseType<
-  (typeof client.invitations)[":token"]["$get"]
->
 
 export async function getInvitationByToken(token: string) {
   const res = await client.invitations[":token"].$get({ param: { token } })

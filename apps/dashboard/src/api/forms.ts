@@ -1,10 +1,5 @@
-import type { InferRequestType, InferResponseType } from "hono/client"
+import type { InferRequestType } from "hono/client"
 import { ApiError, client } from "./client"
-
-export type FormSubmission = InferResponseType<
-  (typeof client.forms)[":id"]["submissions"]["$get"],
-  200
->["submissions"][number]
 
 export async function listForms() {
   const res = await client.forms.$get()

@@ -33,7 +33,6 @@
     "@inbound/ui": "workspace:*",
     "@js-temporal/polyfill": "^0.5.1",
     "@tanstack/react-router": "catalog:",
-    "@tanstack/react-router-ssr-query": "^1.131.7",
     "@tanstack/react-start": "^1.132.0",
     "react": "catalog:",
     "react-dom": "catalog:",

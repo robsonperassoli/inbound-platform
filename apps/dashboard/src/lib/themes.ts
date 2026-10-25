@@ -123,7 +123,7 @@ export type Theme = {
   buttonTextColor: string
 }
 
-export const basicThemes: Theme[] = [
+const basicThemes: Theme[] = [
   {
     name: "Midnight Slate",
     backgroundColor: "#0F172A",
@@ -331,33 +331,4 @@ export function getDefaultTheme() {
   }
 
   return theme
-}
-
-export function getUserPageFontClassName(fontName: string) {
-  return fonts.find((font) => font.name === fontName)?.className ?? "font-sans"
-}
-
-export function getUserPageFontTracking(fontName: string) {
-  switch (fontName) {
-    case "Bebas Neue":
-      return {
-        heading: "tracking-[0.02em]",
-        body: "tracking-[0.01em]",
-      }
-    case "Anton":
-      return {
-        heading: "tracking-[0.025em]",
-        body: "tracking-[0.015em]",
-      }
-    case "Archivo Black":
-      return {
-        heading: "tracking-[0.005em]",
-        body: "tracking-normal",
-      }
-    default:
-      return {
-        heading: "tracking-[-0.03em]",
-        body: "tracking-normal",
-      }
-  }
 }
