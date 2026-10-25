@@ -21,6 +21,7 @@ describe("fallow config", () => {
     expect(config).toContain("apps/api/src/index.ts")
     expect(config).toContain("apps/api/src/app.ts")
     expect(config).toContain("apps/api/src/scripts/**/*.ts")
+    expect(config).toContain("apps/api/src/integrations/tinybird.ts")
     expect(config).toContain("**/*.gen.ts")
     expect(config).toContain('"fallow"')
 
@@ -42,6 +43,9 @@ describe("fallow config", () => {
     expect(output).toContain("apps/api/src/index.ts (manual entry)")
     expect(output).toContain("apps/api/src/app.ts (manual entry)")
     expect(output).toContain("apps/api/src/scripts/seed.ts (manual entry)")
+    expect(output).toContain(
+      "apps/api/src/integrations/tinybird.ts (manual entry)",
+    )
     expect(output).not.toContain("routeTree.gen.ts")
   })
 })
