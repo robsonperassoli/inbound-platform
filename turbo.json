@@ -40,7 +40,8 @@
         "B2_PUBLIC_URL",
         "TINYBIRD_URL",
         "TINYBIRD_TOKEN",
-        "OPENAI_API_KEY"
+        "OPENAI_API_KEY",
+        "E2E_AUTH_BYPASS"
       ]
     },
     "stripe-tunnel": {
@@ -59,6 +60,16 @@
     "lint": {
       "dependsOn": ["^build"],
       "passThroughEnv": ["CI"]
+    },
+    "e2e": {
+      "cache": false,
+      "passThroughEnv": [
+        "CI",
+        "HOME",
+        "TMPDIR",
+        "PLAYWRIGHT_BROWSERS_PATH",
+        "E2E_AUTH_BYPASS"
+      ]
     }
   }
 }

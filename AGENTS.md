@@ -47,6 +47,9 @@ Colocate `*.test.ts` and `*.test.tsx` beside the source. Root `pnpm test` runs e
 
 Component tests render with Testing Library in jsdom. Query by role, label, or text, and drive input with `userEvent`. Mock network and hooks with `vi.mock`. Assert behavior, not snapshots.
 
+End-to-end tests live in `e2e/` and run with `pnpm e2e` (Playwright, Chromium only).
+Sign in with `/auth/e2e-login` while `E2E_AUTH_BYPASS=1`; that route stays off when `NODE_ENV` is `production`.
+
 ## Branch protection
 
 - PR, 1 approval, dismiss stale reviews, resolve threads, up to date, check `ci`.

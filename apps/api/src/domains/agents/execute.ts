@@ -1,3 +1,4 @@
+import { isE2EHarnessEnabled } from "../../lib/e2e-harness"
 import { env } from "../../lib/env"
 import * as chat from "../chat/index"
 import { createAgent } from "./create-agent"
@@ -18,7 +19,7 @@ export async function runAgent(threadId: string) {
     return
   }
 
-  if (!env.OPENAI_API_KEY) {
+  if (isE2EHarnessEnabled() || !env.OPENAI_API_KEY) {
     await chat.updateMessage(lastMessage.id, {
       content:
         "Thanks! (AI is not configured in this environment — your message was saved.)",

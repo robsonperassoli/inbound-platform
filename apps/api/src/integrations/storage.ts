@@ -4,6 +4,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { isE2EHarnessEnabled } from "../lib/e2e-harness"
 import { env } from "../lib/env"
 
 function createClient() {
@@ -25,11 +26,12 @@ function createClient() {
 const client = createClient()
 
 export function isStorageConfigured() {
+  if (isE2EHarnessEnabled()) return false
   return Boolean(client && env.B2_BUCKET)
 }
 
 export async function createUploadUrl(key: string, contentType: string) {
-  if (!client || !env.B2_BUCKET) {
+  if (isE2EHarnessEnabled() || !client || !env.B2_BUCKET) {
     throw new Error("Backblaze storage is not configured")
   }
 
@@ -43,6 +45,8 @@ export async function createUploadUrl(key: string, contentType: string) {
 }
 
 export async function createDownloadUrl(key: string) {
+  if (isE2EHarnessEnabled()) return null
+
   if (env.B2_PUBLIC_URL) {
     return `${env.B2_PUBLIC_URL.replace(/\/$/, "")}/${key}`
   }
