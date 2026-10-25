@@ -7,7 +7,7 @@ const repoRoot = path.resolve(
   "../..",
 )
 
-export const E2E_SECRET_NAMES = [
+const E2E_SECRET_NAMES = [
   "WORKOS_API_KEY",
   "WORKOS_CLIENT_ID",
   "E2E_USER_EMAIL",

@@ -4,7 +4,7 @@ import { SESSION_COOKIE } from "../lib/session"
 
 export const client = testClient(app)
 
-export function sessionCookie(userId: string) {
+function sessionCookie(userId: string) {
   return `${SESSION_COOKIE}=${userId}`
 }
 
