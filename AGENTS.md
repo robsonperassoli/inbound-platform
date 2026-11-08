@@ -50,3 +50,7 @@ Component tests render with Testing Library in jsdom. Query by role, label, or t
 ## Branch protection
 
 - PR, 1 approval, dismiss stale reviews, resolve threads, up to date, check `ci`.
+- PRs into `main` are squash-merged only. Merge commits and rebase merges are disabled.
+- Head branches are deleted automatically after merge.
+- Auto-merge is enabled. Dependabot patch updates auto-merge once required checks pass.
+- Who can bypass the `main` ruleset is pending the repo owner's confirmation.
