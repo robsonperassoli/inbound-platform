@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("resend", () => {
   const send = vi.fn()
-  const Resend = vi.fn(
-    function Resend(this: { emails: { send: typeof send } }) {
-      this.emails = { send }
-    },
-  )
+  const Resend = vi.fn(function Resend(this: {
+    emails: { send: typeof send }
+  }) {
+    this.emails = { send }
+  })
   return { Resend, send }
 })
 

@@ -8,11 +8,11 @@ vi.mock("@workos-inc/node", () => {
   }
 
   return {
-    WorkOS: vi.fn(
-      function WorkOS(this: { userManagement: typeof userManagement }) {
-        this.userManagement = userManagement
-      },
-    ),
+    WorkOS: vi.fn(function WorkOS(this: {
+      userManagement: typeof userManagement
+    }) {
+      this.userManagement = userManagement
+    }),
   }
 })
 
