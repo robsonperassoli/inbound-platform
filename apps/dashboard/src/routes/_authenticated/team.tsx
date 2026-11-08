@@ -197,28 +197,24 @@ function RouteComponent() {
   const manageableProfileOptions = profileOptionsQuery.data ?? []
 
   const rows: TeamRow[] = [
-    ...teamMembers.map(
-      (member): TeamMember => ({
-        id: member.membershipId,
-        type: "member",
-        email: member.email,
-        name: member.name,
-        role: member.role,
-        date: member.joinedAt,
-        member,
-      }),
-    ),
-    ...pendingInvitations.map(
-      (invitation): TeamInvitation => ({
-        id: invitation.invitationId,
-        type: "invitation",
-        email: invitation.email,
-        name: invitation.email,
-        role: invitation.role,
-        date: invitation.expiresAt,
-        invitation,
-      }),
-    ),
+    ...teamMembers.map((member): TeamMember => ({
+      id: member.membershipId,
+      type: "member",
+      email: member.email,
+      name: member.name,
+      role: member.role,
+      date: member.joinedAt,
+      member,
+    })),
+    ...pendingInvitations.map((invitation): TeamInvitation => ({
+      id: invitation.invitationId,
+      type: "invitation",
+      email: invitation.email,
+      name: invitation.email,
+      role: invitation.role,
+      date: invitation.expiresAt,
+      invitation,
+    })),
   ].toSorted((a, b) => {
     if (a.type === "member" && b.type === "invitation") return -1
     if (a.type === "invitation" && b.type === "member") return 1
