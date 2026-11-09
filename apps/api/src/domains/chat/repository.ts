@@ -77,7 +77,7 @@ export async function listMessagesByThread(threadId: string) {
   })
 }
 
-export async function getMessageById(id: string) {
+async function getMessageById(id: string) {
   return db.query.messages.findFirst({ where: eq(messages.id, id) })
 }
 

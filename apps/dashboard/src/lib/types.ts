@@ -3,8 +3,6 @@ import type { client } from "@/api/client"
 
 export type Session = InferResponseType<typeof client.me.$get, 200>
 
-export type SessionUser = Session["user"]
-
 export type Profile = InferResponseType<
   typeof client.profiles.$get,
   200

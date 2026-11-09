@@ -1,7 +1,6 @@
-export const APP_URL = "https://dashboard.inbound.click"
+const APP_URL = "https://dashboard.inbound.click"
 export const APP_SIGNIN_URL = `${APP_URL}/signin`
 
-export const SITE_URL = "https://inbound.click"
 export const SITE_NAME = "Inbound.click"
 export const SITE_TITLE = "Inbound.click — Turn followers into qualified leads"
 export const SITE_DESCRIPTION =

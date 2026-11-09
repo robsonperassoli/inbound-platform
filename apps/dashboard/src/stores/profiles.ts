@@ -1,6 +1,6 @@
 import { Store, useStore } from "@tanstack/react-store"
 
-export const profileStore = new Store({
+const profileStore = new Store({
   selectedId: null as string | null,
 })
 

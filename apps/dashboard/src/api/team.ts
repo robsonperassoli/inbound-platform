@@ -1,20 +1,5 @@
-import type { InferRequestType, InferResponseType } from "hono/client"
+import type { InferRequestType } from "hono/client"
 import { ApiError, client } from "./client"
-
-export type TeamMember = InferResponseType<
-  typeof client.team.members.$get,
-  200
->["members"][number]
-
-export type TeamInvitation = InferResponseType<
-  typeof client.team.invitations.$get,
-  200
->["invitations"][number]
-
-export type TeamProfile = InferResponseType<
-  typeof client.team.profiles.$get,
-  200
->["profiles"][number]
 
 export async function listTeamMembers() {
   const res = await client.team.members.$get()

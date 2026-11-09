@@ -1,1 +1,1 @@
-export { useSession, type DashboardSession } from "@/hooks/queries/session"
+export { useSession } from "@/hooks/queries/session"

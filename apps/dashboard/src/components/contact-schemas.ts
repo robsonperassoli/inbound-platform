@@ -64,7 +64,7 @@ export const supportSchema = z.object({
   routeContext: z.string().optional(),
 })
 
-export const feedbackTypeSchema = z.enum(["feature", "bug"])
+const feedbackTypeSchema = z.enum(["feature", "bug"])
 
 export const featureFeedbackSchema = z.object({
   email: requiredEmail,

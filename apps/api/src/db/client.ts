@@ -18,7 +18,7 @@ function resolveSqlitePath() {
   return resolveConfiguredPath(env.SQLITE_PATH)
 }
 
-export function createSqliteConnection(sqlitePath = resolveSqlitePath()): {
+function createSqliteConnection(sqlitePath = resolveSqlitePath()): {
   sqlite: SqliteDatabase
   sqlitePath: string
 } {
@@ -43,4 +43,4 @@ const sqlite = connection.sqlite
 const sqlitePath = connection.sqlitePath
 
 export const db = drizzle(sqlite, { schema })
-export { schema, sqlite, sqlitePath }
+export { sqlite, sqlitePath }

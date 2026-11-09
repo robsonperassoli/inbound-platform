@@ -16,8 +16,6 @@ import { themeSchema } from "./tools"
 
 export const model = openai("gpt-5.6-luna")
 
-export { runAgent }
-
 async function sendMessageAndRun(threadId: string, message: string) {
   const thread = await chat.getThreadById(threadId)
   if (!thread) throw new Error("Thread not found")
@@ -158,7 +156,7 @@ export async function sendThreadMessage(input: {
   return sendMessageAndRun(input.threadId, input.message)
 }
 
-export async function generateTheme(input: {
+async function generateTheme(input: {
   username: string
   title: string
   subtitle: string

@@ -9,7 +9,7 @@ export async function listProfiles() {
   return res.json()
 }
 
-export async function checkUsernameAvailability(username: string) {
+async function checkUsernameAvailability(username: string) {
   const res = await client.profiles["username-available"].$get({
     query: { username },
   })

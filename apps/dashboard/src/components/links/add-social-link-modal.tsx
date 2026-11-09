@@ -38,7 +38,7 @@ import {
 } from "@/lib/social-links"
 import { useCreateLink } from "@/hooks/queries/links"
 
-export const addSocialLinkSchema = z
+const addSocialLinkSchema = z
   .object({
     platform: z.enum(socialPlatforms),
     identifier: z.string().trim().min(1, "Enter a username or handle"),

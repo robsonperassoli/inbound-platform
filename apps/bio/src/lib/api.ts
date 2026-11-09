@@ -9,7 +9,7 @@ export class ApiError extends Error {
   }
 }
 
-export type PublicLinkDetail = {
+type PublicLinkDetail = {
   id: string
   title: string
   order: number

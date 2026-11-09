@@ -10,7 +10,7 @@ export type PricingPlanView = PricingPlanConfig & {
   isActive?: boolean
 }
 
-export type PricingPlanCtaState = {
+type PricingPlanCtaState = {
   label: string
   disabled?: boolean
   loading?: boolean

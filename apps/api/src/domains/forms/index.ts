@@ -110,6 +110,5 @@ export async function completeSubmission(submissionId: string) {
 export {
   getFormById,
   createForm as insertForm,
-  updateForm,
   getSubmissionById,
 } from "./repository"

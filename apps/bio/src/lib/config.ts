@@ -12,8 +12,3 @@ export const API_URL = env(
   { vite: "VITE_API_URL", node: "API_URL" },
   "http://localhost:8787",
 )
-
-export const BIO_URL = env(
-  { vite: "VITE_BIO_URL", node: "BIO_URL" },
-  "http://localhost:3001",
-)
