@@ -12,6 +12,7 @@
     "fallow:audit": "fallow audit",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "e2e": "turbo run e2e",
     "db:generate": "pnpm --filter @inbound/api db:generate",
     "db:check": "pnpm --filter @inbound/api db:check",
     "db:migrate": "pnpm --filter @inbound/api db:migrate",

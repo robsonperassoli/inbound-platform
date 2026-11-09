@@ -5,26 +5,42 @@ import {
   ensureUserFromWorkOS,
   getAuthorizationUrl,
   getWorkOsLogoutUrl,
-  getWorkOsSessionIdFromAccessToken,
 } from "../integrations/workos"
 import { env } from "../lib/env"
-
-const SESSION_COOKIE = "inbound_session"
-const WORKOS_SID_COOKIE = "workos_sid"
-
-function sessionCookieOptions() {
-  return {
-    httpOnly: true,
-    sameSite: "Lax" as const,
-    path: "/",
-    secure: env.NODE_ENV === "production",
-  }
-}
+import {
+  buildAuthSessionCookies,
+  SESSION_COOKIE,
+  WORKOS_SID_COOKIE,
+} from "../lib/session"
 
 function clearAuthCookies(c: Parameters<typeof setCookie>[0]) {
-  const cookieOptions = sessionCookieOptions()
+  const { httpOnly, sameSite, path, secure } = buildAuthSessionCookies({
+    userId: "",
+    nodeEnv: env.NODE_ENV,
+  })[0]!
+  const cookieOptions = { httpOnly, sameSite, path, secure }
   deleteCookie(c, SESSION_COOKIE, cookieOptions)
   deleteCookie(c, WORKOS_SID_COOKIE, cookieOptions)
+}
+
+function applySessionCookies(
+  c: Parameters<typeof setCookie>[0],
+  userId: string,
+  accessToken: string | null | undefined,
+) {
+  for (const cookie of buildAuthSessionCookies({
+    userId,
+    accessToken,
+    nodeEnv: env.NODE_ENV,
+  })) {
+    setCookie(c, cookie.name, cookie.value, {
+      httpOnly: cookie.httpOnly,
+      sameSite: cookie.sameSite,
+      path: cookie.path,
+      secure: cookie.secure,
+      maxAge: cookie.maxAge,
+    })
+  }
 }
 
 export const authRoutes = new Hono()
@@ -53,22 +69,7 @@ export const authRoutes = new Hono()
 
     if (!user) return c.json({ error: "Failed to provision user" }, 500)
 
-    const cookieOptions = sessionCookieOptions()
-
-    setCookie(c, SESSION_COOKIE, user.id, {
-      ...cookieOptions,
-      maxAge: 60 * 60 * 24 * 30,
-    })
-
-    const workosSessionId = getWorkOsSessionIdFromAccessToken(
-      result.accessToken,
-    )
-    if (workosSessionId) {
-      setCookie(c, WORKOS_SID_COOKIE, workosSessionId, {
-        ...cookieOptions,
-        maxAge: 60 * 60 * 24 * 30,
-      })
-    }
+    applySessionCookies(c, user.id, result.accessToken)
 
     return c.redirect(env.DASHBOARD_URL)
   })

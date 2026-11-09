@@ -2,6 +2,7 @@ import { createMiddleware } from "hono/factory"
 import { getCookie } from "hono/cookie"
 import * as accounts from "../domains/accounts/index"
 import type { User } from "../db/schema"
+import { SESSION_COOKIE } from "../lib/session"
 
 export type AuthContext = {
   user: User
@@ -15,7 +16,7 @@ type Variables = {
 
 export const requireAuth = createMiddleware<{ Variables: Variables }>(
   async (c, next) => {
-    const sessionUserId = getCookie(c, "inbound_session")
+    const sessionUserId = getCookie(c, SESSION_COOKIE)
     if (!sessionUserId) {
       return c.json({ error: "Unauthorized" }, 401)
     }

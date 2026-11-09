@@ -83,3 +83,71 @@ jobs:
           FALLOW_AUDIT_BASE: ${{ github.event.pull_request.base.sha }}
           FALLOW_FORMAT: github-summary
         run: pnpm fallow:audit | tee -a "$GITHUB_STEP_SUMMARY"
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TURBO_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: mise.toml
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check e2e secrets
+        id: secrets
+        env:
+          WORKOS_API_KEY: ${{ secrets.WORKOS_API_KEY }}
+          WORKOS_CLIENT_ID: ${{ secrets.WORKOS_CLIENT_ID }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          missing=()
+          [ -z "$WORKOS_API_KEY" ] && missing+=(WORKOS_API_KEY)
+          [ -z "$WORKOS_CLIENT_ID" ] && missing+=(WORKOS_CLIENT_ID)
+          [ -z "$E2E_USER_EMAIL" ] && missing+=(E2E_USER_EMAIL)
+          [ -z "$E2E_USER_PASSWORD" ] && missing+=(E2E_USER_PASSWORD)
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping e2e. Add these GitHub Actions secrets: ${missing[*]}"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Playwright Chromium
+        if: steps.secrets.outputs.skip != 'true'
+        run: pnpm --filter @inbound/e2e exec playwright install --with-deps chromium
+
+      - name: E2E
+        if: steps.secrets.outputs.skip != 'true'
+        env:
+          WORKOS_API_KEY: ${{ secrets.WORKOS_API_KEY }}
+          WORKOS_CLIENT_ID: ${{ secrets.WORKOS_CLIENT_ID }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: pnpm e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+          if-no-files-found: ignore

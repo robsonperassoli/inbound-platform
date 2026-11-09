@@ -59,6 +59,19 @@
     "lint": {
       "dependsOn": ["^build"],
       "passThroughEnv": ["CI"]
+    },
+    "e2e": {
+      "cache": false,
+      "passThroughEnv": [
+        "CI",
+        "HOME",
+        "TMPDIR",
+        "PLAYWRIGHT_BROWSERS_PATH",
+        "WORKOS_API_KEY",
+        "WORKOS_CLIENT_ID",
+        "E2E_USER_EMAIL",
+        "E2E_USER_PASSWORD"
+      ]
     }
   }
 }

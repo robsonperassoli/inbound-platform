@@ -1,0 +1,17 @@
+{
+  "name": "@inbound/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@inbound/config": "workspace:*",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^22.10.2",
+    "@workos-inc/node": "^7.71.0",
+    "typescript": "catalog:"
+  }
+}
